@@ -6,54 +6,9 @@
     "auditLog": ".66eaf542c18d6963a153097a9c99824aa1513d2c-audit.json",
     "files": [
         {
-            "date": 1601937155112,
-            "name": "server-2020-10-06-11.log",
-            "hash": "c8223ac92948a87afcc331cd6b65d8a1"
-        },
-        {
-            "date": 1601939103023,
-            "name": "server-2020-10-06-12.log",
-            "hash": "67ebe503f09786663286de469039aacc"
-        },
-        {
-            "date": 1601942703006,
-            "name": "server-2020-10-06-13.log",
-            "hash": "2dd57998921fd5b012765b4ed73c8ec8"
-        },
-        {
-            "date": 1601946303004,
-            "name": "server-2020-10-06-14.log",
-            "hash": "0fec7db4bcefa6dfaa8d33f4859a526d"
-        },
-        {
-            "date": 1601949903004,
-            "name": "server-2020-10-06-15.log",
-            "hash": "1f875365b59d8a280aa76128e4b8337d"
-        },
-        {
-            "date": 1601953503006,
-            "name": "server-2020-10-06-16.log",
-            "hash": "4c6ba462b3d6d24cc89c06281039dff5"
-        },
-        {
-            "date": 1601957448575,
-            "name": "server-2020-10-06-17.log",
-            "hash": "930ed84182ccd56c9cc064388a189a68"
-        },
-        {
-            "date": 1601960703005,
-            "name": "server-2020-10-06-18.log",
-            "hash": "fdd4545d44d07506c3de7788ec4fbf6f"
-        },
-        {
-            "date": 1601964303006,
-            "name": "server-2020-10-06-19.log",
-            "hash": "4fd55dc916e3c66ebd87944c5164b365"
-        },
-        {
-            "date": 1601967903003,
-            "name": "server-2020-10-06-20.log",
-            "hash": "facb05538faf039e67feba9bcbb15f9e"
+            "date": 1605145644978,
+            "name": "server-2020-11-12-14.log",
+            "hash": "88351242c98aba288ff3db382c55f7aa"
         }
     ]
 }

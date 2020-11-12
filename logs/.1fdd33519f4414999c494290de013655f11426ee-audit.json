@@ -6,14 +6,9 @@
     "auditLog": "logs\\.1fdd33519f4414999c494290de013655f11426ee-audit.json",
     "files": [
         {
-            "date": 1601175349360,
-            "name": "logs\\exceptions-2020-09-27.log",
-            "hash": "7dcbc323b98008aa96501ea4baeffa51"
-        },
-        {
-            "date": 1601937155093,
-            "name": "logs\\exceptions-2020-10-06.log",
-            "hash": "9c04ee30ea17f25fe9c6dd596d617a06"
+            "date": 1605145644944,
+            "name": "logs\\exceptions-2020-11-12.log",
+            "hash": "eb3dd9703a9114cbd36b56eab93a0ccc"
         }
     ]
 }
