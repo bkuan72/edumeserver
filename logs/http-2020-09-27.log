@@ -1,0 +1,12 @@
+2020-09-27T02:56:05.425Z http: Request Header:{"user-agent":"PostmanRuntime/7.26.3","accept":"*/*","postman-token":"04c0c7f1-1765-4166-be6a-fa076f2892cf","host":"localhost:3000","accept-encoding":"gzip, deflate, br","connection":"keep-alive","content-type":"application/x-www-form-urlencoded","content-length":"44"}
+2020-09-27T02:56:05.426Z http: Request Body :{"email":"bkuan72@gmail.com","password":"Abc123566"}
+2020-09-27T02:56:05.427Z http: Request Parameters :{}
+2020-09-27T02:57:55.658Z http: Request Header:{"user-agent":"PostmanRuntime/7.26.3","accept":"*/*","postman-token":"03b5c771-1161-4dc3-a2f5-dd3a39e9d18c","host":"localhost:3000","accept-encoding":"gzip, deflate, br","connection":"keep-alive","content-type":"application/x-www-form-urlencoded","content-length":"44"}
+2020-09-27T02:57:55.660Z http: Request Body :{"email":"bkuan72@gmail.com","password":"Abc123566"}
+2020-09-27T02:57:55.660Z http: Request Parameters :{}
+2020-09-27T02:58:40.217Z http: Request Header:{"user-agent":"PostmanRuntime/7.26.3","accept":"*/*","postman-token":"73aa8b48-7f1c-4ae6-87cb-f7a8883d34f9","host":"localhost:3000","accept-encoding":"gzip, deflate, br","connection":"keep-alive","content-type":"application/x-www-form-urlencoded","content-length":"41"}
+2020-09-27T02:58:40.218Z http: Request Body :{"email":"bkuan72@gmail.com","password":"Abc123"}
+2020-09-27T02:58:40.219Z http: Request Parameters :{}
+2020-09-27T03:47:35.108Z http: Request Header:{"user-agent":"PostmanRuntime/7.26.3","accept":"*/*","postman-token":"5d565937-d980-4aec-9ba7-daad942d1f5f","host":"localhost:3000","accept-encoding":"gzip, deflate, br","connection":"keep-alive","content-type":"application/x-www-form-urlencoded","content-length":"41","cookie":"Authorization=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZWIxOGU4ZDktZWZkNy0xMWVhLWFhNzQtMzQxN2ViYzk1YjcwIiwidXVpZCI6ImIxZDBlMWM1LTgyMzYtNDMyZi1hMGEwLTUzZjk5OGQzYWM3ZiIsInNpdGVfY29kZSI6IlRFU1QiLCJjcmVhdGVUaW1lU3RhbXAiOiJTdW4sIDI3IFNlcCAyMDIwIDAyOjU4OjQwIEdNVCIsImV4cGlyZUluTWluIjozNjAwLCJpYXQiOjE2MDExNzU1MjAsImV4cCI6MTYwMTE3OTEyMH0.GnY1iNnOhJ3gbshxoPITCCfI2ZdV7QBfETjCGDumRX4"}
+2020-09-27T03:47:35.110Z http: Request Body :{"email":"bkuan72@gmail.com","password":"Abc123"}
+2020-09-27T03:47:35.111Z http: Request Parameters :{}

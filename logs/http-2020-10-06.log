@@ -1,0 +1,6 @@
+2020-10-05T22:33:00.009Z http: Request Header:{"user-agent":"PostmanRuntime/7.26.5","accept":"*/*","postman-token":"10e4f06c-20c3-423c-ad41-d301814be222","host":"localhost:3000","accept-encoding":"gzip, deflate, br","connection":"keep-alive","content-type":"application/x-www-form-urlencoded","content-length":"41"}
+2020-10-05T22:33:00.011Z http: Request Body :{"email":"bkuan72@gmail.com","password":"Abc123"}
+2020-10-05T22:33:00.011Z http: Request Parameters :{}
+2020-10-05T22:33:46.433Z http: Request Header:{"cookie":"Authorization=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZWIxOGU4ZDktZWZkNy0xMWVhLWFhNzQtMzQxN2ViYzk1YjcwIiwidXVpZCI6ImNlZmYzZWM5LWExYWYtNGE4Yy04MDliLWZhYzdiZDgxZDU5YiIsInNpdGVfY29kZSI6IlRFU1QiLCJjcmVhdGVUaW1lU3RhbXAiOiJNb24sIDA1IE9jdCAyMDIwIDIyOjMzOjAwIEdNVCIsImV4cGlyZUluTWluIjozNjAwLCJpYXQiOjE2MDE5MzcxODAsImV4cCI6MTYwMTk0MDc4MH0.g3qCsLuYVH8GPxC9qKM5Fscd_mstuiVyzM2AWSwCQ2I; Path=/api/auth; Domain=localhost; HttpOnly; Expires=Mon, 05 Oct 2020 23:33:00 GMT;","user-agent":"PostmanRuntime/7.26.5","accept":"*/*","postman-token":"71ca5801-1c08-4fce-83fd-0eb764ad2069","host":"localhost:3000","accept-encoding":"gzip, deflate, br","connection":"keep-alive"}
+2020-10-05T22:33:46.435Z http: Request Body :{}
+2020-10-05T22:33:46.436Z http: Request Parameters :{}

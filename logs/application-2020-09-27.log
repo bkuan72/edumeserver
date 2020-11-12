@@ -1,0 +1,238 @@
+2020-09-27T02:55:50.423Z info: Cron setup to purge expired blacklistTokens every minute
+2020-09-27T02:55:50.438Z info: App listening on the port 3000
+2020-09-27T02:55:50.445Z info: Connected!
+2020-09-27T02:55:50.449Z info: Result: [{"Database (testdb)":"testdb"}]
+2020-09-27T02:55:50.451Z info: Database testdb Used {"fieldCount":0,"affectedRows":0,"insertId":0,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
+2020-09-27T02:55:50.454Z info: Table : [{"Tables_in_testdb (users)":"users"}]
+2020-09-27T02:55:50.456Z info: Table : [{"Tables_in_testdb (tokens)":"tokens"}]
+2020-09-27T02:55:50.457Z info: Table : [{"Tables_in_testdb (blacklistTokens)":"blacklisttokens"}]
+2020-09-27T02:55:50.459Z info: Table : [{"Tables_in_testdb (accounts)":"accounts"}]
+2020-09-27T02:55:50.461Z info: Table : [{"Tables_in_testdb (userAccounts)":"useraccounts"}]
+2020-09-27T02:56:05.430Z info: find SQL: SELECT BIN_TO_UUID(id) id, site_code, user_id, title, user_name, password, email, phone_no, status FROM users WHERE email = 'bkuan72@gmail.com'
+2020-09-27T02:56:05.512Z error: Wrong Password Exception: bkuan72@gmail.com
+2020-09-27T02:57:29.154Z info: Cron setup to purge expired blacklistTokens every minute
+2020-09-27T02:57:29.169Z info: App listening on the port 3000
+2020-09-27T02:57:29.177Z info: Connected!
+2020-09-27T02:57:29.181Z info: Result: [{"Database (testdb)":"testdb"}]
+2020-09-27T02:57:29.183Z info: Database testdb Used {"fieldCount":0,"affectedRows":0,"insertId":0,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
+2020-09-27T02:57:29.185Z info: Table : [{"Tables_in_testdb (users)":"users"}]
+2020-09-27T02:57:29.187Z info: Table : [{"Tables_in_testdb (tokens)":"tokens"}]
+2020-09-27T02:57:29.189Z info: Table : [{"Tables_in_testdb (blacklistTokens)":"blacklisttokens"}]
+2020-09-27T02:57:29.191Z info: Table : [{"Tables_in_testdb (accounts)":"accounts"}]
+2020-09-27T02:57:29.193Z info: Table : [{"Tables_in_testdb (userAccounts)":"useraccounts"}]
+2020-09-27T02:57:55.663Z info: find SQL: SELECT BIN_TO_UUID(id) id, site_code, user_id, title, user_name, password, email, phone_no, status FROM users WHERE email = 'bkuan72@gmail.com'
+2020-09-27T02:58:40.220Z info: find SQL: SELECT BIN_TO_UUID(id) id, site_code, user_id, title, user_name, password, email, phone_no, status FROM users WHERE email = 'bkuan72@gmail.com'
+2020-09-27T02:58:40.314Z info: created Token: 
+2020-09-27T03:00:21.782Z info: Cron setup to purge expired blacklistTokens every minute
+2020-09-27T03:00:21.797Z info: App listening on the port 3000
+2020-09-27T03:00:21.805Z info: Connected!
+2020-09-27T03:00:21.808Z info: Result: [{"Database (testdb)":"testdb"}]
+2020-09-27T03:00:21.810Z info: Database testdb Used {"fieldCount":0,"affectedRows":0,"insertId":0,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
+2020-09-27T03:00:21.814Z info: Table : [{"Tables_in_testdb (users)":"users"}]
+2020-09-27T03:00:21.816Z info: Table : [{"Tables_in_testdb (tokens)":"tokens"}]
+2020-09-27T03:00:21.818Z info: Table : [{"Tables_in_testdb (blacklistTokens)":"blacklisttokens"}]
+2020-09-27T03:00:21.820Z info: Table : [{"Tables_in_testdb (accounts)":"accounts"}]
+2020-09-27T03:00:21.822Z info: Table : [{"Tables_in_testdb (userAccounts)":"useraccounts"}]
+2020-09-27T03:02:12.203Z info: Cron setup to purge expired blacklistTokens every minute
+2020-09-27T03:02:12.217Z info: App listening on the port 3000
+2020-09-27T03:02:12.224Z info: Connected!
+2020-09-27T03:02:12.228Z info: Result: [{"Database (testdb)":"testdb"}]
+2020-09-27T03:02:12.230Z info: Database testdb Used {"fieldCount":0,"affectedRows":0,"insertId":0,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
+2020-09-27T03:02:12.232Z info: Table : [{"Tables_in_testdb (users)":"users"}]
+2020-09-27T03:02:12.234Z info: Table : [{"Tables_in_testdb (tokens)":"tokens"}]
+2020-09-27T03:02:12.236Z info: Table : [{"Tables_in_testdb (blacklistTokens)":"blacklisttokens"}]
+2020-09-27T03:02:12.238Z info: Table : [{"Tables_in_testdb (accounts)":"accounts"}]
+2020-09-27T03:02:12.240Z info: Table : [{"Tables_in_testdb (userAccounts)":"useraccounts"}]
+2020-09-27T03:05:03.005Z info: cron run at 5.03am to purge expired blacklist token
+2020-09-27T03:05:03.009Z info: purging expired tokens..
+2020-09-27T03:08:20.613Z info: Cron setup to purge expired blacklistTokens every minute
+2020-09-27T03:08:20.630Z info: App listening on the port 3000
+2020-09-27T03:08:20.637Z info: Connected!
+2020-09-27T03:08:20.643Z info: Result: [{"Database (testdb)":"testdb"}]
+2020-09-27T03:08:20.644Z info: Database testdb Used {"fieldCount":0,"affectedRows":0,"insertId":0,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
+2020-09-27T03:08:20.647Z info: Table : [{"Tables_in_testdb (users)":"users"}]
+2020-09-27T03:08:20.649Z info: Table : [{"Tables_in_testdb (tokens)":"tokens"}]
+2020-09-27T03:08:20.651Z info: Table : [{"Tables_in_testdb (blacklistTokens)":"blacklisttokens"}]
+2020-09-27T03:08:20.653Z info: Table : [{"Tables_in_testdb (accounts)":"accounts"}]
+2020-09-27T03:08:20.655Z info: Table : [{"Tables_in_testdb (userAccounts)":"useraccounts"}]
+2020-09-27T03:18:22.609Z info: Cron setup to purge expired blacklistTokens every minute
+2020-09-27T03:18:22.625Z info: App listening on the port 3000
+2020-09-27T03:18:22.633Z info: Connected!
+2020-09-27T03:18:22.638Z info: Result: [{"Database (testdb)":"testdb"}]
+2020-09-27T03:18:22.640Z info: Database testdb Used {"fieldCount":0,"affectedRows":0,"insertId":0,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
+2020-09-27T03:18:22.642Z info: Table : [{"Tables_in_testdb (users)":"users"}]
+2020-09-27T03:18:22.644Z info: Table : [{"Tables_in_testdb (tokens)":"tokens"}]
+2020-09-27T03:18:22.646Z info: Table : [{"Tables_in_testdb (blacklistTokens)":"blacklisttokens"}]
+2020-09-27T03:18:22.648Z info: Table : [{"Tables_in_testdb (accounts)":"accounts"}]
+2020-09-27T03:18:22.650Z info: Table : [{"Tables_in_testdb (userAccounts)":"useraccounts"}]
+2020-09-27T03:18:23.094Z info: Event loop lag detected! Latency: 413.3333333333333ms
+2020-09-27T03:18:23.594Z info: Event loop lag detected! Latency: 275.5555555555556ms
+2020-09-27T03:18:24.094Z info: Event loop lag detected! Latency: 183.70370370370375ms
+2020-09-27T03:18:24.594Z info: Event loop lag detected! Latency: 122.46913580246918ms
+2020-09-27T03:18:25.096Z info: Event loop lag detected! Latency: 82.31275720164614ms
+2020-09-27T03:18:25.595Z info: Event loop lag detected! Latency: 54.8751714677641ms
+2020-09-27T03:18:26.096Z info: Event loop lag detected! Latency: 36.91678097850941ms
+2020-09-27T03:18:26.606Z info: Event loop lag detected! Latency: 27.944520652339605ms
+2020-09-27T03:18:27.106Z info: Event loop lag detected! Latency: 18.62968043489307ms
+2020-09-27T03:18:27.607Z info: Event loop lag detected! Latency: 12.419786956595383ms
+2020-09-27T03:18:50.359Z info: Cron setup to purge expired blacklistTokens every minute
+2020-09-27T03:18:50.373Z info: App listening on the port 3000
+2020-09-27T03:18:50.381Z info: Connected!
+2020-09-27T03:18:50.385Z info: Result: [{"Database (testdb)":"testdb"}]
+2020-09-27T03:18:50.386Z info: Database testdb Used {"fieldCount":0,"affectedRows":0,"insertId":0,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
+2020-09-27T03:18:50.389Z info: Table : [{"Tables_in_testdb (users)":"users"}]
+2020-09-27T03:18:50.390Z info: Table : [{"Tables_in_testdb (tokens)":"tokens"}]
+2020-09-27T03:18:50.392Z info: Table : [{"Tables_in_testdb (blacklistTokens)":"blacklisttokens"}]
+2020-09-27T03:18:50.394Z info: Table : [{"Tables_in_testdb (accounts)":"accounts"}]
+2020-09-27T03:18:50.396Z info: Table : [{"Tables_in_testdb (userAccounts)":"useraccounts"}]
+2020-09-27T03:18:50.844Z info: Event loop lag detected! Latency: 321.3333333333333ms
+2020-09-27T03:18:51.346Z info: Event loop lag detected! Latency: 214.88888888888889ms
+2020-09-27T03:18:51.847Z info: Event loop lag detected! Latency: 143.5925925925926ms
+2020-09-27T03:18:52.348Z info: Event loop lag detected! Latency: 96.06172839506175ms
+2020-09-27T03:20:45.557Z info: Cron setup to purge expired blacklistTokens every minute
+2020-09-27T03:20:45.572Z info: App listening on the port 3000
+2020-09-27T03:20:45.579Z info: Connected!
+2020-09-27T03:20:45.583Z info: Result: [{"Database (testdb)":"testdb"}]
+2020-09-27T03:20:45.585Z info: Database testdb Used {"fieldCount":0,"affectedRows":0,"insertId":0,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
+2020-09-27T03:20:45.587Z info: Table : [{"Tables_in_testdb (users)":"users"}]
+2020-09-27T03:20:45.589Z info: Table : [{"Tables_in_testdb (tokens)":"tokens"}]
+2020-09-27T03:20:45.591Z info: Table : [{"Tables_in_testdb (blacklistTokens)":"blacklisttokens"}]
+2020-09-27T03:20:45.593Z info: Table : [{"Tables_in_testdb (accounts)":"accounts"}]
+2020-09-27T03:20:45.595Z info: Table : [{"Tables_in_testdb (userAccounts)":"useraccounts"}]
+2020-09-27T03:20:46.042Z info: Event loop lag detected! Latency: 308ms
+2020-09-27T03:20:46.542Z info: Event loop lag detected! Latency: 205.33333333333334ms
+2020-09-27T03:20:47.043Z info: Event loop lag detected! Latency: 136.8888888888889ms
+2020-09-27T03:20:47.544Z info: Event loop lag detected! Latency: 91.59259259259261ms
+2020-09-27T03:21:59.877Z info: Cron setup to purge expired blacklistTokens every minute
+2020-09-27T03:21:59.895Z info: App listening on the port 3000
+2020-09-27T03:21:59.904Z info: Connected!
+2020-09-27T03:21:59.908Z info: Result: [{"Database (testdb)":"testdb"}]
+2020-09-27T03:21:59.910Z info: Database testdb Used {"fieldCount":0,"affectedRows":0,"insertId":0,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
+2020-09-27T03:21:59.912Z info: Table : [{"Tables_in_testdb (users)":"users"}]
+2020-09-27T03:21:59.914Z info: Table : [{"Tables_in_testdb (tokens)":"tokens"}]
+2020-09-27T03:21:59.916Z info: Table : [{"Tables_in_testdb (blacklistTokens)":"blacklisttokens"}]
+2020-09-27T03:21:59.918Z info: Table : [{"Tables_in_testdb (accounts)":"accounts"}]
+2020-09-27T03:21:59.920Z info: Table : [{"Tables_in_testdb (userAccounts)":"useraccounts"}]
+2020-09-27T03:22:00.362Z info: Event loop lag detected! Latency: 378ms
+2020-09-27T03:22:00.863Z info: Event loop lag detected! Latency: 252.33333333333337ms
+2020-09-27T03:22:01.369Z info: Event loop lag detected! Latency: 170.22222222222226ms
+2020-09-27T03:22:01.874Z info: Event loop lag detected! Latency: 114.81481481481485ms
+2020-09-27T03:22:02.374Z info: Event loop lag detected! Latency: 76.87654320987657ms
+2020-09-27T03:37:06.120Z info: Cron setup to purge expired blacklistTokens every minute
+2020-09-27T03:37:06.136Z info: App listening on the port 3000
+2020-09-27T03:37:06.144Z info: Connected!
+2020-09-27T03:37:06.149Z info: Result: [{"Database (testdb)":"testdb"}]
+2020-09-27T03:37:06.151Z info: Database testdb Used {"fieldCount":0,"affectedRows":0,"insertId":0,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
+2020-09-27T03:37:06.153Z info: Table : [{"Tables_in_testdb (users)":"users"}]
+2020-09-27T03:37:06.155Z info: Table : [{"Tables_in_testdb (tokens)":"tokens"}]
+2020-09-27T03:37:06.157Z info: Table : [{"Tables_in_testdb (blacklistTokens)":"blacklisttokens"}]
+2020-09-27T03:37:06.159Z info: Table : [{"Tables_in_testdb (accounts)":"accounts"}]
+2020-09-27T03:37:06.161Z info: Table : [{"Tables_in_testdb (userAccounts)":"useraccounts"}]
+2020-09-27T03:37:06.607Z info: Event loop lag detected! Latency: 306ms
+2020-09-27T03:37:07.107Z info: Event loop lag detected! Latency: 204.33333333333337ms
+2020-09-27T03:37:07.608Z info: Event loop lag detected! Latency: 136.5555555555556ms
+2020-09-27T03:37:08.108Z info: Event loop lag detected! Latency: 91.03703703703708ms
+2020-09-27T03:46:17.745Z info: Cron setup to purge expired blacklistTokens every minute
+2020-09-27T03:46:17.760Z info: App listening on the port 3000
+2020-09-27T03:46:17.767Z info: Connected!
+2020-09-27T03:46:17.772Z info: Result: [{"Database (testdb)":"testdb"}]
+2020-09-27T03:46:17.774Z info: Database testdb Used {"fieldCount":0,"affectedRows":0,"insertId":0,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
+2020-09-27T03:46:17.776Z info: Table : [{"Tables_in_testdb (users)":"users"}]
+2020-09-27T03:46:17.778Z info: Table : [{"Tables_in_testdb (tokens)":"tokens"}]
+2020-09-27T03:46:17.780Z info: Table : [{"Tables_in_testdb (blacklistTokens)":"blacklisttokens"}]
+2020-09-27T03:46:17.781Z info: Table : [{"Tables_in_testdb (accounts)":"accounts"}]
+2020-09-27T03:46:17.783Z info: Table : [{"Tables_in_testdb (userAccounts)":"useraccounts"}]
+2020-09-27T03:46:18.232Z info: Event loop lag detected! Latency: 323ms
+2020-09-27T03:46:18.731Z info: Event loop lag detected! Latency: 215.33333333333337ms
+2020-09-27T03:46:19.232Z info: Event loop lag detected! Latency: 143.5555555555556ms
+2020-09-27T03:46:19.732Z info: Event loop lag detected! Latency: 95.70370370370374ms
+2020-09-27T03:47:17.809Z info: Cron setup to purge expired blacklistTokens every minute
+2020-09-27T03:47:17.839Z info: App listening on the port 3000
+2020-09-27T03:47:17.855Z info: Connected!
+2020-09-27T03:47:17.860Z info: Result: [{"Database (testdb)":"testdb"}]
+2020-09-27T03:47:17.862Z info: Database testdb Used {"fieldCount":0,"affectedRows":0,"insertId":0,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
+2020-09-27T03:47:17.866Z info: Table : [{"Tables_in_testdb (users)":"users"}]
+2020-09-27T03:47:17.869Z info: Table : [{"Tables_in_testdb (tokens)":"tokens"}]
+2020-09-27T03:47:17.873Z info: Table : [{"Tables_in_testdb (blacklistTokens)":"blacklisttokens"}]
+2020-09-27T03:47:17.876Z info: Table : [{"Tables_in_testdb (accounts)":"accounts"}]
+2020-09-27T03:47:17.879Z info: Table : [{"Tables_in_testdb (userAccounts)":"useraccounts"}]
+2020-09-27T03:47:18.297Z info: Event loop lag detected! Latency: 255.33333333333331ms
+2020-09-27T03:47:18.796Z info: Event loop lag detected! Latency: 170.22222222222223ms
+2020-09-27T03:47:19.296Z info: Event loop lag detected! Latency: 113.4814814814815ms
+2020-09-27T03:47:19.796Z info: Event loop lag detected! Latency: 75.65432098765434ms
+2020-09-27T03:47:35.134Z info: find SQL: SELECT BIN_TO_UUID(id) id, site_code, user_id, title, user_name, password, email, phone_no, status FROM users WHERE email = 'bkuan72@gmail.com'
+2020-09-27T03:47:35.229Z info: created Token
+2020-09-27T03:56:22.063Z info: Cron setup to purge expired blacklistTokens every minute
+2020-09-27T03:56:22.073Z info: App listening on the port 3000
+2020-09-27T03:56:22.079Z info: Connected!
+2020-09-27T03:56:22.084Z info: Result: [{"Database (testdb)":"testdb"}]
+2020-09-27T03:56:22.086Z info: Database testdb Used {"fieldCount":0,"affectedRows":0,"insertId":0,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
+2020-09-27T03:56:22.090Z info: Table : [{"Tables_in_testdb (users)":"users"}]
+2020-09-27T03:56:22.092Z info: Table : [{"Tables_in_testdb (tokens)":"tokens"}]
+2020-09-27T03:56:22.093Z info: Table : [{"Tables_in_testdb (blacklistTokens)":"blacklisttokens"}]
+2020-09-27T03:56:22.095Z info: Table : [{"Tables_in_testdb (accounts)":"accounts"}]
+2020-09-27T03:56:22.097Z info: Table : [{"Tables_in_testdb (userAccounts)":"useraccounts"}]
+2020-09-27T03:56:22.551Z info: Event loop lag detected! Latency: 397ms
+2020-09-27T03:56:23.051Z info: Event loop lag detected! Latency: 264.6666666666667ms
+2020-09-27T03:56:23.551Z info: Event loop lag detected! Latency: 176.44444444444449ms
+2020-09-27T03:56:24.052Z info: Event loop lag detected! Latency: 117.962962962963ms
+2020-09-27T03:56:24.553Z info: Event loop lag detected! Latency: 78.97530864197535ms
+2020-09-27T04:07:58.061Z info: Cron setup to purge expired blacklistTokens every minute
+2020-09-27T04:07:58.083Z info: App listening on the port 3000
+2020-09-27T04:07:58.097Z info: Connected!
+2020-09-27T04:07:58.139Z info: Result: [{"Database (testdb)":"testdb"}]
+2020-09-27T04:07:58.143Z info: Database testdb Used {"fieldCount":0,"affectedRows":0,"insertId":0,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
+2020-09-27T04:07:58.147Z info: Table : [{"Tables_in_testdb (users)":"users"}]
+2020-09-27T04:07:58.151Z info: Table : [{"Tables_in_testdb (tokens)":"tokens"}]
+2020-09-27T04:07:58.154Z info: Table : [{"Tables_in_testdb (blacklistTokens)":"blacklisttokens"}]
+2020-09-27T04:07:58.158Z info: Table : [{"Tables_in_testdb (accounts)":"accounts"}]
+2020-09-27T04:07:58.161Z info: Table : [{"Tables_in_testdb (userAccounts)":"useraccounts"}]
+2020-09-27T04:07:58.092Z info: Cron setup to purge expired blacklistTokens every minute
+2020-09-27T04:07:58.203Z info: Connected!
+2020-09-27T04:07:58.209Z info: Result: [{"Database (testdb)":"testdb"}]
+2020-09-27T04:07:58.211Z info: Database testdb Used {"fieldCount":0,"affectedRows":0,"insertId":0,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
+2020-09-27T04:07:58.216Z info: Table : [{"Tables_in_testdb (users)":"users"}]
+2020-09-27T04:07:58.220Z info: Table : [{"Tables_in_testdb (tokens)":"tokens"}]
+2020-09-27T04:07:58.222Z info: Table : [{"Tables_in_testdb (blacklistTokens)":"blacklisttokens"}]
+2020-09-27T04:07:58.224Z info: Table : [{"Tables_in_testdb (accounts)":"accounts"}]
+2020-09-27T04:07:58.226Z info: Table : [{"Tables_in_testdb (userAccounts)":"useraccounts"}]
+2020-09-27T04:07:58.537Z info: Event loop lag detected! Latency: 467.3333333333333ms
+2020-09-27T04:07:58.564Z info: Event loop lag detected! Latency: 461.3333333333333ms
+2020-09-27T04:07:59.047Z info: Event loop lag detected! Latency: 315.2222222222223ms
+2020-09-27T04:07:59.065Z info: Event loop lag detected! Latency: 307.8888888888889ms
+2020-09-27T04:07:59.548Z info: Event loop lag detected! Latency: 210.48148148148155ms
+2020-09-27T04:07:59.566Z info: Event loop lag detected! Latency: 205.2592592592593ms
+2020-09-27T04:08:00.049Z info: Event loop lag detected! Latency: 140.6543209876544ms
+2020-09-27T04:08:00.066Z info: Event loop lag detected! Latency: 137.1728395061729ms
+2020-09-27T04:08:00.551Z info: Event loop lag detected! Latency: 94.4362139917696ms
+2020-09-27T04:08:00.568Z info: Event loop lag detected! Latency: 92.1152263374486ms
+2020-09-27T04:08:24.662Z info: Cron setup to purge expired blacklistTokens every minute
+2020-09-27T04:08:24.679Z info: App listening on the port 3000
+2020-09-27T04:08:24.689Z info: Connected!
+2020-09-27T04:08:24.697Z info: Result: [{"Database (testdb)":"testdb"}]
+2020-09-27T04:08:24.699Z info: Database testdb Used {"fieldCount":0,"affectedRows":0,"insertId":0,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
+2020-09-27T04:08:24.701Z info: Table : [{"Tables_in_testdb (users)":"users"}]
+2020-09-27T04:08:24.703Z info: Table : [{"Tables_in_testdb (tokens)":"tokens"}]
+2020-09-27T04:08:24.705Z info: Table : [{"Tables_in_testdb (blacklistTokens)":"blacklisttokens"}]
+2020-09-27T04:08:24.708Z info: Table : [{"Tables_in_testdb (accounts)":"accounts"}]
+2020-09-27T04:08:24.720Z info: Table : [{"Tables_in_testdb (userAccounts)":"useraccounts"}]
+2020-09-27T04:08:24.700Z info: Cron setup to purge expired blacklistTokens every minute
+2020-09-27T04:08:24.820Z info: Connected!
+2020-09-27T04:08:24.823Z info: Result: [{"Database (testdb)":"testdb"}]
+2020-09-27T04:08:24.844Z info: Database testdb Used {"fieldCount":0,"affectedRows":0,"insertId":0,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
+2020-09-27T04:08:24.847Z info: Table : [{"Tables_in_testdb (users)":"users"}]
+2020-09-27T04:08:24.850Z info: Table : [{"Tables_in_testdb (tokens)":"tokens"}]
+2020-09-27T04:08:24.852Z info: Table : [{"Tables_in_testdb (blacklistTokens)":"blacklisttokens"}]
+2020-09-27T04:08:24.854Z info: Table : [{"Tables_in_testdb (accounts)":"accounts"}]
+2020-09-27T04:08:24.856Z info: Table : [{"Tables_in_testdb (userAccounts)":"useraccounts"}]
+2020-09-27T04:08:25.146Z info: Event loop lag detected! Latency: 569.3333333333333ms
+2020-09-27T04:08:25.181Z info: Event loop lag detected! Latency: 529.3333333333333ms
+2020-09-27T04:08:25.647Z info: Event loop lag detected! Latency: 379.88888888888886ms
+2020-09-27T04:08:25.681Z info: Event loop lag detected! Latency: 352.88888888888886ms
+2020-09-27T04:08:26.148Z info: Event loop lag detected! Latency: 253.5925925925926ms
+2020-09-27T04:08:26.181Z info: Event loop lag detected! Latency: 235.25925925925927ms
+2020-09-27T04:08:26.649Z info: Event loop lag detected! Latency: 169.3950617283951ms
+2020-09-27T04:08:26.681Z info: Event loop lag detected! Latency: 156.83950617283952ms
+2020-09-27T04:08:27.149Z info: Event loop lag detected! Latency: 112.93004115226341ms
+2020-09-27T04:08:27.181Z info: Event loop lag detected! Latency: 104.55967078189302ms
+2020-09-27T04:08:27.649Z info: Event loop lag detected! Latency: 75.28669410150896ms
