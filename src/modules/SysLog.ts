@@ -86,7 +86,7 @@ class Logger {
         )
       }),
       new DailyRotateFile({
-        filename: 'server-%DATE%.log',
+        filename: 'logs/server-%DATE%.log',
         datePattern: 'YYYY-MM-DD-HH',
         zippedArchive: true,
         maxSize: '20m',
