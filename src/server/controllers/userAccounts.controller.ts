@@ -15,6 +15,8 @@ import { UserAccountsDTO } from "../../dtos/userAccounts.DTO";
 import UserAccountAlreadyExistsException from "../../exceptions/UserAccountAlreadyExistException";
 import DbCreatingNewUserAccountException from "../../exceptions/DbCreatingNewUserAccountException";
 import SysEnv from "../../modules/SysEnv";
+import cors = require('cors');
+
 
 
 export class UserAccountsController implements Controller{
@@ -34,9 +36,10 @@ export class UserAccountsController implements Controller{
                     validationUserAccountRegistrationMiddleware(userAccounts_schema),
                     validationUserAccountMiddleware(),
                     this.registration);
-    this.router.get(this.path, authMiddleware, this.getAll);
-    this.router.get(this.path+'/byUserAccountId/:userAccountId',  authMiddleware, this.findById);
+    this.router.get(this.path, cors(), authMiddleware, this.getAll);
+    this.router.get(this.path+'/byUserAccountId/:userAccountId',  cors(), authMiddleware, this.findById);
     this.router.patch(this.path+'/:userAccountId',
+                        cors(),
                         authMiddleware,
                         validationUpdateMiddleware(userAccounts_schema),
                         validationUserAccountMiddleware(),

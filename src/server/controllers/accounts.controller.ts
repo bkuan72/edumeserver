@@ -12,6 +12,7 @@ import validationMiddleware from "../../middleware/validation.middleware";
 
 import PostDataFailedException from "../../exceptions/PostDataFailedException";
 import SysEnv from "../../modules/SysEnv";
+import cors = require('cors');
 
 export class AccountsController implements Controller{
   public path='/accounts';
@@ -27,12 +28,13 @@ export class AccountsController implements Controller{
 
   public intializeRoutes() {
     this.router.post(this.path,
+                    cors(),
                     authMiddleware,
                     validationMiddleware(accounts_schema),
                     this.newAccount);
-    this.router.get(this.path, authMiddleware, this.getAll);
-    this.router.get(this.path+'/byAccountId/:accountId',  authMiddleware, this.findById);
-    this.router.patch(this.path+'/:accountId', authMiddleware, validationUpdateMiddleware(accounts_schema), this.update);
+    this.router.get(this.path, cors(), authMiddleware, this.getAll);
+    this.router.get(this.path+'/byAccountId/:accountId',  cors(), authMiddleware, this.findById);
+    this.router.patch(this.path+'/:accountId', cors(), authMiddleware, validationUpdateMiddleware(accounts_schema), this.update);
     return;
   }
 
