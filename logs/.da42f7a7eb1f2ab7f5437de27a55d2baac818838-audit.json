@@ -9,6 +9,11 @@
             "date": 1605145644961,
             "name": "logs\\error-2020-11-12.log",
             "hash": "b31a33ec4b91ceb702a366e05da1304b"
+        },
+        {
+            "date": 1605565667593,
+            "name": "logs\\error-2020-11-17.log",
+            "hash": "44c415bebae0be8993f64e7b0f9c9e4b"
         }
     ]
 }
