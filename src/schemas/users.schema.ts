@@ -25,6 +25,7 @@ export const users_schema: schemaIfc[] = [
     sqlType: 'VARCHAR(20)',
     size: 20,
     allowNull: false,
+    excludeFromUpdate: false,
     default: '',
     trim: true,
     enum: [],
@@ -34,6 +35,7 @@ export const users_schema: schemaIfc[] = [
     sqlType: 'ENUM',
     size: 10,
     enum: ['Mr', 'Ms', 'Mrs', 'Dr', 'Madam', 'Sir'],
+    excludeFromUpdate: false,
     index: [],
     default: 'Mr'
   },
@@ -41,6 +43,7 @@ export const users_schema: schemaIfc[] = [
     sqlType: 'VARCHAR(60)',
     size: 60,
     allowNull: false,
+    excludeFromUpdate: false,
     default: '',
     enum: [],
     index: []
@@ -61,6 +64,7 @@ export const users_schema: schemaIfc[] = [
     sqlType: 'VARCHAR(60)',
     size: 60,
     allowNull: false,
+    excludeFromUpdate: false,
     default: '',
     trim: true,
     enum: [],
@@ -70,6 +74,7 @@ export const users_schema: schemaIfc[] = [
     sqlType: 'VARCHAR(30)',
     size: 30,
     allowNull: false,
+    excludeFromUpdate: false,
     default: '',
     trim: true,
     enum: [],
@@ -83,6 +88,7 @@ export const users_schema: schemaIfc[] = [
       'BLOCKED',
       'RETRY_LOCKED_OUT'
       ],
+    excludeFromUpdate: false,
     index: [],
     default: 'ENABLED'
   },

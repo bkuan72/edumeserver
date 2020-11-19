@@ -11,18 +11,23 @@ import { uuidIfc } from './uuidIfc';
 import DataStoredInToken from '../../interfaces/DataStoredInToken';
 import CommonFn from '../../modules/CommonFnModule';
 import SysLog from '../../modules/SysLog';
+import SysEnv from '../../modules/SysEnv';
 
 export class TokenModel {
   tableName = 'tokens';
+  siteCode = 'TEST';
+
   constructor (altTable?: string) {
     if (altTable) {
         this.tableName = altTable;
+        this.siteCode = SysEnv.SITE_CODE;
     }
   }
 
   create = (dataInToken: DataStoredInToken, jwtSignToken: string): Promise<TokenDTO> => {
     return new Promise((resolve) => {
       const newToken = new TokenDTO(dataInToken);
+      newToken.data.site_code = this.siteCode;
       const len = jwtSignToken.length;
       newToken.data.token = jwtSignToken;
       SqlFormatter.formatInsert(
@@ -30,33 +35,36 @@ export class TokenModel {
         this.tableName,
         token_schema
       ).then((sql) => {
-        dbConnection.DB.query('SET @uuidId=UUID(); ', (err: any, res: any) => {
-          if (err) {
-            SysLog.error(JSON.stringify(err));
-            const respTokenDTO = new TokenDTO(newToken);
-            resolve(respTokenDTO);
-            return;
-          }
-          dbConnection.DB.query(sql, (err: any, res: any) => {
-            if (err) {
+        dbConnection.DB.sql('SET @uuidId=UUID(); ').execute()
+        .then((result1) => {
+          dbConnection.DB.sql(sql).execute()
+          .then((result2) => {
+            dbConnection.DB.sql('SELECT @uuidId;').execute()
+            .then((result3) => {
+              SysLog.info('created Token');
+              const newUuid: uuidIfc = { '@uuidId': result3.rows[0][0] }; // TODO
+              newToken.data.id = newUuid['@uuidId'];
+              resolve(newToken);
+            })
+            .catch((err) => {
               SysLog.error(JSON.stringify(err));
-            }
-            dbConnection.DB.query(
-              'SELECT @uuidId;',
-              (err: any, res: uuidIfc[]) => {
-                if (err) {
-                  SysLog.error(JSON.stringify(err));
-                  resolve(undefined);
-                  return;
-                }
-                SysLog.info('created Token');
-                const newUuid: uuidIfc = res[0];
-                newToken.data.id = newUuid['@uuidId'];
-                resolve(newToken);
-              }
-            );
+              resolve(undefined);
+              return;
+            });
+          })
+          .catch((err) => {
+            SysLog.error(JSON.stringify(err));
+            resolve(undefined);
+            return;
           });
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          const respTokenDTO = new TokenDTO(newToken);
+          resolve(respTokenDTO);
+          return;
         });
+
       });
     });
   };
@@ -67,21 +75,25 @@ export class TokenModel {
       SqlFormatter.formatSelect(this.tableName, token_schema) + ' WHERE ';
       sql += SqlStr.format('id = UUID_TO_BIN(?)', [tokenId]);
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.query(sql, (err, res) => {
-        if (err) {
-          SysLog.error(JSON.stringify(err));
-          resolve(undefined);
-          return;
-        }
-        if (res.length) {
-          const respTokenDTO = new TokenDTO(res[0]);
+      dbConnection.DB.sql(sql).execute()
+      .then((result) => {
+        if (result.rows.length) {
+          const data = SqlFormatter.transposeResultSet(token_schema,
+            undefined,
+            undefined,
+            result.rows[0]);
+          const respTokenDTO = new TokenDTO(data);
           resolve(respTokenDTO);
           return;
         }
         // not found Customer with the id
         resolve(undefined);
+      })
+      .catch((err) => {
+        SysLog.error(JSON.stringify(err));
+        resolve(undefined);
+        return;
       });
-
     });
   };
 
@@ -89,24 +101,18 @@ export class TokenModel {
     return new Promise ((resolve) => {
       SqlFormatter.formatUpdate(this.tableName, token_schema, tokenDTO).then ((sql) => {
         sql += SqlFormatter.formatWhereAND('', {id: tokenId}, token_schema);
-        dbConnection.DB.query( sql,
-          (err, res) => {
-            if (err) {
-              SysLog.error(JSON.stringify(err));
-              resolve(undefined);
-              return;
-            }
-            if (res.affectedRows == 0) {
-              // not found token with the id
-              resolve(undefined);
-              return;
-            }
-            SysLog.info('updated token: ', { id: tokenId, ...tokenDTO });
-            this.findById(tokenId).then((respTokenDTO) => {
-              resolve(respTokenDTO);
-            })
-          }
-        );
+        dbConnection.DB.sql(sql).execute()
+        .then((result) => {
+          SysLog.info('updated token: ', { id: tokenId, ...tokenDTO });
+          this.findById(tokenId).then((respTokenDTO) => {
+            resolve(respTokenDTO);
+          })
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(undefined);
+          return;
+        });
       });
       });
   };
@@ -126,15 +132,15 @@ export class TokenModel {
     sql += SqlFormatter.formatWhereAND('', conditions, token_schema);
     SysLog.info('find SQL: ' + sql);
     return new Promise((resolve) => {
-      dbConnection.DB.query(sql, (err, res) => {
-        if (err) {
-          SysLog.error(JSON.stringify(err));
-          resolve(undefined);
-          return;
-        }
-        if (res.length) {
+      dbConnection.DB.sql(sql).execute()
+      .then((result) => {
+        if (result.rows.length) {
           const respTokenDTOArray: TokenDTO[] = [];
-          res.forEach((data: any) => {
+          result.rows.forEach((rowData: any) => {
+            const data = SqlFormatter.transposeResultSet(token_schema,
+              ignoreExclSelect,
+              excludeSelectProp,
+              rowData);
             const respTokenDTO = new TokenDTO(data);
             respTokenDTOArray.push(respTokenDTO);
           });
@@ -143,6 +149,11 @@ export class TokenModel {
         }
         // not found with the id
         resolve(undefined);
+      })
+      .catch((err) => {
+        SysLog.error(JSON.stringify(err));
+        resolve(undefined);
+        return;
       });
     });
   };
@@ -150,63 +161,66 @@ export class TokenModel {
 
   getAll = (): Promise<TokenDTO[] | undefined> => {
     return new Promise ((resolve) => {
-      dbConnection.DB.query(
-        SqlFormatter.formatSelect(this.tableName, token_schema),
-        (err, res) => {
-          if (err) {
-            SysLog.error('error: ', err);
-            resolve(undefined);
-            return;
-          }
-          if (res.length) {
-            const respTokenDTOArray:TokenDTO[] = [];
-            res.forEach((data: any) => {
-              const respTokenDTO = new TokenDTO(data);
-              respTokenDTOArray.push(respTokenDTO);
-            });
-            resolve (respTokenDTOArray);
-            return;
-          }
-          // not found
-          resolve(undefined);
+      dbConnection.DB.sql(SqlFormatter.formatSelect(this.tableName, token_schema)).execute()
+      .then((result) => {
+        if (result.rows.length) {
+          const respTokenDTOArray:TokenDTO[] = [];
+          result.rows.forEach((rowData: any) => {
+            const data = SqlFormatter.transposeResultSet(token_schema,
+              undefined,
+              undefined,
+              rowData);
+            const respTokenDTO = new TokenDTO(data);
+            respTokenDTOArray.push(respTokenDTO);
+          });
+          resolve (respTokenDTOArray);
+          return;
         }
-      );
+        // not found
+        resolve(undefined);
+      })
+      .catch((err) => {
+        SysLog.error('error: ', err);
+        resolve(undefined);
+        return;
+      });
+
     });
   };
 
   remove = (id: string): Promise<string | undefined> => {
     return new Promise((resolve) => {
-      dbConnection.DB.query(
-        'DELETE FROM ' + this.tableName + ' WHERE id = UUID_TO_BIN(?);',
-        id,
-        (err, res) => {
-          if (err) {
-            SysLog.error('error: ', err);
-            resolve(undefined);
-            return;
-          }
-          if (res.affectedRows == 0) {
-            // not found Customer with the id
-            resolve(undefined);
-            return;
-          }
-          SysLog.info('deleted ' + this.tableName + ' with id: ', id);
-          resolve(id);
+      let sql = 'DELETE FROM ' + this.tableName + ' WHERE ';
+      sql += SqlStr.format('id = UUID_TO_BIN(?)', [id]);
+      dbConnection.DB.sql(sql).execute()
+      .then((result) => {
+        if (result.rows.length == 0) {
+          // not found Customer with the id
+          resolve(undefined);
+          return;
         }
-      );
+        SysLog.info('deleted ' + this.tableName + ' with id: ', id);
+        resolve(id);
+      })
+      .catch((err) => {
+        SysLog.error('error: ', err);
+        resolve(undefined);
+        return;
+      });
     });
   };
 
   purgeExpired = () => {
     SysLog.info('purging expired tokens..');
-    dbConnection.DB.query(SqlFormatter.formatSelect(this.tableName, token_schema), (err, res) => {
-      if (err) {
-        SysLog.error(JSON.stringify(err));
-        return;
-      }
+    dbConnection.DB.sql(SqlFormatter.formatSelect(this.tableName, token_schema)).execute()
+    .then((result) => {
       const now = new Date();
-      if (res.length > 0) {
-        res.forEach((token: any) => {
+      if (result.rows.length > 0) {
+        result.rows.forEach((rowData: any) => {
+          const token = SqlFormatter.transposeResultSet(token_schema,
+            undefined,
+            undefined,
+            rowData);
           const min = token.expireInMin/ 60;
           const tokenDate = new Date(token.createTimeStamp);
           const expiry = CommonFn.addMinutesToDate(min, tokenDate);
@@ -219,7 +233,12 @@ export class TokenModel {
           }
         });
       }
+    })
+    .catch((err) => {
+      SysLog.error(JSON.stringify(err));
+      return;
     });
+
   };
 
 }

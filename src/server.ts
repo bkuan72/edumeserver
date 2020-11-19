@@ -1,3 +1,4 @@
+import { LogsController } from './server/controllers/logs.controller';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import 'dotenv/config';
 import validateEnv from './utils/validateEnv';
@@ -13,6 +14,7 @@ import toobusy_js from 'toobusy-js';
 import SysEnv from './modules/SysEnv';
 
 // validate that all required environment variable is present
+SysEnv.init();
 validateEnv();
 
 const blacklistTokens = new TokenModel('blacklistTokens');
@@ -25,7 +27,8 @@ const app = new App (
     new AuthenticationController(),
     new UsersController(),
     new AccountsController(),
-    new UserAccountsController()
+    new UserAccountsController(),
+    new LogsController()
   ],
   port
 );

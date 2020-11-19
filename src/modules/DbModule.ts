@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import CommonFn from './CommonFnModule'
-import { Connection, MysqlError, createConnection } from 'mysql';
 import { sysTables } from '../schemas/SysTables';
 import SysLog from './SysLog';
+import mysqlx from 'mysqlx';
+import Session from 'mysqlx/lib/Session';
 
 
 export interface indexIfc {
@@ -39,55 +40,57 @@ export interface tableIfc {
 
 class Database {
 
-    DB: Connection;
-    constructor () {
-        const {
-            DB_HOST,
-            DB_USER,
-            DB_PASSWORD
-          } = process.env;
+    DB!: Session;
 
-          const serverCfg: import("mysql").ConnectionConfig = {
-              host: DB_HOST,
-              user: DB_USER,
-              password: DB_PASSWORD
-          };
-
-          this.DB = createConnection(serverCfg);
-    }
+    serverCfg!: {
+        host: string | undefined;
+        user: string | undefined;
+        password: string | undefined;
+    };
 
     /**
      * connect the application to the MySQL database
      */
-    DBM_connectDB = (): Promise<Connection> => {
+    DBM_connectDB = (): Promise<any> => {
         return new Promise ((resolve) => {
-            const { DB_NAME } = process.env;
+            const {
+                DB_HOST,
+                DB_USER,
+                DB_PASSWORD,
+                DB_NAME
+              } = process.env;
 
-            this.DB.connect((err) => {
-              if (err){ throw(err); } else {
-                SysLog.info("Connected!");
-                this.DBM_initializeDatabase(DB_NAME).then (() => {
-                    resolve(this.DB);
-                })
-                .catch((err: any) => {
-                    throw(err);
-                })
-              }
+              this.serverCfg = {
+                  host: DB_HOST,
+                  user: DB_USER,
+                  password: DB_PASSWORD
+              };
+
+            mysqlx.getSession(this.serverCfg).then((session) => {
+              this.DB = session;
+              SysLog.info("Connected!");
+              this.DBM_initializeDatabase(DB_NAME).then (() => {
+                  resolve(this.DB);
+              })
+            })
+            .catch((err: any) => {
+                throw(err);
             });
 
         });
     }
+
     /**
      * This function query the database, it creates the database if not found, and if  data
      * table does not exist it creates the data tables
      * @param dbName - database name to initialize
      */
-    DBM_initializeDatabase = (dbName: any): Promise<MysqlError> => {
+    DBM_initializeDatabase = (dbName: any): Promise<any> => {
         return new Promise ((resolve, reject) => {
-            this.DB.query("SHOW DATABASES LIKE " + CommonFn.strWrapper(dbName),  (err: any, result: string) => {
-                if (err){ reject(err); } else {
+            this.DB.sql("SHOW DATABASES LIKE " + CommonFn.strWrapper(dbName))
+                .execute().then((result) => {
                     SysLog.info("Result: " + JSON.stringify(result));
-                    if (result == "") {
+                    if (result.rows.length === 0) {
                         this.DBM_createDb(dbName).then (() => {
                             this.DBM_selectDatabase(dbName).then (() => {
                                 sysTables.forEach(table => {
@@ -97,7 +100,7 @@ class Database {
                             })
                             .catch((err: any) => {
                                 reject(err);
-                            })
+                            });
                         });
                     } else {
                         this.DBM_selectDatabase(dbName).then (() => {
@@ -110,9 +113,10 @@ class Database {
                             reject(err);
                         })
                     }
-                }
-            });
-
+                })
+                .catch((err) => {
+                    reject(err);
+                });
         });
     }
 
@@ -121,12 +125,12 @@ class Database {
      * @param dbName - database name
      * @param table  - table object
      */
-    DBM_tableExistCheck = (dbName: string, table: tableIfc): Promise<MysqlError | boolean> => {
+    DBM_tableExistCheck = (dbName: string, table: tableIfc): Promise<any | boolean> => {
         return new Promise((resolve, reject) => {
             let exist = false;
-            this.DB.query("SHOW TABLES LIKE " + CommonFn.strWrapper(table.name),  (err: any, result: string) => {
-                if (err){ reject(err); } else {
-                    if (result == "") {
+            this.DB.sql("SHOW TABLES LIKE " + CommonFn.strWrapper(table.name)).execute()
+                .then((result) => {
+                    if (result.rows.length === 0) {
                         SysLog.info("Table " + table.name + " Does Not Exist");
                         this.DBM_createTable (dbName, table.name, table.schema).then(()=> {
                             resolve(true);
@@ -139,41 +143,42 @@ class Database {
                         exist = true;
                     }
                     resolve (exist);
-                }
-            });
+                })
+                .catch((err) => {
+                    reject(err);
+                })
         })
     }
     /**
      * This function execute the USE command for the database named
      * @param dbName - database name
      */
-    DBM_selectDatabase = (dbName: string): Promise<MysqlError> => {
+    DBM_selectDatabase = (dbName: string): Promise<any> => {
         return new Promise((resolve, reject) => {
-            this.DB.query("USE " + dbName, function (err: any, result: any) {
-                if (err) {
-                    reject (err);
-                } else {
-                    SysLog.info("Database " + dbName + " Used " + JSON.stringify(result));
-                    resolve();
-                }
-              });
-        })
-
+            this.DB.sql("USE " + dbName).execute()
+            .then((result) => {
+                SysLog.info("Database " + dbName + " Used " + JSON.stringify(result));
+                resolve();
+            })
+            .catch((err) => {
+                reject (err);
+            });
+        });
     }
     /**
      * This function check and create a database if it does not exist
      * @param dbName - database name to query
      */
-    DBM_createDb = (dbName: string): Promise<MysqlError> => {
+    DBM_createDb = (dbName: string): Promise<any> => {
         return new Promise ((resolve, reject) => {
-            this.DB.query("CREATE DATABASE " + CommonFn.strWrapper(dbName), function (err: any, result: any) {
-                if (err) {
-                    reject(err);
-                } else {
-                    SysLog.info("Database created " + JSON.stringify(result));
-                    resolve();
-                }
-              });
+            this.DB.sql("CREATE DATABASE " + CommonFn.strWrapper(dbName)).execute()
+            .then((result) => {
+                SysLog.info("Database created " + JSON.stringify(result));
+                resolve();
+            })
+            .catch((err) => {
+                reject(err);
+            });
         })
     }
     /**
@@ -308,17 +313,16 @@ class Database {
 
             sql += ")";
             SysLog.info("Create Table : " + sql);
-            this.DB.query(sql, function (err: any, result: any) {
-                if (err) {
-                    console.log ('Create Table Error :', err)
-                    reject(err);
-                    return;
-                }
+            this.DB.sql(sql).execute()
+            .then((result) => {
                 SysLog.info("Table created : " + JSON.stringify(result));
                 resolve();
-              });
-
-        })
+            })
+            .catch((err) => {
+                console.log ('Create Table Error :', err)
+                reject(err);
+            });
+        });
 
     }
 

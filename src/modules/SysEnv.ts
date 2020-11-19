@@ -26,6 +26,8 @@ class SystemEnvironment {
         this.NODE_ENV = 'development';
         this.MIN_LAG = 70;
         this.MIN_LAG_INTERVAL = 500;
+    }
+    init () {
         if (process.env.DB_HOST !== undefined) {
             this.DB_HOST = process.env.DB_HOST;
         }

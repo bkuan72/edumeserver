@@ -10,6 +10,7 @@ import InvalidAuthenticationTokenException from '../exceptions/InvalidAuthentica
 import { TokenModel } from '../server/models/token.model';
 import SysLog from '../modules/SysLog';
 import SysEnv from '../modules/SysEnv';
+import InvalidUserStatusException from '../exceptions/InvalidUserStatausException';
 
 async function authMiddleware(request: Request, _response: Response, next: NextFunction) {
   const cookies = request.cookies;
@@ -27,14 +28,19 @@ async function authMiddleware(request: Request, _response: Response, next: NextF
             if (
                 await blacklistTokens.find({ token: cookies.Authorization})
              ) {
-              SysLog.error('Wrong Authentication Token. Missing User Id :', id);
+              SysLog.error('Blacklisted Token Used by User Id :', id);
                 next(new WrongAuthenticationTokenException());
             } else {
                     const user = await users.findById(id);
                 if (user) {
-                  next();
+                  if (user.data.status === 'ENABLED') {
+                    next();
+                  } else {
+                    SysLog.error('Authentication Token used by Invalid User Id :', id);
+                    next(new InvalidUserStatusException(user));
+                  }
                 } else {
-                  SysLog.error('Wrong Authentication Token. Missing User Id :', id);
+                  SysLog.error('Authentication Token used by Invalid User Id :', id);
                   next(new WrongAuthenticationTokenException());
                 }
             }

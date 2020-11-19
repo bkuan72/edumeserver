@@ -161,12 +161,14 @@ class ModelGenerator {
                     }
                 }
                 else {
-                    let escStr = SqlStr.escape(postDTO[colProp.fieldName]);
-                    escStr = escStr.replace("'","");
-                    escStr = escStr.replace("'","");
-                    if (!isUndefined(colProp.size)) {
-                        if (escStr.length > colProp.size) {
-                            error += colProp.fieldName + ' exceed string length of ' + colProp.size + ', ';
+                    if (colProp.sqlType?.includes('VARCHAR')) {
+                        let escStr = SqlStr.escape(postDTO[colProp.fieldName]);
+                        escStr = escStr.replace("'","");
+                        escStr = escStr.replace("'","");
+                        if (!isUndefined(colProp.size) && colProp.size > 0) {
+                            if (escStr.length > colProp.size) {
+                                error += colProp.fieldName + ' exceed string length of ' + colProp.size + ', ';
+                            }
                         }
                     }
                 }

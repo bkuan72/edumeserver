@@ -1,3 +1,4 @@
+import { logs_schema } from './logs.schema';
 import { tableIfc } from '../modules/DbModule';
 import { users_schema } from './users.schema';
 import { token_schema } from './tokens.schema';
@@ -24,5 +25,9 @@ export const sysTables: tableIfc[] = [
   {
     name: 'userAccounts',
     schema: userAccounts_schema
+  },
+  {
+    name: 'logs',
+    schema: logs_schema
   }
 ];

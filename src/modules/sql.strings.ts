@@ -234,6 +234,40 @@ export class SqlFormatter {
     return sql;
   };
 
+    /**
+   * This function formats the SQL SELECT statement, if fmtPropArr is provided then only
+   * those properties with fieldNames in the array would be format into the SQL statement
+   *
+   * @param table - entity table name
+   * @param schema - entity schema
+   * @param fmtPropArr - optional Property name array
+   */
+  static transposeResultSet = (
+    schema: schemaIfc[],
+    ignoreExclFromSelect: boolean | undefined,
+    fmtPropArr: string[] | undefined,
+    dataRow: any[]
+  ): any => {
+    let idx = 0;
+    let data = Object.create(null);
+    schema.forEach((prop) => {
+      if (prop.fieldName !== 'INDEX') {
+        if (isUndefined(prop.excludeFromSelect) ||
+            ignoreExclFromSelect ||
+            !prop.excludeFromSelect) {
+          if (ignoreExclFromSelect ||
+            SqlFormatter.includeInSql(prop, fmtPropArr)) {
+            data = DTOGenerator.defineProperty(data,
+                                              prop.fieldName,
+                                              dataRow[idx++]);
+          }
+        }
+      }
+    });
+
+    return data;
+  };
+
   /**
    * This function formats the SQL UPDATE statement based on schema configuration and data object properties
    * it checks schema property excludeFromUpdate to determine if data property can be updated

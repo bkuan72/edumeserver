@@ -10,41 +10,55 @@ import { userAccounts_schema } from '../../schemas/userAccounts.schema';
 import { uuidIfc } from './uuidIfc';
 import { UserAccountsDTO } from '../../dtos/userAccounts.DTO';
 import SysLog from '../../modules/SysLog';
+import SysEnv from '../../modules/SysEnv';
 
 export class UserAccountModel {
 
+  siteCode = 'TEST';
+  constructor() {
+    this.siteCode = SysEnv.SITE_CODE;
+  }
+
   tableName = 'userAccounts';
   create = (newUserAccount: UserAccountsDTO): Promise<UserAccountsDTO | undefined> => {
+
+    newUserAccount.data.site_code = this.siteCode;
     return new Promise (async (resolve) => {
      SqlFormatter.formatInsert(
         newUserAccount.data,
         this.tableName,
         userAccounts_schema
       ).then((sql) => {
-        dbConnection.DB.query('SET @uuidId=UUID(); ', (err: any, res: any) => {
-          if (err) {
-            SysLog.error(JSON.stringify(err));
-            resolve(undefined)
-            return;
-          }
-          dbConnection.DB.query(sql, (err: any, res: any) => {
-            if (err) {
-              SysLog.error(JSON.stringify(err));
-            }
-            dbConnection.DB.query('SELECT @uuidId;', (err: any, res: uuidIfc[]) => {
-              if (err) {
-                SysLog.error(JSON.stringify(err));
-                resolve(undefined)
-                return;
-              }
-              SysLog.info('created userAccount: ', res);
-              const newUuid: uuidIfc = res[0];
+        dbConnection.DB.sql('SET @uuidId=UUID(); ').execute()
+        .then((result) => {
+          dbConnection.DB.sql(sql).execute()
+          .then((result2) => {
+            dbConnection.DB.sql('SELECT @uuidId;').execute()
+            .then((result3) => {
+              SysLog.info('created Entity: ', result3);
+              const newUuid: uuidIfc = { '@uuidId': result3.rows[0][0] }; // TODO
+
               const respUserAccountsDTO = new UserAccountsDTO(newUserAccount.data);
               respUserAccountsDTO.data.password = '';
               respUserAccountsDTO.data.id = newUuid['@uuidId'];
               resolve(respUserAccountsDTO)
+            })
+            .catch((err) => {
+              SysLog.error(JSON.stringify(err));
+              resolve(undefined);
+              return;
             });
+          })
+          .catch((err) => {
+            SysLog.error(JSON.stringify(err));
+            resolve(undefined);
+            return;
           });
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(undefined);
+          return;
         });
       });
     });
@@ -57,21 +71,25 @@ export class UserAccountModel {
       SqlFormatter.formatSelect(this.tableName, userAccounts_schema) + ' WHERE ';
       sql += SqlStr.format('id = UUID_TO_BIN(?)', [userAccountId]);
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.query(sql, (err, res) => {
-        if (err) {
-          SysLog.error(JSON.stringify(err));
-          resolve(undefined);
-          return;
-        }
-        if (res.length) {
-          const respUserAccountsDTO = new UserAccountsDTO(res[0]);
+      dbConnection.DB.sql(sql).execute()
+      .then((result) => {
+        if (result.rows.length) {
+          const data = SqlFormatter.transposeResultSet(userAccounts_schema,
+            undefined,
+            undefined,
+            result.rows[0]);
+          const respUserAccountsDTO = new UserAccountsDTO(data);
           resolve(respUserAccountsDTO);
           return;
         }
         // not found Customer with the id
         resolve(undefined);
+      })
+      .catch((err) => {
+        SysLog.error(JSON.stringify(err));
+        resolve(undefined);
+        return;
       });
-
     });
   };
 
@@ -82,15 +100,15 @@ export class UserAccountModel {
     sql += SqlFormatter.formatWhereAND('', conditions, userAccounts_schema);
     SysLog.info('find SQL: ' + sql);
     return new Promise((resolve) => {
-      dbConnection.DB.query(sql, (err, res) => {
-        if (err) {
-          SysLog.error(JSON.stringify(err));
-          resolve (undefined);
-          return;
-        }
-        if (res.length) {
+      dbConnection.DB.sql(sql).execute()
+      .then((result) => {
+        if (result.rows.length) {
           const respUserAccountsDTOArray:UserAccountsDTO[] = [];
-          res.forEach((data: any) => {
+          result.rows.forEach((rowData: any) => {
+            const data = SqlFormatter.transposeResultSet(userAccounts_schema,
+              ignoreExclSelect,
+              excludeSelectProp,
+              rowData);
             const respUserAccountsDTO = new UserAccountsDTO(data);
             respUserAccountsDTOArray.push(respUserAccountsDTO);
           });
@@ -99,34 +117,40 @@ export class UserAccountModel {
         }
         // not found with the id
         resolve(undefined);
+      })
+      .catch((err) => {
+        SysLog.error(JSON.stringify(err));
+        resolve (undefined);
+        return;
       });
-
     });
   };
 
   getAll = (): Promise<UserAccountsDTO[] | undefined> => {
     return new Promise ((resolve) => {
-      dbConnection.DB.query(
-        SqlFormatter.formatSelect(this.tableName, userAccounts_schema),
-        (err, res) => {
-          if (err) {
-            SysLog.error(JSON.stringify(err));
-            resolve(undefined);
-            return;
-          }
-          if (res.length) {
-            const respUserAccountsDTOArray:UserAccountsDTO[] = [];
-            res.forEach((data: any) => {
-              const respUserAccountsDTO = new UserAccountsDTO(data);
-              respUserAccountsDTOArray.push(respUserAccountsDTO);
-            });
-            resolve (respUserAccountsDTOArray);
-            return;
-          }
-          // not found
-          resolve(undefined);
+      dbConnection.DB.sql(SqlFormatter.formatSelect(this.tableName, userAccounts_schema)).execute()
+      .then((result) => {
+        if (result.rows.length) {
+          const respUserAccountsDTOArray:UserAccountsDTO[] = [];
+          result.rows.forEach((rowData: any) => {
+            const data = SqlFormatter.transposeResultSet(userAccounts_schema,
+              undefined,
+              undefined,
+              rowData);
+            const respUserAccountsDTO = new UserAccountsDTO(data);
+            respUserAccountsDTOArray.push(respUserAccountsDTO);
+          });
+          resolve (respUserAccountsDTOArray);
+          return;
         }
-      );
+        // not found
+        resolve(undefined);
+      })
+      .catch((err) => {
+        SysLog.error(JSON.stringify(err));
+        resolve(undefined);
+        return;
+      });
     });
   };
 
@@ -134,48 +158,41 @@ export class UserAccountModel {
     return new Promise ((resolve) => {
       SqlFormatter.formatUpdate(this.tableName, userAccounts_schema, UserAccountsDTO).then ((sql) => {
         sql += SqlFormatter.formatWhereAND('', {id: userAccountId}, userAccounts_schema);
-        dbConnection.DB.query( sql,
-          (err, res) => {
-            if (err) {
-              SysLog.error(JSON.stringify(err));
-              resolve(undefined);
-              return;
-            }
-            if (res.affectedRows == 0) {
-              // not found userAccount with the id
-              resolve(undefined);
-              return;
-            }
-            SysLog.info('updated userAccount: ', { id: userAccountId, ...UserAccountsDTO });
-            this.findById(userAccountId).then((respUserAccountsDTO) => {
-              resolve(respUserAccountsDTO);
-            })
-          }
-        );
+        dbConnection.DB.sql(sql).execute()
+        .then((result) => {
+          SysLog.info('updated userAccount: ', { id: userAccountId, ...UserAccountsDTO });
+          this.findById(userAccountId).then((respUserAccountsDTO) => {
+            resolve(respUserAccountsDTO);
+          })
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(undefined);
+          return;
+        });
       });
-      });
+    });
   };
 
   remove = (id: string): Promise<string | undefined> => {
     return new Promise((resolve) => {
-      dbConnection.DB.query(
-        'DELETE FROM userAccounts WHERE id = UUID_TO_BIN(?);',
-        id,
-        (err, res) => {
-          if (err) {
-            SysLog.error(JSON.stringify(err));
-            resolve(undefined);
-            return;
-          }
-          if (res.affectedRows == 0) {
-            // not found Customer with the id
-            resolve(undefined);
-            return;
-          }
-          SysLog.info('deleted userAccounts with id: ', id);
-          resolve(id);
+      let sql = 'DELETE FROM userAccounts WHERE ';
+      sql += SqlStr.format('id = UUID_TO_BIN(?)', [id]);
+      dbConnection.DB.sql(sql).execute()
+      .then((result) => {
+        if (result.rows.length == 0) {
+          // not found Customer with the id
+          resolve(undefined);
+          return;
         }
-      );
+        SysLog.info('deleted entities with id: ', id);
+        resolve(id);
+      })
+      .catch((err) => {
+        SysLog.error(JSON.stringify(err));
+        resolve(undefined);
+        return;
+      });
     });
   };
 }
