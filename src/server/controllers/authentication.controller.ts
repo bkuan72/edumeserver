@@ -20,6 +20,7 @@ import { TokenModel } from "../models/token.model";
 import { TokenDTO } from "../../dtos/tokens.DTO";
 import SysLog from "../../modules/SysLog";
 import SysEnv from "../../modules/SysEnv";
+import InvalidUserStatusException from "../../exceptions/InvalidUserStatausException";
 
 class AuthenticationController implements Controller {
     public path='/auth';
@@ -98,10 +99,15 @@ class AuthenticationController implements Controller {
         if (user) {
           const isPasswordMatching = await bcryptCompare(logInData.data.password, user[0].data.password);
           if (isPasswordMatching) {
-            user[0].data.password = undefined;
-            const tokenData = await this.createToken(user[0]);
-            response.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
-            response.send(user);
+            if (user[0].data.status === 'ENABLED') {
+              user[0].data.password = undefined;
+              const tokenData = await this.createToken(user[0]);
+              response.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
+              response.send(user);
+            } else {
+              SysLog.error(`Invalid User Status,  Id : ${user[0].data.id}, email: ${user[0].data.email} Status: ${user[0].data.status}`);
+              next(new InvalidUserStatusException(user[0]));
+            }
           } else {
             SysLog.error(`Wrong Password Exception: ${logInData.data.email}`);
             next(new WrongCredentialsException(logInData.data.email));
