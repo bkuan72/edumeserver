@@ -5,6 +5,7 @@ import { sysTables } from '../schemas/SysTables';
 import SysLog from './SysLog';
 import mysqlx from 'mysqlx';
 import Session from 'mysqlx/lib/Session';
+import SqlFormatter from './sql.strings';
 
 
 export interface indexIfc {
@@ -16,21 +17,22 @@ export interface indexIfc {
  * Data column properties
  */
 export interface schemaIfc  {
-    fieldName: string;
-    enum: string[];
-    index: indexIfc[];
-    postRequired?: boolean;
-    trim?: boolean;
-    primaryKey?: boolean;
-    sqlType: string | undefined;
-    size?: number;
-    allowNull?: boolean;
-    default?: string;
-    encrypt?: boolean;
-    bcryptIt?: boolean;
-    excludeFromSelect?: boolean;
-    excludeFromUpdate?: boolean;
-    uuidProperty?: boolean;
+    fieldName: string;      // SQL column name
+    sqlType: string | undefined;    // sql type eg VARCHAR, BLOB, INT, ENUM, TEXT, etc
+    size?: number;                  // size of VARCHAR
+    allowNull?: boolean;            // allow null value
+    default?: string;               // default value
+    enum: string[];         // ENUM values
+    index: indexIfc[];      // array of index
+
+    primaryKey?: boolean;           // is a primary key
+    trim?: boolean;                 // right trim the String
+    encrypt?: boolean;              // encrypted value
+    bcryptIt?: boolean;             // using bcrypt
+    postRequired?: boolean;         // column required for INSERT SQL statement
+    excludeFromSelect?: boolean;    // exclude column from SELECT SQL statement
+    excludeFromUpdate?: boolean;    // exclude column from UPDATE SQL statement
+    uuidProperty?: boolean;         // a UUID field
 }
 
 export interface tableIfc {
@@ -120,6 +122,84 @@ class Database {
         });
     }
 
+    DBM_tableSchemaUpdate = (dbName: string, table: tableIfc): Promise<any | boolean> => {
+        return new Promise ((resolve, reject) => {
+            const columns: string[] = [
+                'column_name',
+                'column_default',
+                'data_type',
+                'column_type'
+            ];
+            let colStr = '';
+            columns.forEach((col) => {
+                if (colStr !== '') {
+                    colStr += ', ' + col;
+                }
+                else {
+                    colStr = col;
+                }
+            });
+            this.DB.sql("SELECT " + colStr +
+                        " FROM INFORMATION_SCHEMA.COLUMNS" +
+                        " WHERE TABLE_SCHEMA = " + CommonFn.strWrapper(dbName) +
+                        " AND TABLE_NAME = " + CommonFn.strWrapper(table.name) + ";")
+                .execute()
+                .then((result) => {
+                    SysLog.info("Table : " + JSON.stringify(result));
+                    const colDefinitions: any[] = [];
+                    result.rows.forEach((data) => {
+                        colDefinitions.push(SqlFormatter.transposeColumnResultSet(columns, data));
+                    });
+                    let alterSql = '';
+                    table.schema.forEach((column: schemaIfc) => {
+                        if (column.fieldName !== 'INDEX') {
+                            let newCol = true;
+                            colDefinitions.some((colDef) => {
+                                if (column.fieldName === colDef.column_name) {
+                                    newCol = false;
+                                    // TODO logic to alter existing columns
+                                    // if (alterSql === '') {
+                                    //     alterSql = 'ALTER TABLE ' + table.name;
+                                    // } else {
+                                    //     alterSql += ', '
+                                    // }
+                                    return true;
+                                }
+                            });
+                            if (newCol) {
+                                if (alterSql === '') {
+                                    alterSql = 'ALTER TABLE ' + table.name;
+                                } else {
+                                    alterSql += ', '
+                                }
+                                alterSql += ' ADD COLUMN ' + SqlFormatter.formatColumnDefinition(column);
+                            }
+                        }
+                    });
+
+                    if (alterSql !== '') {
+                        alterSql += ';';
+                        this.DB.sql(alterSql)
+                        .execute()
+                        .then((result) => {
+                            SysLog.info("Success Altering Table Schema : " + JSON.stringify(result))
+                            resolve(true);
+                        })
+                        .catch((err) => {
+                            SysLog.error("Error Altering Table Schema : " + JSON.stringify(err))
+                            reject(err);
+                        });
+                    } else {
+                        resolve(false);
+                    }
+                })
+                .catch((err) => {
+                    SysLog.error("Error Reading Table Schema : " + JSON.stringify(err))
+                    reject(err);
+                });
+        });
+    }
+
     /**
      * This function query the database, and create the data table if does not exist
      * @param dbName - database name
@@ -139,16 +219,22 @@ class Database {
                             reject(err);
                         })
                     } else {
-                        SysLog.info("Table : " + JSON.stringify(result))
-                        exist = true;
+                        this.DBM_tableSchemaUpdate(dbName, table).then((alter) => {
+                            exist = true;
+                            SysLog.info("Table Altered : " + alter);
+                            resolve (exist);
+                        })
+                        .catch((err) => {
+                            reject(err);
+                        });
                     }
-                    resolve (exist);
                 })
                 .catch((err) => {
                     reject(err);
                 })
         })
     }
+
     /**
      * This function execute the USE command for the database named
      * @param dbName - database name
@@ -181,60 +267,7 @@ class Database {
             });
         })
     }
-    /**
-     * This function format a quoted coma delimited string list
-     * @param sql - SQL buffer
-     * @param arr - array of string values
-     */
-    appendStrList = (sql: string, arr: string[]) => {
-        let ft = true;
-        arr.forEach(enumVal => {
-            if (ft) {
-                ft = false;
-            } else {
-                sql += ",";
-            }
-            sql += "'" + enumVal + "'";
-        });
-        return sql;
-    }
 
-    /**
-     * This function format the SQL syntax for and index property
-     * @param sql - SQL buffer
-     * @param index - index property
-     */
-    appendIdxColumnList = (sql: string, index: indexIfc) => {
-        let firstCol = true;
-        index.columns.forEach((column: string) => {
-            if (firstCol) {
-                firstCol = false;
-            } else {
-                sql += ', ';
-            }
-            sql += column;
-        });
-        return sql;
-    }
-    /**
-     * This function format the SQL syntax to create a database index
-     * @param sql - the SQL string
-     * @param indexes - index properties
-     */
-    appendIndexes = (sql: string, indexes: indexIfc[]) => {
-        let first = true;
-        indexes.forEach(index => {
-            if (first) {
-                first = false;
-            } else {
-                sql += "), "
-            }
-            sql += "INDEX "+ index.name + " (";
-            sql = this.appendIdxColumnList (sql, index);
-        });
-        sql += ")";
-        return sql;
-    }
 
 
     /**
@@ -248,65 +281,22 @@ class Database {
             let sql = "CREATE TABLE `"+db+"`.`"+tableName+"` (";
             let first = true;
 
-            tableProperties.forEach((field: schemaIfc) => {
-                if (field.fieldName != 'INDEX') {
+            tableProperties.forEach((column) => {
+                if (column.fieldName !== 'INDEX') {
                     if (first) {
                         first = false;
                     } else {
                         sql += ", ";
                     }
-                    for (const prop in field) {
-                        let dropOut = false;
-                        switch (prop) {
-                            case 'fieldName':
-                                sql += field[prop];
-                                sql += ' ';
-                                break;
-                            case 'sqlType':
-                                sql += field[prop];
-                                if (field.primaryKey) {
-                                    dropOut = true;
-                                }
-                                break;
-                            case 'allowNull':
-                                sql += " ";
-                                if (field[prop] == true) {
-                                    sql += 'NULL'
-                                } else {
-                                    sql += 'NOT NULL'
-                                }
-                                break;
-                            case 'default':
-                                if (field.sqlType?.includes('VARCHAR')) {
-                                    sql += " ";
-                                    sql += "DEFAULT '"+ field[prop];
-                                    sql += "'";
-                                } else {
-                                    sql += " ";
-                                    sql += "DEFAULT '"+ field[prop]?.toString();
-                                    sql += "'";
-                                }
-                                break;
-                            case 'enum':
-                                if (field.sqlType?.includes('ENUM')) {
-                                    sql += "("
-                                    sql = this.appendStrList (sql, field.enum);
-                                    sql += ")";
-                                }
-                                break;
-                        }
-                        if (dropOut) {
-                            break;
-                        }
-                    }
+                    sql +=    SqlFormatter.formatColumnDefinition(column);
                 }
-            })
+            });
 
-            tableProperties.forEach((field: schemaIfc) => {
-                if (field.fieldName == 'INDEX') {
+            tableProperties.forEach((column: schemaIfc) => {
+                if (column.fieldName == 'INDEX') {
                 sql += ", ";
-                if (field.index.length > 0) {
-                    sql = this.appendIndexes (sql, field.index);
+                if (column.index.length > 0) {
+                    sql = SqlFormatter.appendIndexes (sql, column.index);
                 }
                 }
             })
