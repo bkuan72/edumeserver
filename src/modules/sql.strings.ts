@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { schemaIfc } from './DbModule';
+import { indexIfc, schemaIfc } from './DbModule';
 import { isString, isUndefined } from 'util';
 // import { bcryptHash, cryptoStr } from './cryto';
 import SqlStr = require('sqlstring');
@@ -84,6 +84,112 @@ export class SqlFormatter {
       }
     });
   };
+
+      /**
+     * This function format a quoted coma delimited string list
+     * @param sql - SQL buffer
+     * @param arr - array of string values
+     */
+  static  appendStrList = (sql: string, arr: string[]) => {
+      let ft = true;
+      arr.forEach(enumVal => {
+          if (ft) {
+              ft = false;
+          } else {
+              sql += ",";
+          }
+          sql += "'" + enumVal + "'";
+      });
+      return sql;
+  }
+
+  /**
+   * This function format the SQL syntax for and index property
+   * @param sql - SQL buffer
+   * @param index - index property
+   */
+  static appendIdxColumnList = (sql: string, index: indexIfc) => {
+      let firstCol = true;
+      index.columns.forEach((column: string) => {
+          if (firstCol) {
+              firstCol = false;
+          } else {
+              sql += ', ';
+          }
+          sql += column;
+      });
+      return sql;
+  }
+  /**
+   * This function format the SQL syntax to create a database index
+   * @param sql - the SQL string
+   * @param indexes - index properties
+   */
+  static appendIndexes = (sql: string, indexes: indexIfc[]) => {
+      let first = true;
+      indexes.forEach(index => {
+          if (first) {
+              first = false;
+          } else {
+              sql += "), "
+          }
+          sql += "INDEX "+ index.name + " (";
+          sql = SqlFormatter.appendIdxColumnList (sql, index);
+      });
+      sql += ")";
+      return sql;
+  }
+
+  static formatColumnDefinition = (column: schemaIfc) => {
+    let sql = '';
+    if (column.fieldName != 'INDEX') {
+        for (const prop in column) {
+            let dropOut = false;
+            switch (prop) {
+                case 'fieldName':
+                    sql += column[prop];
+                    sql += ' ';
+                    break;
+                case 'sqlType':
+                    sql += column[prop];
+                    if (column.primaryKey) {
+                        dropOut = true;
+                    }
+                    break;
+                case 'allowNull':
+                    sql += " ";
+                    if (column[prop] == true) {
+                        sql += 'NULL'
+                    } else {
+                        sql += 'NOT NULL'
+                    }
+                    break;
+                case 'default':
+                    if (column.sqlType?.includes('VARCHAR')) {
+                        sql += " ";
+                        sql += "DEFAULT '"+ column[prop];
+                        sql += "'";
+                    } else {
+                        sql += " ";
+                        sql += "DEFAULT '"+ column[prop]?.toString();
+                        sql += "'";
+                    }
+                    break;
+                case 'enum':
+                    if (column.sqlType?.includes('ENUM')) {
+                        sql += "("
+                        sql = SqlFormatter.appendStrList (sql, column.enum);
+                        sql += ")";
+                    }
+                    break;
+            }
+            if (dropOut) {
+                break;
+            }
+        }
+    }
+    return sql;
+}
 
   /**
    * This function formats the SQL INSERT syntax
@@ -234,13 +340,38 @@ export class SqlFormatter {
     return sql;
   };
 
-    /**
-   * This function formats the SQL SELECT statement, if fmtPropArr is provided then only
-   * those properties with fieldNames in the array would be format into the SQL statement
+
+  /**
+   * This function transpose the data return from SQL statement into
+   * an object defined with properties from the columns array
    *
-   * @param table - entity table name
+   * @param columns - array of columns name
+   * @param dataRow - data rows returned by SQL statement
+   */
+  static transposeColumnResultSet = (
+    columns: string[],
+    dataRow: any[]
+  ): any => {
+    let idx = 0;
+    let data = Object.create(null);
+    columns.forEach((column) => {
+      data = DTOGenerator.defineProperty(data,
+                                        column,
+                                        dataRow[idx++]);
+    });
+
+    return data;
+  };
+
+  /**
+   * This function transpose the data return from SQL statement into
+   * an object defined with properties from the schema taking into account
+   *  ignoreExclFromSelect and fmtPropArr
+   *
    * @param schema - entity schema
-   * @param fmtPropArr - optional Property name array
+   * @param ignoreExclFromSelect - columns to be excluded
+   * @param fmtPropArr - Property name array
+   * @param dataRow - data rows returned by SQL statement
    */
   static transposeResultSet = (
     schema: schemaIfc[],
