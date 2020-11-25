@@ -1,4 +1,4 @@
-import { ResponseUserDTO } from './../dtos/ResponseUserDTO';
+import { ResponseUserDTO } from '../dtos/ResponseUserDTO';
 import HttpException from "./HttpException";
 
 class InvalidUserStatusException extends HttpException {

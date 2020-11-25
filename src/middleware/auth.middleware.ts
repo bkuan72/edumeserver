@@ -10,12 +10,13 @@ import InvalidAuthenticationTokenException from '../exceptions/InvalidAuthentica
 import { TokenModel } from '../server/models/token.model';
 import SysLog from '../modules/SysLog';
 import SysEnv from '../modules/SysEnv';
-import InvalidUserStatusException from '../exceptions/InvalidUserStatausException';
+import InvalidUserStatusException from '../exceptions/InvalidUserStatusException';
+import { blacklist_tokens_schema_table } from '../schemas/tokens.schema';
 
 async function authMiddleware(request: Request, _response: Response, next: NextFunction) {
   const cookies = request.cookies;
   const users = new UserModel();
-  const blacklistTokens = new TokenModel('blacklistTokens');
+  const blacklistTokens = new TokenModel(blacklist_tokens_schema_table);
   if (cookies && cookies.Authorization) {
 
     try {
