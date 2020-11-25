@@ -1,6 +1,8 @@
 import { schemaIfc } from '../modules/DbModule';
 import DTOGenerator from '../modules/ModelGenerator';
 
+export const userAccounts_schema_table = 'user_accounts';
+
 export const userAccounts_schema: schemaIfc[] = [
   {    fieldName: 'id',
     sqlType: 'BINARY(16) PRIMARY KEY',
@@ -55,6 +57,12 @@ export const userAccounts_schema: schemaIfc[] = [
     default: '0'
   },
   {    fieldName: 'allow_promo',
+    sqlType: 'TINYINT(1)',
+    enum: [],
+    index: [],
+    default: '0'
+  },
+  {    fieldName: 'test',
     sqlType: 'TINYINT(1)',
     enum: [],
     index: [],

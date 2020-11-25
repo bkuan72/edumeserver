@@ -18,7 +18,7 @@ export class AccountsController implements Controller{
   public path='/accounts';
   public router= express.Router();
   private accounts = new AccountModel();
-  siteCode = 'TEST';
+  siteCode = SysEnv.SITE_CODE;
 
 
   constructor() {

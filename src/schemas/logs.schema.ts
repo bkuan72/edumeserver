@@ -1,6 +1,8 @@
 import { schemaIfc } from '../modules/DbModule';
 import DTOGenerator from '../modules/ModelGenerator';
 
+export const logs_schema_table = 'logs';
+
 export const logs_schema: schemaIfc[] = [
     {    fieldName: 'id',
       sqlType: 'BINARY(16) PRIMARY KEY',

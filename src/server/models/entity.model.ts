@@ -5,7 +5,7 @@ import { SqlFormatter } from '../../modules/sql.strings';
 import SqlStr = require('sqlstring');
 import e = require('express');
 import dbConnection, { schemaIfc } from '../../modules/DbModule';
-import { entities_schema } from '../../schemas/entities.schema';
+import { entities_schema, entities_schema_table } from '../../schemas/entities.schema';
 import { EntityDTO } from '../../dtos/entities.DTO';
 import { uuidIfc } from './uuidIfc';
 import SysLog from '../../modules/SysLog';
@@ -13,11 +13,11 @@ import { isUndefined } from '../../modules/isUndefined';
 import SysEnv from '../../modules/SysEnv';
 
 export class EntityModel {
-  tableName = 'entities';
+  tableName = entities_schema_table;
   schema: schemaIfc[] = entities_schema;
   requestDTO: any;
   responseDTO: any;
-  siteCode = 'TEST';
+  siteCode = SysEnv.SITE_CODE;
   constructor (altTable?: string) {
     if (altTable) {
         this.tableName = altTable;

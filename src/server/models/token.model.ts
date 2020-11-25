@@ -5,7 +5,7 @@ import { SqlFormatter } from '../../modules/sql.strings';
 import SqlStr = require('sqlstring');
 import e = require('express');
 import dbConnection from '../../modules/DbModule';
-import { token_schema } from '../../schemas/tokens.schema';
+import { token_schema, tokens_schema_table } from '../../schemas/tokens.schema';
 import { TokenDTO } from '../../dtos/tokens.DTO';
 import { uuidIfc } from './uuidIfc';
 import DataStoredInToken from '../../interfaces/DataStoredInToken';
@@ -14,8 +14,8 @@ import SysLog from '../../modules/SysLog';
 import SysEnv from '../../modules/SysEnv';
 
 export class TokenModel {
-  tableName = 'tokens';
-  siteCode = 'TEST';
+  tableName = tokens_schema_table;
+  siteCode = SysEnv.SITE_CODE;
 
   constructor (altTable?: string) {
     if (altTable) {

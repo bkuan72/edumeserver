@@ -1,6 +1,9 @@
 import { schemaIfc } from '../modules/DbModule';
 import DTOGenerator from '../modules/ModelGenerator';
 
+export const tokens_schema_table = 'tokens';
+export const blacklist_tokens_schema_table = 'blacklist_tokens';
+
 export const token_schema: schemaIfc[] = [
   {    fieldName: 'id',
     sqlType: 'BINARY(16) PRIMARY KEY',

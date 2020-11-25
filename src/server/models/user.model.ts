@@ -8,7 +8,7 @@ import e = require('express');
 import dbConnection from '../../modules/DbModule';
 import { CreateUserDTO } from '../../dtos/CreateUserDTO';
 import { ResponseUserDTO } from '../../dtos/ResponseUserDTO';
-import { users_schema } from '../../schemas/users.schema';
+import { users_schema, users_schema_table } from '../../schemas/users.schema';
 import { uuidIfc } from './uuidIfc';
 import SysLog from '../../modules/SysLog';
 import { Column, Metadata, Row } from 'mysqlx/lib/types';
@@ -16,8 +16,8 @@ import SysEnv from '../../modules/SysEnv';
 
 export class UserModel {
 
-  tableName = 'users';
-  siteCode = 'TEST';
+  tableName = users_schema_table;
+  siteCode = SysEnv.SITE_CODE;
   constructor () {
     this.siteCode = SysEnv.SITE_CODE;
   }

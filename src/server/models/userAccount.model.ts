@@ -6,7 +6,7 @@ import { SqlFormatter } from '../../modules/sql.strings';
 import SqlStr = require('sqlstring');
 import e = require('express');
 import dbConnection from '../../modules/DbModule';
-import { userAccounts_schema } from '../../schemas/userAccounts.schema';
+import { userAccounts_schema, userAccounts_schema_table } from '../../schemas/userAccounts.schema';
 import { uuidIfc } from './uuidIfc';
 import { UserAccountsDTO } from '../../dtos/userAccounts.DTO';
 import SysLog from '../../modules/SysLog';
@@ -14,12 +14,12 @@ import SysEnv from '../../modules/SysEnv';
 
 export class UserAccountModel {
 
-  siteCode = 'TEST';
+  siteCode = SysEnv.SITE_CODE;
   constructor() {
     this.siteCode = SysEnv.SITE_CODE;
   }
 
-  tableName = 'userAccounts';
+  tableName = userAccounts_schema_table;
   create = (newUserAccount: UserAccountsDTO): Promise<UserAccountsDTO | undefined> => {
 
     newUserAccount.data.site_code = this.siteCode;

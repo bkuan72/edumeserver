@@ -20,7 +20,7 @@ export class EntitiesController implements Controller{
   public path='/entities';
   public router= express.Router();
   private entities = new EntityModel();
-  siteCode = 'TEST';
+  siteCode = SysEnv.SITE_CODE;
 
 
   constructor() {

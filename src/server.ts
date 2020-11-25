@@ -12,12 +12,13 @@ import { TokenModel } from './server/models/token.model';
 import SysLog from './modules/SysLog';
 import toobusy_js from 'toobusy-js';
 import SysEnv from './modules/SysEnv';
+import { blacklist_tokens_schema_table } from './schemas/tokens.schema';
 
 // validate that all required environment variable is present
 SysEnv.init();
 validateEnv();
 
-const blacklistTokens = new TokenModel('blacklistTokens');
+const blacklistTokens = new TokenModel(blacklist_tokens_schema_table);
 
 const port = SysEnv.PORT;
 

@@ -1,9 +1,10 @@
+import { blacklist_tokens_schema_table } from './../../schemas/tokens.schema';
 import Controller from "../../interfaces/controller.interface";
 import * as express from 'express';
 import jwt = require('jsonwebtoken');
 import { users_schema } from "../../schemas/users.schema";
 import validationUserRegistrationMiddleware from "../../middleware/validation.user.registration.middleware";
-import { loginDTO_schema } from "../../schemas/login.schema";
+import { loginDTO_schema } from "../../schemas/loginDTO.schema";
 import validationMiddleware from "../../middleware/validation.middleware";
 import { LoginDTO } from "../../dtos/login.DTO";
 import { bcryptCompare } from "../../modules/cryto";
@@ -20,15 +21,15 @@ import { TokenModel } from "../models/token.model";
 import { TokenDTO } from "../../dtos/tokens.DTO";
 import SysLog from "../../modules/SysLog";
 import SysEnv from "../../modules/SysEnv";
-import InvalidUserStatusException from "../../exceptions/InvalidUserStatausException";
+import InvalidUserStatusException from "../../exceptions/InvalidUserStatusException";
 
 class AuthenticationController implements Controller {
     public path='/auth';
     public router= express.Router();
     private users = new UserModel();
     private tokens = new TokenModel();
-    private blacklistTokens = new TokenModel('blacklistTokens');
-    private siteCode = 'TEST';
+    private blacklistTokens = new TokenModel(blacklist_tokens_schema_table);
+    private siteCode = SysEnv.SITE_CODE;
     private tokenExpireInMin = 60;
     constructor() {
         this.siteCode = SysEnv.SITE_CODE;
@@ -64,7 +65,7 @@ class AuthenticationController implements Controller {
       }
 
       private createCookie(tokenData: TokenData) {
-        return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn}`;
+        return `Authorization=${tokenData.token}; HttpOnly=true; Max-Age=${tokenData.expiresIn}`;
       }
 
 
@@ -127,6 +128,8 @@ class AuthenticationController implements Controller {
           response.send(200);
         });
       }
+
+      // TODO private renewCookie ()
 }
 
 export default AuthenticationController;

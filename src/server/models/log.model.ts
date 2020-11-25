@@ -5,7 +5,7 @@ import { SqlFormatter } from '../../modules/sql.strings';
 import SqlStr = require('sqlstring');
 import e = require('express');
 import dbConnection from '../../modules/DbModule';
-import { logs_schema } from '../../schemas/logs.schema';
+import { logs_schema, logs_schema_table } from '../../schemas/logs.schema';
 import { LogDTO } from '../../dtos/logs.DTO';
 import { uuidIfc } from './uuidIfc';
 import { EntityModel } from './entity.model';
@@ -18,7 +18,7 @@ export class LogModel extends EntityModel {
     if (altTable) {
       super(altTable);
     } else  {
-      this.tableName = 'logs';
+      this.tableName = logs_schema_table;
     }
     this.schema = logs_schema;
     this.requestDTO = LogDTO;

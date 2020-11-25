@@ -5,7 +5,7 @@ import { SqlFormatter } from '../../modules/sql.strings';
 import SqlStr = require('sqlstring');
 import e = require('express');
 import dbConnection from '../../modules/DbModule';
-import { accounts_schema } from '../../schemas/accounts.schema';
+import { accounts_schema, accounts_schema_table } from '../../schemas/accounts.schema';
 import { AccountDTO } from '../../dtos/accounts.DTO';
 import { uuidIfc } from './uuidIfc';
 import { EntityModel } from './entity.model';
@@ -16,7 +16,7 @@ export class AccountModel extends EntityModel {
       super(altTable);
     } else  {
       super();
-      this.tableName = 'accounts';
+      this.tableName = accounts_schema_table;
     }
     this.schema = accounts_schema;
     this.requestDTO = AccountDTO;

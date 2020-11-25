@@ -18,7 +18,7 @@ export class LogsController implements Controller{
   public path='/logs';
   public router= express.Router();
   private logs = new LogModel();
-  siteCode = 'TEST';
+  siteCode = SysEnv.SITE_CODE;
 
 
   constructor() {
