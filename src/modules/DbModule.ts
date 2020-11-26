@@ -268,7 +268,46 @@ class Database {
         })
     }
 
+    DBM_createIndex = (prom: Promise<any>, dbName: string, tableName: string, index: indexIfc): Promise<any | undefined> => {
+        let sql = '';
+        return new Promise((resolve, reject) => {
+            if (prom == undefined) {
+                sql = SqlFormatter.formatCreateIndexSql (dbName, tableName, index);
+                SysLog.info("Create Index : " + sql);
+                this.DB.sql(sql).execute()
+                .then((result) => {
+                    SysLog.info("Index created : " + JSON.stringify(result));
+                    resolve();
+                })
+                .catch((err) => {
+                    SysLog.error ('Create Index SQL : ' + sql)
+                    SysLog.error ('Create Index Error :', err)
+                    reject(err);
+                });
 
+            } else {
+                prom.then(() => {
+                        sql = SqlFormatter.formatCreateIndexSql (dbName, tableName, index);
+                        SysLog.info("Create Index : " + sql);
+                        this.DB.sql(sql).execute()
+                        .then((result) => {
+                            SysLog.info("Index created : " + JSON.stringify(result));
+                            resolve();
+                        })
+                        .catch((err) => {
+                            SysLog.error ('Create Index SQL : ' + sql)
+                            SysLog.error ('Create Index Error :', err)
+                            reject(err);
+                        });
+                })
+                .catch((err) => {
+                    SysLog.error ('Create Index SQL : ' + sql)
+                    SysLog.error ('Create Index Error :', err)
+                    reject(err);
+                })
+            }
+        });
+    }
 
     /**
      * This function generate SQL to create a database table
@@ -288,33 +327,38 @@ class Database {
                     } else {
                         sql += ", ";
                     }
-                    sql +=    SqlFormatter.formatColumnDefinition(column);
+                    sql += SqlFormatter.formatColumnDefinition(column);
                 }
             });
 
-            tableProperties.forEach((column: schemaIfc) => {
-                if (column.fieldName == 'INDEX') {
-                sql += ", ";
-                if (column.index.length > 0) {
-                    sql = SqlFormatter.appendIndexes (sql, column.index);
-                }
-                }
-            })
+            sql += ");";
 
-            sql += ")";
             SysLog.info("Create Table : " + sql);
             this.DB.sql(sql).execute()
             .then((result) => {
                 SysLog.info("Table created : " + JSON.stringify(result));
+                sql = ''
+                tableProperties.forEach((column: schemaIfc) => {
+                    if (column.fieldName == 'INDEX') {
+                        let prom: Promise<any>;
+                        if (column.index.length > 0) {
+                            column.index.forEach((idx: indexIfc) => {
+                                prom = this.DBM_createIndex (prom, db, tableName, idx);
+                            })
+                        }
+                    }
+                })
                 resolve();
             })
             .catch((err) => {
-                console.log ('Create Table Error :', err)
+                SysLog.error ('Create Table SQL : ' + sql)
+                SysLog.error ('Create Table Error :', err)
                 reject(err);
             });
         });
 
     }
+
 
 }
 

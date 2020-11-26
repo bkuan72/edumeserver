@@ -120,23 +120,18 @@ export class SqlFormatter {
       });
       return sql;
   }
+
+
   /**
    * This function format the SQL syntax to create a database index
    * @param sql - the SQL string
    * @param indexes - index properties
    */
-  static appendIndexes = (sql: string, indexes: indexIfc[]) => {
-      let first = true;
-      indexes.forEach(index => {
-          if (first) {
-              first = false;
-          } else {
-              sql += "), "
-          }
-          sql += "INDEX "+ index.name + " (";
-          sql = SqlFormatter.appendIdxColumnList (sql, index);
-      });
-      sql += ")";
+  static formatCreateIndexSql = (dbName: string, tableName: string, index: indexIfc) => {
+      let sql = '';
+      sql += " CREATE INDEX "+ index.name + " ON `"+ dbName +"`.`"+tableName+"`  (";
+      sql = SqlFormatter.appendIdxColumnList (sql, index);
+      sql += ");";
       return sql;
   }
 
