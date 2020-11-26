@@ -12,13 +12,14 @@ import { TokenModel } from './server/models/token.model';
 import SysLog from './modules/SysLog';
 import toobusy_js from 'toobusy-js';
 import SysEnv from './modules/SysEnv';
-import { blacklist_tokens_schema_table } from './schemas/tokens.schema';
+import { blacklist_tokens_schema_table, tokens_schema_table } from './schemas/tokens.schema';
 
 // validate that all required environment variable is present
 SysEnv.init();
 validateEnv();
 
 const blacklistTokens = new TokenModel(blacklist_tokens_schema_table);
+const tokens = new TokenModel(tokens_schema_table);
 
 const port = SysEnv.PORT;
 
@@ -34,11 +35,21 @@ const app = new App (
   port
 );
 SysLog.info('Cron setup to purge expired blacklistTokens every minute')
-const task = cron.schedule('3 5 * * * *', () => {
-  SysLog.info('cron run at 5.03am to purge expired blacklist token');
-  blacklistTokens.purgeExpired();
+
+const cronTasks: cron.ScheduledTask[] = [
+  cron.schedule('* 3 5 * * *', () => {
+    SysLog.info('cron run at 5.03am to purge expired blacklist token');
+    blacklistTokens.purgeExpired();
+  }),
+  cron.schedule('* */15 * * * * *', () => {
+    // SysLog.info('cron run every 15 minutes to purge expired tokens');
+    tokens.purgeExpired();
+  })
+];
+
+cronTasks.forEach((task) => {
+  task.start();
 });
-task.start();
 
 app.listen();
 
