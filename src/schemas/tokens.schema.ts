@@ -27,7 +27,6 @@ export const token_schema: schemaIfc[] = [
   {    fieldName: 'uuid',
     sqlType: 'BINARY(16)',
     primaryKey: false,
-    default: '',
     uuidProperty: true,
     excludeFromUpdate: true,
     enum: [],
@@ -58,8 +57,8 @@ export const token_schema: schemaIfc[] = [
     index: []
   },
   {    fieldName: 'token',
-    sqlType: 'VARCHAR(400)',
-    size: 400,
+    sqlType: 'VARCHAR(1024)',
+    size: 1024,
     allowNull: false,
     default: '',
     enum: [],
@@ -69,10 +68,15 @@ export const token_schema: schemaIfc[] = [
     sqlType: undefined,
     index: [
       {
-        name: 'token_idx',
-        columns: ['site_code', 'token'],
+        name: 'user_id_idx',
+        columns: ['site_code', 'user_id'],
         unique: true
       },
+      {
+        name: 'uuid_idx',
+        columns: ['site_code', 'uuid'],
+        unique: true
+      }
     ],
     enum: []
   }

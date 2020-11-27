@@ -8,7 +8,7 @@ interface JwtError {
 
 class InvalidAuthenticationTokenException extends HttpException {
   constructor(err: JwtError) {
-    super(404, err.name + ' : ' + err.message);
+    super(501, err.name + ' : ' + err.message);
   } 
 }
 

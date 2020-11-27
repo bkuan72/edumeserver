@@ -17,7 +17,7 @@ export class TokenModel {
   tableName = tokens_schema_table;
   siteCode = SysEnv.SITE_CODE;
 
-  constructor (altTable?: string) {
+  constructor (altTable: string) {
     if (altTable) {
         this.tableName = altTable;
         this.siteCode = SysEnv.SITE_CODE;
@@ -86,7 +86,7 @@ export class TokenModel {
           resolve(respTokenDTO);
           return;
         }
-        // not found Customer with the id
+        // not found token with the id
         resolve(undefined);
       })
       .catch((err) => {
@@ -195,7 +195,7 @@ export class TokenModel {
       dbConnection.DB.sql(sql).execute()
       .then((result) => {
         if (result.rows.length == 0) {
-          // not found Customer with the id
+          // not found token with the id
           resolve(undefined);
           return;
         }
@@ -210,25 +210,62 @@ export class TokenModel {
     });
   };
 
+  removeByUuid = (uuid: string): Promise<string | undefined> => {
+    return new Promise((resolve) => {
+      let sql = 'DELETE FROM ' + this.tableName + ' WHERE ';
+      sql += `site_code = '${this.siteCode}' AND `;
+      sql += SqlStr.format('uuid = UUID_TO_BIN(?)', [uuid]);
+      sql += ';';
+      dbConnection.DB.sql(sql).execute()
+      .then((result) => {
+        if (result.rows.length == 0) {
+          // not found token with the uuid
+          resolve(undefined);
+          return;
+        }
+        SysLog.info('deleted ' + this.tableName + ' with uuid: ', uuid);
+        resolve(uuid);
+      })
+      .catch((err) => {
+        SysLog.error('error: ', err);
+        resolve(undefined);
+        return;
+      });
+    });
+  };
+
+  tokenExpired = (
+    expireInMin: number,
+    createTimeStamp: string
+  ) => {
+    let tokenExpired = true;
+    const now = new Date();
+    const min = expireInMin;
+    const tokenDate = new Date(createTimeStamp);
+    const expiry = CommonFn.addMinutesToDate(min, tokenDate);
+    // SysLog.info('now: ' + now.toUTCString());
+    // SysLog.info('expiry: ' + expiry.toUTCString());
+    if (now.valueOf() < expiry.valueOf()) {
+        tokenExpired = false;
+    }
+    return tokenExpired;
+  }
+
   purgeExpired = () => {
-    SysLog.info('purging expired tokens..');
+    // SysLog.info('purging expired tokens..');
     dbConnection.DB.sql(SqlFormatter.formatSelect(this.tableName, token_schema)).execute()
     .then((result) => {
-      const now = new Date();
+
       if (result.rows.length > 0) {
         result.rows.forEach((rowData: any) => {
           const token = SqlFormatter.transposeResultSet(token_schema,
             undefined,
             undefined,
             rowData);
-          const min = token.expireInMin/ 60;
-          const tokenDate = new Date(token.createTimeStamp);
-          const expiry = CommonFn.addMinutesToDate(min, tokenDate);
-          SysLog.info('now: ', now.toUTCString());
-          SysLog.info('expiry: ', expiry.toUTCString());
-          if (now.valueOf() > expiry.valueOf()) {
+          if (this.tokenExpired(token.expireInMin,
+                                token.createTimeStamp)) {
             this.remove(token.id).then(() => {
-              SysLog.info('remove expiry: ', expiry.toUTCString());
+              SysLog.info('Purged remove token');
             })
           }
         });

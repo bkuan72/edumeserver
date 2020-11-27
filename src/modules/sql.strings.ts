@@ -3,7 +3,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { indexIfc, schemaIfc } from './DbModule';
-import { isString, isUndefined } from 'util';
 // import { bcryptHash, cryptoStr } from './cryto';
 import SqlStr = require('sqlstring');
 import { bcryptHash, cryptoStr } from './cryto';
@@ -32,21 +31,29 @@ export class SqlFormatter {
   ): Promise<void> => {
     return new Promise((lresolve) => {
       if (prop.uuidProperty) {
-        if (addPropEqual) {
-          valueArray.push(prop.fieldName + ' = UUID_TO_BIN(@uuidId)');
+        if (prop.fieldName === 'id') {
+          if (addPropEqual) {
+            valueArray.push(prop.fieldName + ' = UUID_TO_BIN(@uuidId)');
+          } else {
+            valueArray.push('UUID_TO_BIN(@uuidId)');
+          }
         } else {
-          valueArray.push('UUID_TO_BIN(@uuidId)');
+          if (addPropEqual) {
+            valueArray.push(prop.fieldName + ' = UUID_TO_BIN('+ SqlStr.escape(obj[prop.fieldName]) +')');
+          } else {
+            valueArray.push('UUID_TO_BIN('+ SqlStr.escape(obj[prop.fieldName]) +')');
+          }
         }
         lresolve();
       } else {
-        if (isString(obj[prop.fieldName])) {
+        if (typeof(obj[prop.fieldName]) === 'string') {
           if (
-            !isUndefined(prop.encrypt) &&
+            prop.encrypt !== undefined &&
             prop.encrypt &&
             !CommonFn.isEmpty(obj[prop.fieldName])
           ) {
             const escStrValue = obj[prop.fieldName];
-            if (!isUndefined(prop.bcryptIt) && prop.bcryptIt) {
+            if (prop.bcryptIt !== undefined && prop.bcryptIt) {
               bcryptHash(escStrValue).then((secret) => {
                 if (addPropEqual) {
                   valueArray.push(prop.fieldName + ' = ' + SqlStr.escape(secret));
@@ -257,7 +264,7 @@ export class SqlFormatter {
    */
   static includeInSql(prop: schemaIfc, fmtPropArr?: string[]): boolean {
     let includeInSql = false;
-    if (!isUndefined(fmtPropArr) && fmtPropArr.length > 0) {
+    if (fmtPropArr != undefined && fmtPropArr.length > 0) {
       fmtPropArr.some((fmtProp) => {
         if (fmtProp === prop.fieldName) {
           includeInSql = true;
@@ -278,7 +285,7 @@ export class SqlFormatter {
    */
   static excludeFromSql(prop: schemaIfc, exclPropArr?: string[]): boolean {
     let exclSql = false;
-    if (!isUndefined(exclPropArr) && exclPropArr.length > 0) {
+    if (exclPropArr != undefined && exclPropArr.length > 0) {
       exclPropArr.some((fmtProp) => {
         if (fmtProp === prop.fieldName) {
           exclSql = true;
@@ -307,12 +314,12 @@ export class SqlFormatter {
     let first = true;
     schema.forEach((prop) => {
       if (prop.fieldName !== 'INDEX') {
-        if (isUndefined(prop.excludeFromSelect) || 
+        if (CommonFn.isUndefined(prop.excludeFromSelect) || 
             ignoreExclFromSelect || 
             !prop.excludeFromSelect) {
           if (ignoreExclFromSelect || 
             SqlFormatter.includeInSql(prop, fmtPropArr)) {
-            if (!isUndefined(prop.uuidProperty) && prop.uuidProperty) {
+            if (!CommonFn.isUndefined(prop.uuidProperty) && prop.uuidProperty) {
               if (first) {
                 first = false;
               } else {
@@ -378,7 +385,7 @@ export class SqlFormatter {
     let data = Object.create(null);
     schema.forEach((prop) => {
       if (prop.fieldName !== 'INDEX') {
-        if (isUndefined(prop.excludeFromSelect) ||
+        if (CommonFn.isUndefined(prop.excludeFromSelect) ||
             ignoreExclFromSelect ||
             !prop.excludeFromSelect) {
           if (ignoreExclFromSelect ||
@@ -411,8 +418,8 @@ export class SqlFormatter {
 
       for (const prop in data) {
         const colProp = DTOGenerator.getSchema(schema, prop);
-        if (!isUndefined(colProp)) {
-          if (isUndefined(colProp.excludeFromUpdate) || !colProp.excludeFromUpdate) {
+        if (colProp != undefined) {
+          if (colProp.excludeFromUpdate === undefined || !colProp.excludeFromUpdate) {
             propCnt++;
           }
         }
@@ -430,8 +437,8 @@ export class SqlFormatter {
 
         for (const prop in data) {
           const colProp = DTOGenerator.getSchema(schema, prop);
-          if (!isUndefined(colProp)) {
-            if (isUndefined(colProp.excludeFromUpdate) || !colProp.excludeFromUpdate) {
+          if (colProp != undefined) {
+            if (CommonFn.isUndefined(colProp.excludeFromUpdate) || !colProp.excludeFromUpdate) {
               promiseChain = promiseChain
               .then(async () => {
                 return await SqlFormatter.formatValueArray(

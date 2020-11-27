@@ -1,4 +1,5 @@
-import { blacklist_tokens_schema_table } from './../../schemas/tokens.schema';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { blacklist_tokens_schema_table, tokens_schema_table } from './../../schemas/tokens.schema';
 import Controller from "../../interfaces/controller.interface";
 import * as express from 'express';
 import jwt = require('jsonwebtoken');
@@ -22,12 +23,16 @@ import { TokenDTO } from "../../dtos/tokens.DTO";
 import SysLog from "../../modules/SysLog";
 import SysEnv from "../../modules/SysEnv";
 import InvalidUserStatusException from "../../exceptions/InvalidUserStatusException";
+import WrongAuthenticationTokenException from '../../exceptions/WrongAuthenticationTokenException';
+import InvalidAuthenticationTokenException from '../../exceptions/InvalidAuthenticationTokenException';
+import ExpiredTokenException from '../../exceptions/ExpiredTokenExceptions';
+import authMiddleware from '../../middleware/auth.middleware';
 
 class AuthenticationController implements Controller {
     public path='/auth';
     public router= express.Router();
     private users = new UserModel();
-    private tokens = new TokenModel();
+    private tokens = new TokenModel(tokens_schema_table);
     private blacklistTokens = new TokenModel(blacklist_tokens_schema_table);
     private siteCode = SysEnv.SITE_CODE;
     private tokenExpireInMin = 60;
@@ -38,6 +43,7 @@ class AuthenticationController implements Controller {
       }
       private initializeRoutes() {
         this.router.post(`${this.path}/logout`, this.loggingOut);
+        this.router.post(`${this.path}/renew/token`, authMiddleware, this.renewAuthCookie);
         this.router.post(`${this.path}/register`, validationUserRegistrationMiddleware(users_schema), this.registration);
         this.router.post(`${this.path}/login`, validationMiddleware(loginDTO_schema), this.loggingIn);
       }
@@ -122,14 +128,51 @@ class AuthenticationController implements Controller {
       private loggingOut = (request: express.Request, response: express.Response) => {
         const cookies = request.cookies;
         const verificationResponse = jwt.verify(cookies.Authorization, SysEnv.JWT_SECRET) as DataStoredInToken;
+
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         this.blacklistTokens.create(verificationResponse, cookies.Authorization).then ((tokenDTO: TokenDTO) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        this.tokens.removeByUuid(verificationResponse.uuid);
           response.setHeader('Set-Cookie', ['Authorization=;Max-age=0']);
           response.send(200);
         });
       }
 
-      // TODO private renewCookie ()
+
+
+      private renewAuthCookie = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
+        const cookies = request.cookies;
+        jwt.verify(cookies.Authorization, SysEnv.JWT_SECRET, async (err: any, verificationResponse: any) => {
+          if (err) {
+            next(new InvalidAuthenticationTokenException(err));
+          } else {
+            const id = verificationResponse.user_id;
+            const user = await this.users.findById(id);
+            if (user) {
+              if (user.data.status === 'ENABLED') {
+                if (this.tokens.tokenExpired(verificationResponse.expireInMin,
+                  verificationResponse.createTimeStamp)) {
+                    SysLog.error('Renew Cookie using Expired Token Used By User Id :', id);
+                    next(new ExpiredTokenException(user));
+                } else {
+                  this.blacklistTokens.create(verificationResponse, cookies.Authorization).then(async () => {
+                    this.tokens.removeByUuid(verificationResponse.uuid);
+                    const tokenData = await this.createToken(user);
+                    response.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
+                    response.send(user);
+                  })
+                }
+              } else {
+                SysLog.error('Authentication Token used by Invalid User Id :', id);
+                next(new InvalidUserStatusException(user));
+              }
+            } else {
+              SysLog.error('Renew Cookie by Invalid User Id :', id);
+              next(new WrongAuthenticationTokenException());
+            }
+          }
+        });
+      };
 }
 
 export default AuthenticationController;
