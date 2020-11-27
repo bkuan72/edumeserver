@@ -1,9 +1,9 @@
 import { schemaIfc } from '../modules/DbModule';
 import DTOGenerator from '../modules/ModelGenerator';
 
-export const entities_schema_table = 'entities';
+export const properties_schema_table = 'properties';
 
-export const entities_schema: schemaIfc[] = [
+export const properties_schema: schemaIfc[] = [
   {    fieldName: 'id',
     sqlType: 'BINARY(16) PRIMARY KEY',
     primaryKey: true,
@@ -23,6 +23,26 @@ export const entities_schema: schemaIfc[] = [
   enum: [],
   index: []
   },
+  {    fieldName: 'name',
+  sqlType: 'VARCHAR(255)',
+  size: 255,
+  allowNull: false,
+  default: '',
+  excludeFromUpdate: true,
+  trim: true,
+  enum: [],
+  index: []
+  },
+  {    fieldName: 'value',
+  sqlType: 'VARCHAR(255)',
+  size: 255,
+  allowNull: false,
+  default: '',
+  excludeFromUpdate: false,
+  trim: true,
+  enum: [],
+  index: []
+  },
   {    fieldName: 'status',
     sqlType: 'ENUM',
     size: 10,
@@ -34,5 +54,5 @@ export const entities_schema: schemaIfc[] = [
   }
 ];
 
-const EntitySchemaModel = DTOGenerator.genSchemaModel(entities_schema);
-export type EntityData = typeof EntitySchemaModel;
+const PropertySchemaModel = DTOGenerator.genSchemaModel(properties_schema);
+export type PropertyData = typeof PropertySchemaModel;

@@ -1,3 +1,4 @@
+import { PropertiesController } from './server/controllers/properties.controller';
 import { TokensController } from './server/controllers/tokens.controller';
 import { LogsController } from './server/controllers/logs.controller';
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -34,7 +35,8 @@ const app = new App (
     new UserAccountsController(),
     new LogsController(),
     new TokensController(),
-    new BlacklistController()
+    new BlacklistController(),
+    new PropertiesController
   ],
   port
 );

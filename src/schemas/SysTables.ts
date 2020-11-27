@@ -1,3 +1,4 @@
+import { properties_schema, properties_schema_table } from './properties.schema';
 import { logs_schema, logs_schema_table } from './logs.schema';
 import { tableIfc } from '../modules/DbModule';
 import { users_schema, users_schema_table } from './users.schema';
@@ -29,5 +30,9 @@ export const sysTables: tableIfc[] = [
   {
     name: logs_schema_table,
     schema: logs_schema
+  },
+  {
+    name: properties_schema_table,
+    schema: properties_schema
   }
 ];

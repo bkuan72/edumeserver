@@ -1,4 +1,3 @@
-import { CommonFn } from './CommonFnModule';
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-unused-vars */
