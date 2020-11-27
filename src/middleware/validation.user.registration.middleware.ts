@@ -5,7 +5,6 @@ import HttpException from '../exceptions/HttpException';
 import DTOGenerator from '../modules/ModelGenerator';
 import { schemaIfc } from '../modules/DbModule';
 import CommonFn from '../modules/CommonFnModule';
-import { isUndefined } from '../modules/isUndefined';
 import SysLog from '../modules/SysLog';
  
 function validationUserRegistrationMiddleware<T>(dto_schema: schemaIfc[]): express.RequestHandler {
@@ -19,7 +18,7 @@ function validationUserRegistrationMiddleware<T>(dto_schema: schemaIfc[]): expre
         errors = "Email Must Be Provided";
       }
       if (CommonFn.isEmpty(req.body.password)) {
-        if (isUndefined(errors)) {
+        if (CommonFn.isUndefined(errors)) {
           errors = '';
         } else {
           errors += ', '

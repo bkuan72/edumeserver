@@ -9,7 +9,6 @@ import { entities_schema, entities_schema_table } from '../../schemas/entities.s
 import { EntityDTO } from '../../dtos/entities.DTO';
 import { uuidIfc } from './uuidIfc';
 import SysLog from '../../modules/SysLog';
-import { isUndefined } from '../../modules/isUndefined';
 import SysEnv from '../../modules/SysEnv';
 
 export class EntityModel {

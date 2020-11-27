@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { schemaIfc } from "./DbModule";
-import { isUndefined, isString } from "util";
 import SqlStr = require('sqlstring');
+import CommonFn from "./CommonFnModule";
 
 
 class ModelGenerator {
@@ -23,7 +23,7 @@ class ModelGenerator {
 
     private excludeFromDTO (prop: schemaIfc, excludeProps: string[] | undefined) {
         let excl = false;
-        if (!isUndefined(excludeProps) && excludeProps.length > 0) {
+        if (excludeProps !== undefined && excludeProps.length > 0) {
             excludeProps.some((exclProp) => {
                 if (exclProp === prop.fieldName) {
                     excl = true;
@@ -48,8 +48,8 @@ class ModelGenerator {
         let obj = Object.create(null);
         schema.forEach((prop) => {
             if (prop.fieldName !== "INDEX" && !this.excludeFromDTO(prop, excludeProps)) {
-                if (isUndefined(prop.excludeFromUpdate) ||
-                    (!isUndefined(prop.excludeFromUpdate) && prop.excludeFromUpdate)) {
+                if (prop.excludeFromUpdate === undefined ||
+                    (prop.excludeFromUpdate !== undefined && prop.excludeFromUpdate === false)) {
                     obj = this.defineProperty(obj, prop.fieldName, prop.default);
                 }
             }
@@ -73,13 +73,13 @@ class ModelGenerator {
         let errorMsg: string | undefined = undefined;
         for (const prop in requestDTO) {
             const colProp = this.getSchema(schema, prop);
-            if (isUndefined(colProp)) {
+            if (colProp === undefined) {
                 error += prop + ' not defined! ';
             } else {
                 error = this.validateProperty(colProp, error, requestDTO);
             }
         }
-        if (isUndefined(error) || error.length > 0) {
+        if (error !== undefined && error.length > 0) {
             errorMsg = "Invalid requestDTO : " + error;
         }
 
@@ -91,17 +91,17 @@ class ModelGenerator {
         let errorMsg: string | undefined = undefined;
         for (const prop in requestDTO) {
             const colProp = this.getSchema(schema, prop);
-            if (isUndefined(colProp)) {
+            if (colProp === undefined) {
                 error += prop + ' not defined! ';
             } else {
-                if (!isUndefined(colProp.excludeFromUpdate) && colProp.excludeFromUpdate) {
+                if (colProp.excludeFromUpdate != undefined && colProp.excludeFromUpdate) {
                     error += prop + ' cannot be updated! ';
                 } else {
                     error = this.validateProperty(colProp, error, requestDTO);
                 }
             }
         }
-        if (isUndefined(error) || error.length > 0) {
+        if (error !== undefined && error.length > 0) {
             errorMsg = "Invalid requestDTO : " + error;
         }
 
@@ -121,7 +121,7 @@ class ModelGenerator {
             }
         });
 
-        if (isUndefined(error) || error.length > 0) {
+        if (error !== undefined && error.length > 0) {
             errorMsg = "Invalid postDTO : " + error;
         }
 
@@ -133,12 +133,12 @@ class ModelGenerator {
             error += colProp.fieldName + ' invalid property! ';
         }
         else {
-            if (isString(postDTO[colProp.fieldName])) {
+            if (CommonFn.isString(postDTO[colProp.fieldName])) {
                 if (colProp.trim) {
                     postDTO[colProp.fieldName].trim();
                 }
                 if (!colProp.allowNull) {
-                    if (isUndefined(colProp.default)) {
+                    if (CommonFn.isUndefined(colProp.default)) {
                         if (postDTO[colProp.fieldName] === null) {
                             error += colProp.fieldName + ' must not be null, ';
                         }
@@ -165,7 +165,7 @@ class ModelGenerator {
                         let escStr = SqlStr.escape(postDTO[colProp.fieldName]);
                         escStr = escStr.replace("'","");
                         escStr = escStr.replace("'","");
-                        if (!isUndefined(colProp.size) && colProp.size > 0) {
+                        if (colProp.size != undefined && colProp.size > 0) {
                             if (escStr.length > colProp.size) {
                                 error += colProp.fieldName + ' exceed string length of ' + colProp.size + ', ';
                             }

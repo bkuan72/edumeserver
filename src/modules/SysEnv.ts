@@ -1,5 +1,3 @@
-import { isUndefined } from "./isUndefined";
-
 class SystemEnvironment {
     DB_HOST: string;
     DB_USER: string;

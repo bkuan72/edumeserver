@@ -1,3 +1,4 @@
+import { CommonFn } from './CommonFnModule';
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -5,8 +6,8 @@
 import { serverCfg } from '../config/db.config';
 import bcrypt = require('bcrypt');
 import crypto = require('crypto');
-import { isUndefined, isString } from 'util';
 import SysLog from './SysLog';
+import SysEnv from './SysEnv';
 
 /**
  * Encrypt a string
@@ -15,13 +16,9 @@ import SysLog from './SysLog';
 export const bcryptHash = async (secret: string): Promise<string> => {
     return new Promise( async (resolve) => {
 
-      const {
-        DB_BCRYPT_SALT
-      } = process.env;
       let bcryptSalt = 0;
-      if (isString(DB_BCRYPT_SALT)) {
-        bcryptSalt = parseInt(DB_BCRYPT_SALT);
-      }
+
+      bcryptSalt = SysEnv.DB_BCRYPT_SALT;
 
       const salt = bcrypt.genSaltSync(bcryptSalt);
 
