@@ -1,3 +1,4 @@
+import { TokensController } from './server/controllers/tokens.controller';
 import { LogsController } from './server/controllers/logs.controller';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import 'dotenv/config';
@@ -13,6 +14,7 @@ import SysLog from './modules/SysLog';
 import toobusy_js from 'toobusy-js';
 import SysEnv from './modules/SysEnv';
 import { blacklist_tokens_schema_table, tokens_schema_table } from './schemas/tokens.schema';
+import { BlacklistController } from './server/controllers/blacklist.controller';
 
 // validate that all required environment variable is present
 SysEnv.init();
@@ -30,7 +32,9 @@ const app = new App (
     new UsersController(),
     new AccountsController(),
     new UserAccountsController(),
-    new LogsController()
+    new LogsController(),
+    new TokensController(),
+    new BlacklistController()
   ],
   port
 );
