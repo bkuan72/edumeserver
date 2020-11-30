@@ -1,3 +1,10 @@
+import { AccountDTO } from './dtos/accounts.DTO';
+import { UserAccountsDTO } from './dtos/userAccounts.DTO';
+import { CreateUserDTO } from './dtos/CreateUserDTO';
+import { AccountModel } from './server/models/account.model';
+import { serverCfg } from './config/db.config';
+import { UserAccountModel } from './server/models/userAccount.model';
+import { UserModel } from './server/models/user.model';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as express from 'express';
@@ -8,6 +15,10 @@ import SysLog from './modules/SysLog';
 import toobusy_js = require('toobusy-js');
 import ServerTooBusyException from './exceptions/ServerTooBusyException';
 import rateLimit = require('express-rate-limit');
+import SysEnv from './modules/SysEnv';
+import CommonFn from './modules/CommonFnModule';
+import { AccountTypeEnum, AccountStatusEnum } from './schemas/accounts.schema';
+import { UserStatusEnum } from './schemas/users.schema';
 
 
 
@@ -76,6 +87,51 @@ class App {
 
   private connectToTheDatabase() {
     dbConnection.DBM_connectDB()
+    .then(async () => {
+      const accounts = new AccountModel();
+      const account = await accounts.find({
+        site_code: SysEnv.SITE_CODE,
+        account_type: AccountTypeEnum.ADMIN
+      });
+      if (CommonFn.isUndefined(account)) {
+
+        const newAccount = await accounts.create({
+          account_type: 'ADMIN',
+          account_code: 'ADMIN_ACCOUNT',
+          description: 'Admin Account',
+          website: '',
+          status: 'APPROVED'
+        });
+        if (newAccount) {
+          const users = new UserModel();
+          const user = await users.find({
+            site_code: SysEnv.SITE_CODE,
+            email: serverCfg.defaultAdminEmail
+           });
+           if (CommonFn.isUndefined(user)) {
+              const newUser = await users.create({
+                user_id: serverCfg.defaultAdminUserId,
+                email: serverCfg.defaultAdminEmail,
+                title: 'N/A',
+                user_name: serverCfg.defaultAdminUserName,
+                password: serverCfg.defaultAdminPassword,
+                phone_no: serverCfg.defaultAdminPhoneNo,
+                mobile_no: serverCfg.defaultAdminPhoneNo,
+                website: '',
+                language: 'EN',
+                status: 'ENABLED'
+                });
+              if (newUser) {
+                const userAccounts = new UserAccountModel();
+                userAccounts.create({
+                  user_id: newUser.data.id,
+                  account_id: newAccount.data.id
+                });
+             }
+           }
+        }
+      }
+    })
     .catch((err) => {
       throw(err);
     });
