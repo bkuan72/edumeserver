@@ -122,6 +122,7 @@ class Logger {
 
   error(message: string, ...meta: any[]) {
     this.logger.error(message, ...meta);
+    console.error(message, ...meta);
   }
   http(message: string, ...meta: any[]) {
     this.logger.log('http', message, ...meta);
