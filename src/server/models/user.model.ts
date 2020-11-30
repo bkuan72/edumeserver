@@ -18,11 +18,14 @@ export class UserModel {
 
   tableName = users_schema_table;
   siteCode = SysEnv.SITE_CODE;
+
+
   constructor () {
     this.siteCode = SysEnv.SITE_CODE;
   }
-  create = (newUser: CreateUserDTO): Promise<ResponseUserDTO | undefined> => {
-    newUser.data.site_code = this.siteCode; 
+  create = (userData: any): Promise<ResponseUserDTO | undefined> => {
+    const newUser = new CreateUserDTO(userData);
+    newUser.data.site_code = this.siteCode;
 
     return new Promise (async (resolve) => {
      SqlFormatter.formatInsert(

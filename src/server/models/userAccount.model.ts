@@ -20,8 +20,8 @@ export class UserAccountModel {
   }
 
   tableName = userAccounts_schema_table;
-  create = (newUserAccount: UserAccountsDTO): Promise<UserAccountsDTO | undefined> => {
-
+  create = (userAccount: any): Promise<UserAccountsDTO | undefined> => {
+    const newUserAccount =  new UserAccountsDTO(userAccount);
     newUserAccount.data.site_code = this.siteCode;
     return new Promise (async (resolve) => {
      SqlFormatter.formatInsert(
@@ -38,7 +38,7 @@ export class UserAccountModel {
               SysLog.info('created Entity: ', result3);
               const newUuid: uuidIfc = { '@uuidId': result3.rows[0][0] }; // TODO
 
-              const respUserAccountsDTO = new UserAccountsDTO(newUserAccount.data);
+              const respUserAccountsDTO = new UserAccountsDTO(newUserAccount);
               respUserAccountsDTO.data.password = '';
               respUserAccountsDTO.data.id = newUuid['@uuidId'];
               resolve(respUserAccountsDTO)
