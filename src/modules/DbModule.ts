@@ -72,7 +72,7 @@ class Database {
               this.DB = session;
               SysLog.info("Connected!");
               this.DBM_initializeDatabase(DB_NAME).then (() => {
-                  resolve(this.DB);
+                    resolve(this.DB);
               })
             })
             .catch((err: any) => {
@@ -107,9 +107,10 @@ class Database {
                     } else {
                         this.DBM_selectDatabase(dbName).then (() => {
                             sysTables.forEach(table => {
-                                this.DBM_tableExistCheck(dbName, table);
+                                this.DBM_tableExistCheck(dbName, table).finally(() =>{
+                                    resolve();
+                                });
                             });
-                            resolve();
                         })
                         .catch((err: any) => {
                             reject(err);
