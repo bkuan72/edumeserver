@@ -1,3 +1,5 @@
+import { AccountModel } from './../models/account.model';
+import { UserAccountModel } from './../models/userAccount.model';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { blacklist_tokens_schema_table, tokens_schema_table } from './../../schemas/tokens.schema';
 import Controller from "../../interfaces/controller.interface";
@@ -32,6 +34,8 @@ class AuthenticationController implements Controller {
     public path='/auth';
     public router= express.Router();
     private users = new UserModel();
+    private userAccounts = new UserAccountModel();
+    private accounts = new AccountModel();
     private tokens = new TokenModel(tokens_schema_table);
     private blacklistTokens = new TokenModel(blacklist_tokens_schema_table);
     private siteCode = SysEnv.SITE_CODE;
@@ -48,25 +52,50 @@ class AuthenticationController implements Controller {
         this.router.post(`${this.path}/login`, validationMiddleware(loginDTO_schema), this.loggingIn);
       }
 
-      private createToken = (user: ResponseUserDTO): Promise <TokenData> => {
+      private createToken = async (user: ResponseUserDTO): Promise <TokenData> => {
         return new Promise ((resolve) => {
-          const expiresIn = this.tokenExpireInMin * 60; // an hour
-
-          const timestamp = new Date();
-          const dataStoredInToken: DataStoredInToken = {
-            user_id: user.data.id,
-            uuid: uuidv4(),
-            site_code: this.siteCode,
-            createTimeStamp: timestamp.toUTCString(),
-            expireInMin: expiresIn
-          };
-          const authorization = jwt.sign(dataStoredInToken, SysEnv.JWT_SECRET, { expiresIn });
-          this.tokens.create(dataStoredInToken, authorization).then (() => {
-            resolve({
-              expiresIn,
-              token: authorization,
+          const generateToken = (adminUser: boolean) => {
+            const expiresIn = this.tokenExpireInMin * 60; // an hour
+            const timestamp = new Date();
+            const dataStoredInToken: DataStoredInToken = {
+              user_id: user.data.id,
+              uuid: uuidv4(),
+              adminUser: adminUser,
+              site_code: this.siteCode,
+              createTimeStamp: timestamp.toUTCString(),
+              expireInMin: expiresIn
+            };
+            const authorization = jwt.sign(dataStoredInToken, SysEnv.JWT_SECRET, { expiresIn });
+            this.tokens.create(dataStoredInToken, authorization).then (() => {
+              resolve({
+                expiresIn,
+                token: authorization,
+              });
             });
+          }
+
+          this.userAccounts.find({
+            site_code: this.siteCode,
+            user_id: user.data.id,
+            status: 'OK'
+          }).then((userAccount) => {
+            if (userAccount && userAccount.length > 0) {
+              this.accounts.findById(userAccount[0].data.account_id).then((account) => {
+                generateToken(account.data.account_type === 'ADMIN');
+              })
+              .catch(() => {
+                generateToken(false);
+              })
+            } else {
+              generateToken(false);
+            }
+          })
+          .catch(() => {
+            generateToken(false);
           });
+
+
+
         });
       }
 
@@ -87,9 +116,9 @@ class AuthenticationController implements Controller {
           next(new UserWithThatEmailAlreadyExistsException(user.data.email));
         } else {
           user.data.site_code = this.siteCode;
-          const newUser = await this.users.create(user);
+          const newUser = await this.users.create(user.data);
           if (newUser) {
-            const tokenData = await this.createToken(user);
+            const tokenData = await this.createToken(newUser);
             response.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
             response.send(newUser.data);
           } else {
