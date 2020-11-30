@@ -36,10 +36,10 @@ export const users_schema: schemaIfc[] = [
   {    fieldName: 'title',
     sqlType: 'ENUM',
     size: 10,
-    enum: ['Mr', 'Ms', 'Mrs', 'Dr', 'Madam', 'Sir'],
+    enum: ['Mr', 'Ms', 'Mrs', 'Dr', 'Madam', 'Sir','N/A'],
     excludeFromUpdate: false,
     index: [],
-    default: 'Mr'
+    default: 'N/A'
   },
   {    fieldName: 'user_name',
     sqlType: 'VARCHAR(60)',
@@ -176,6 +176,13 @@ export const users_schema: schemaIfc[] = [
     enum: []
   }
 ];
+
+export enum UserStatusEnum {
+  'ENABLED',
+      'DISABLED',
+      'BLOCKED',
+      'RETRY_LOCKED_OUT'
+}
 
 export enum UserTitleEnum {
   'Mr',
