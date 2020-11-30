@@ -20,9 +20,9 @@ export class LogModel extends EntityModel {
     } else  {
       this.tableName = logs_schema_table;
     }
-    this.schema = logs_schema;
     this.requestDTO = LogDTO;
     this.responseDTO = LogDTO;
+    this.schema = logs_schema;
   }
 
   findByLogDate = (logDate: Date): Promise<any | undefined> => {
