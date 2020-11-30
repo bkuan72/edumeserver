@@ -7,7 +7,7 @@ import DataNotFoundException from "../../exceptions/DataNotFoundException";
 import NoDataException from "../../exceptions/NoDataExceptions";
 import { logs_schema } from "../../schemas/logs.schema";
 // import validationUpdateMiddleware from "../../middleware/validate.update.dto.middleware";
-import authMiddleware from "../../middleware/auth.middleware";
+import adminAuthMiddleware from "../../middleware/admin.auth.middleware";
 import validationMiddleware from "../../middleware/validation.middleware";
 
 import PostDataFailedException from "../../exceptions/PostDataFailedException";
@@ -31,8 +31,8 @@ export class LogsController implements Controller{
                     cors(),
                     validationMiddleware(logs_schema),
                     this.newLog);
-    this.router.get(this.path, cors(), authMiddleware, this.getAll);
-    this.router.get(this.path+'/byLogDate/:logDate',  cors(), authMiddleware, this.findByLogDate);
+    this.router.get(this.path, cors(), adminAuthMiddleware, this.getAll);
+    this.router.get(this.path+'/byLogDate/:logDate',  cors(), adminAuthMiddleware, this.findByLogDate);
     // this.router.patch(this.path+'/:logId', cors(), authMiddleware, validationUpdateMiddleware(logs_schema), this.update);
     return;
   }

@@ -5,7 +5,7 @@ import * as express from 'express';
 import Controller from "../../interfaces/controller.interface";
 import DataNotFoundException from "../../exceptions/DataNotFoundException";
 import NoDataException from "../../exceptions/NoDataExceptions";
-import authMiddleware from "../../middleware/auth.middleware";
+import adminAuthMiddleware from "../../middleware/admin.auth.middleware";
 import SysEnv from "../../modules/SysEnv";
 import cors = require('cors');
 import { blacklist_tokens_schema_table } from "../../schemas/tokens.schema";
@@ -25,8 +25,8 @@ export class BlacklistController implements Controller{
   }
 
   public intializeRoutes() {
-    this.router.get(this.path, cors(), authMiddleware, this.getAll);
-    this.router.get(this.path+'/byId/:id',  cors(), authMiddleware, this.findById);
+    this.router.get(this.path, cors(), adminAuthMiddleware, this.getAll);
+    this.router.get(this.path+'/byId/:id',  cors(), adminAuthMiddleware, this.findById);
     return;
   }
 
