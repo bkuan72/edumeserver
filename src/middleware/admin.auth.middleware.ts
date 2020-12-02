@@ -14,14 +14,16 @@ import InvalidUserStatusException from '../exceptions/InvalidUserStatusException
 import { blacklist_tokens_schema_table } from '../schemas/tokens.schema';
 import ExpiredTokenException from '../exceptions/ExpiredTokenExceptions';
 import NonAdminUserException from '../exceptions/NonAdminUserException';
+import { getRequestAuthToken } from './getRequestAuthToken';
 
 async function adminAuthMiddleware(request: Request, _response: Response, next: NextFunction) {
-  const cookies = request.cookies;
-  const users = new UserModel();
-  const blacklistTokens = new TokenModel(blacklist_tokens_schema_table);
-  if (cookies && cookies.Authorization) {
+    const users = new UserModel();
+    const blacklistTokens = new TokenModel(blacklist_tokens_schema_table);
+    const authToken = getRequestAuthToken(request);
+
+  if (authToken) {
     try {
-      jwt.verify(cookies.Authorization, SysEnv.JWT_SECRET, async (err: any, verificationResponse: any) => {
+      jwt.verify(authToken, SysEnv.JWT_SECRET, async (err: any, verificationResponse: any) => {
         if (err) {
             next(new InvalidAuthenticationTokenException(err));
         } else {
@@ -36,7 +38,7 @@ async function adminAuthMiddleware(request: Request, _response: Response, next: 
                   next(new ExpiredTokenException(user));
                 } else {
                   if (
-                    await blacklistTokens.find({ token: cookies.Authorization})
+                    await blacklistTokens.find({ token: authToken})
                  ) {
                     SysLog.error('Blacklisted Token Used by User Id :', id);
                       next(new WrongAuthenticationTokenException());

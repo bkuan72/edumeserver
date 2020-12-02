@@ -30,6 +30,7 @@ import InvalidAuthenticationTokenException from '../../exceptions/InvalidAuthent
 import ExpiredTokenException from '../../exceptions/ExpiredTokenExceptions';
 import authMiddleware from '../../middleware/auth.middleware';
 import DTOGenerator from '../../modules/ModelGenerator';
+import { getRequestAuthToken } from '../../middleware/getRequestAuthToken';
 
 
 class AuthenticationController implements Controller {
@@ -168,18 +169,24 @@ class AuthenticationController implements Controller {
       }
 
       private loggingOut = (request: express.Request, response: express.Response) => {
-        const cookies = request.cookies;
-        const verificationResponse = jwt.verify(cookies.Authorization, SysEnv.JWT_SECRET) as DataStoredInToken;
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        this.blacklistTokens.create(verificationResponse, cookies.Authorization).then ((tokenDTO: TokenDTO) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        this.tokens.removeByUuid(verificationResponse.uuid);
-          if (SysEnv.CookieAuth()) {
-            response.setHeader('Set-Cookie', ['Authorization=;Max-age=0']);
-          }
-          response.send (200);
-        });
+        const authToken = getRequestAuthToken(request);
+
+        if (authToken) {
+          const verificationResponse = jwt.verify(authToken, SysEnv.JWT_SECRET) as DataStoredInToken;
+
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          this.blacklistTokens.create(verificationResponse, authToken).then ((tokenDTO: TokenDTO) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          this.tokens.removeByUuid(verificationResponse.uuid);
+            if (SysEnv.CookieAuth()) {
+              response.setHeader('Set-Cookie', ['Authorization=;Max-age=0']);
+            }
+            response.send (200);
+          });
+        } else {
+          response.send (501);
+        }
       }
 
 

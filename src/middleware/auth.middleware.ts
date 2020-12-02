@@ -13,19 +13,10 @@ import SysEnv from '../modules/SysEnv';
 import InvalidUserStatusException from '../exceptions/InvalidUserStatusException';
 import { blacklist_tokens_schema_table } from '../schemas/tokens.schema';
 import ExpiredTokenException from '../exceptions/ExpiredTokenExceptions';
+import { getRequestAuthToken } from './getRequestAuthToken';
 
 async function authMiddleware(request: Request, _response: Response, next: NextFunction) {
-  let authToken: string | undefined;
-  if (SysEnv.CookieAuth()) {
-    const cookies = request.cookies;
-    if (cookies && cookies.Authorization) {
-      authToken = cookies.Authorization;
-    }
-  } else {
-    if (request.headers.authorization) {
-      authToken = request.headers.authorization.replace('Bearer ','');
-    }
-  }
+  const authToken: string | undefined = getRequestAuthToken(request);
   if (authToken)  {
     const users = new UserModel();
     const blacklistTokens = new TokenModel(blacklist_tokens_schema_table);
@@ -74,3 +65,5 @@ async function authMiddleware(request: Request, _response: Response, next: NextF
 }
 
 export default authMiddleware;
+
+
