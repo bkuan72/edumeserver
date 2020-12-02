@@ -15,12 +15,22 @@ import { blacklist_tokens_schema_table } from '../schemas/tokens.schema';
 import ExpiredTokenException from '../exceptions/ExpiredTokenExceptions';
 
 async function authMiddleware(request: Request, _response: Response, next: NextFunction) {
-  const cookies = request.cookies;
-  const users = new UserModel();
-  const blacklistTokens = new TokenModel(blacklist_tokens_schema_table);
-  if (cookies && cookies.Authorization) {
+  let authToken: string | undefined;
+  if (SysEnv.CookieAuth()) {
+    const cookies = request.cookies;
+    if (cookies && cookies.Authorization) {
+      authToken = cookies.Authorization;
+    }
+  } else {
+    if (request.headers.authorization) {
+      authToken = request.headers.authorization.replace('Bearer ','');
+    }
+  }
+  if (authToken)  {
+    const users = new UserModel();
+    const blacklistTokens = new TokenModel(blacklist_tokens_schema_table);
     try {
-      jwt.verify(cookies.Authorization, SysEnv.JWT_SECRET, async (err: any, verificationResponse: any) => {
+      jwt.verify(authToken, SysEnv.JWT_SECRET, async (err: any, verificationResponse: any) => {
         if (err) {
             next(new InvalidAuthenticationTokenException(err));
         } else {
@@ -35,7 +45,7 @@ async function authMiddleware(request: Request, _response: Response, next: NextF
                   next(new ExpiredTokenException(user));
                 } else {
                   if (
-                    await blacklistTokens.find({ token: cookies.Authorization})
+                    await blacklistTokens.find({ token: authToken})
                  ) {
                     SysLog.error('Blacklisted Token Used by User Id :', id);
                       next(new WrongAuthenticationTokenException());

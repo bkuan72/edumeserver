@@ -29,6 +29,8 @@ import WrongAuthenticationTokenException from '../../exceptions/WrongAuthenticat
 import InvalidAuthenticationTokenException from '../../exceptions/InvalidAuthenticationTokenException';
 import ExpiredTokenException from '../../exceptions/ExpiredTokenExceptions';
 import authMiddleware from '../../middleware/auth.middleware';
+import DTOGenerator from '../../modules/ModelGenerator';
+
 
 class AuthenticationController implements Controller {
     public path='/auth';
@@ -119,8 +121,14 @@ class AuthenticationController implements Controller {
           const newUser = await this.users.create(user.data);
           if (newUser) {
             const tokenData = await this.createToken(newUser);
-            response.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
-            response.send(newUser.data);
+
+            if (SysEnv.CookieAuth()) {
+              response.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
+              response.send(newUser);
+            } else {
+              const authUser = DTOGenerator.defineProperty(newUser, 'token', tokenData)
+              response.send (authUser);
+            }
           } else {
             SysLog.error(`DB Creating New User Exception: ${user.data.email}`);
             next(new DbCreatingNewUserException(user.data.email));
@@ -138,8 +146,13 @@ class AuthenticationController implements Controller {
             if (user[0].data.status === 'ENABLED') {
               user[0].data.password = undefined;
               const tokenData = await this.createToken(user[0]);
-              response.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
-              response.send(user);
+              if (SysEnv.CookieAuth()) {
+                response.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
+                response.send(user[0]);
+              } else {
+                const authUser = DTOGenerator.defineProperty(user[0], 'token', tokenData)
+                response.send (authUser);
+              }
             } else {
               SysLog.error(`Invalid User Status,  Id : ${user[0].data.id}, email: ${user[0].data.email} Status: ${user[0].data.status}`);
               next(new InvalidUserStatusException(user[0]));
@@ -162,8 +175,10 @@ class AuthenticationController implements Controller {
         this.blacklistTokens.create(verificationResponse, cookies.Authorization).then ((tokenDTO: TokenDTO) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         this.tokens.removeByUuid(verificationResponse.uuid);
-          response.setHeader('Set-Cookie', ['Authorization=;Max-age=0']);
-          response.send(200);
+          if (SysEnv.CookieAuth()) {
+            response.setHeader('Set-Cookie', ['Authorization=;Max-age=0']);
+          }
+          response.send (200);
         });
       }
 
@@ -187,8 +202,13 @@ class AuthenticationController implements Controller {
                   this.blacklistTokens.create(verificationResponse, cookies.Authorization).then(async () => {
                     this.tokens.removeByUuid(verificationResponse.uuid);
                     const tokenData = await this.createToken(user);
-                    response.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
-                    response.send(user);
+                    if (SysEnv.CookieAuth()) {
+                      response.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
+                      response.send(user);
+                    } else {
+                      const authUser = DTOGenerator.defineProperty(user, 'token', tokenData)
+                      response.send (authUser);
+                    }
                   })
                 }
               } else {

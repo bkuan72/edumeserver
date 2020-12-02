@@ -12,6 +12,7 @@ class SystemEnvironment {
     MIN_LAG: number;
     MIN_LAG_INTERVAL: number;
     VALID_CORS_ORIGIN: string;
+    private COOKIE_AUTH: string;
     constructor () {
         this.DB_HOST = 'localhost';
         this.DB_USER = 'webservice';
@@ -25,7 +26,8 @@ class SystemEnvironment {
         this.NODE_ENV = 'development';
         this.MIN_LAG = 70;
         this.MIN_LAG_INTERVAL = 500;
-        this.VALID_CORS_ORIGIN = 'http://localhost:4200'
+        this.VALID_CORS_ORIGIN = 'http://localhost:4200';
+        this.COOKIE_AUTH = 'N';
 
     }
     init () {
@@ -65,6 +67,15 @@ class SystemEnvironment {
         if (process.env.MIN_LAG_INTERVAL !== undefined) {
             this.MIN_LAG_INTERVAL = parseInt(process.env.MIN_LAG_INTERVAL);
         }
+        if (process.env.VALID_CORS_ORIGIN !== undefined) {
+            this.VALID_CORS_ORIGIN = process.env.VALID_CORS_ORIGIN;
+        }
+        if (process.env.COOKIE_AUTH !== undefined) {
+            this.COOKIE_AUTH = process.env.COOKIE_AUTH;
+        }
+    }
+    CookieAuth() {
+        return this.COOKIE_AUTH === 'Y';
     }
 }
 
