@@ -12,7 +12,6 @@ import validationMiddleware from "../../middleware/validation.middleware";
 
 import PostDataFailedException from "../../exceptions/PostDataFailedException";
 import SysEnv from "../../modules/SysEnv";
-import cors = require('cors');
 
 
 
@@ -33,9 +32,9 @@ export class EntitiesController implements Controller{
                     authMiddleware,
                     validationMiddleware(entities_schema),
                     this.newEntity);
-    this.router.get(this.path, cors(), authMiddleware, this.getAll);
-    this.router.get(this.path+'/byId/:id',  cors(), authMiddleware, this.findById);
-    this.router.patch(this.path+'/:id', cors(), authMiddleware, validationUpdateMiddleware(entities_schema), this.update);
+    this.router.get(this.path, authMiddleware, this.getAll);
+    this.router.get(this.path+'/byId/:id', authMiddleware, this.findById);
+    this.router.patch(this.path+'/:id', authMiddleware, validationUpdateMiddleware(entities_schema), this.update);
     return;
   }
 

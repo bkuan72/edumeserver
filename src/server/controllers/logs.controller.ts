@@ -12,7 +12,6 @@ import validationMiddleware from "../../middleware/validation.middleware";
 
 import PostDataFailedException from "../../exceptions/PostDataFailedException";
 import SysEnv from "../../modules/SysEnv";
-import cors = require('cors');
 
 export class LogsController implements Controller{
   public path='/logs';
@@ -28,12 +27,11 @@ export class LogsController implements Controller{
 
   public intializeRoutes() {
     this.router.post(this.path,
-                    cors(),
-                    validationMiddleware(logs_schema),
+                   validationMiddleware(logs_schema),
                     this.newLog);
-    this.router.get(this.path, cors(), adminAuthMiddleware, this.getAll);
-    this.router.get(this.path+'/byLogDate/:logDate',  cors(), adminAuthMiddleware, this.findByLogDate);
-    // this.router.patch(this.path+'/:logId', cors(), authMiddleware, validationUpdateMiddleware(logs_schema), this.update);
+    this.router.get(this.path, adminAuthMiddleware, this.getAll);
+    this.router.get(this.path+'/byLogDate/:logDate', adminAuthMiddleware, this.findByLogDate);
+    // this.router.patch(this.path+'/:logId', authMiddleware, validationUpdateMiddleware(logs_schema), this.update);
     return;
   }
 

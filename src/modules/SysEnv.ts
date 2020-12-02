@@ -11,6 +11,7 @@ class SystemEnvironment {
     NODE_ENV: string;
     MIN_LAG: number;
     MIN_LAG_INTERVAL: number;
+    VALID_CORS_ORIGIN: string;
     constructor () {
         this.DB_HOST = 'localhost';
         this.DB_USER = 'webservice';
@@ -24,6 +25,8 @@ class SystemEnvironment {
         this.NODE_ENV = 'development';
         this.MIN_LAG = 70;
         this.MIN_LAG_INTERVAL = 500;
+        this.VALID_CORS_ORIGIN = 'http://localhost:4200'
+
     }
     init () {
         if (process.env.DB_HOST !== undefined) {

@@ -17,8 +17,8 @@ import ServerTooBusyException from './exceptions/ServerTooBusyException';
 import rateLimit = require('express-rate-limit');
 import SysEnv from './modules/SysEnv';
 import CommonFn from './modules/CommonFnModule';
-import { AccountTypeEnum, AccountStatusEnum } from './schemas/accounts.schema';
-import { UserStatusEnum } from './schemas/users.schema';
+import { AccountTypeEnum } from './schemas/accounts.schema';
+import cors = require('cors');
 
 
 
@@ -59,7 +59,12 @@ class App {
 
 
   private initializeMiddlewares() {
-    this.app.use(express.urlencoded({ limit: "1kb" }));
+    const corsOptions = {
+      origin: 'http://localhost:4200',
+      optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+    }
+    this.app.use(cors(corsOptions));
+    this.app.use(express.urlencoded({ limit: "1kb", extended: true }));
     this.app.use(express.json({ limit: "1kb" }));
     // this.app.use(express.multipart({ limit:"10mb" }));
     // this.app.use(express.limit("5kb")); // this will be valid for every other content type

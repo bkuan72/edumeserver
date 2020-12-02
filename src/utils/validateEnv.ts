@@ -16,7 +16,8 @@ import {
         TOKEN_EXP_IN_MIN: num(),
         NODE_ENV: str(),
         MIN_LAG: num(),
-        MIN_LAG_INTERVAL: num()
+        MIN_LAG_INTERVAL: num(),
+        VALID_CORS_ORIGIN: str()
     });
   }
 

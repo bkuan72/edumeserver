@@ -9,7 +9,6 @@ import NoDataException from "../../exceptions/NoDataExceptions";
 import { users_schema } from "../../schemas/users.schema";
 import validationUpdateMiddleware from "../../middleware/validate.update.dto.middleware";
 import authMiddleware from "../../middleware/auth.middleware";
-import cors = require('cors');
 
 
 
@@ -24,9 +23,9 @@ export class UsersController implements Controller{
   }
 
   public intializeRoutes() {
-    this.router.get(this.path, cors(), authMiddleware, this.getAll);
-    this.router.get(this.path+'/byUserId/:userId', cors(), authMiddleware, this.findById);
-    this.router.patch(this.path+'/:userId', cors(), authMiddleware, validationUpdateMiddleware(users_schema), this.update);
+    this.router.get(this.path, authMiddleware, this.getAll);
+    this.router.get(this.path+'/byUserId/:userId', authMiddleware, this.findById);
+    this.router.patch(this.path+'/:userId', authMiddleware, validationUpdateMiddleware(users_schema), this.update);
     return;
   }
 
