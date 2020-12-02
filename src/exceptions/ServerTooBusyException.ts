@@ -2,7 +2,7 @@ import HttpException from "./HttpException";
 
 class ServerTooBusyException extends HttpException {
   constructor() {
-    super(404, `Server Too Busy!`);
+    super(503, `Server Too Busy!`);
   }
 }
 

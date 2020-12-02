@@ -2,7 +2,7 @@ import HttpException from "./HttpException";
 
 class NoDataException extends HttpException {
   constructor() {
-    super(404, `No Result Found`);
+    super(204, `No Result Found`);
   }
 }
 

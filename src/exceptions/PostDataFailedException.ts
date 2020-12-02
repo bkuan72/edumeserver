@@ -2,7 +2,7 @@ import HttpException from "./HttpException";
 
 class PostDataFailedException extends HttpException {
   constructor( ) {
-    super(404, `Post Data Failed!`);
+    super(400, `Post Data Failed!`);
   }
 }
 
