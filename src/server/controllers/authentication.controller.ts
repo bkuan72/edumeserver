@@ -31,6 +31,7 @@ import ExpiredTokenException from '../../exceptions/ExpiredTokenExceptions';
 import authMiddleware from '../../middleware/auth.middleware';
 import DTOGenerator from '../../modules/ModelGenerator';
 import { getRequestAuthToken } from '../../middleware/getRequestAuthToken';
+import AuthenticationTokenMissingException from "../../exceptions/AuthenticationTokenMissingException";
 
 
 class AuthenticationController implements Controller {
@@ -168,7 +169,7 @@ class AuthenticationController implements Controller {
         }
       }
 
-      private loggingOut = (request: express.Request, response: express.Response) => {
+      private loggingOut = (request: express.Request, response: express.Response, next: express.NextFunction) => {
 
         const authToken = getRequestAuthToken(request);
 
@@ -185,50 +186,55 @@ class AuthenticationController implements Controller {
             response.send (200);
           });
         } else {
-          response.send (501);
+          next(new AuthenticationTokenMissingException());
         }
       }
 
 
 
       private renewAuthCookie = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
-        const cookies = request.cookies;
-        jwt.verify(cookies.Authorization, SysEnv.JWT_SECRET, async (err: any, verificationResponse: any) => {
-          if (err) {
-            next(new InvalidAuthenticationTokenException(err));
-          } else {
-            const id = verificationResponse.user_id;
-            const user = await this.users.findById(id);
-            if (user) {
-              if (user.data.status === 'ENABLED') {
-                if (this.tokens.tokenExpired(verificationResponse.expireInMin,
-                  verificationResponse.createTimeStamp)) {
-                    SysLog.error('Renew Cookie using Expired Token Used By User Id :', id);
-                    next(new ExpiredTokenException(user));
+        const authToken = getRequestAuthToken(request);
+
+        if (authToken) {
+          jwt.verify(authToken, SysEnv.JWT_SECRET, async (err: any, verificationResponse: any) => {
+            if (err) {
+              next(new InvalidAuthenticationTokenException(err));
+            } else {
+              const id = verificationResponse.user_id;
+              const user = await this.users.findById(id);
+              if (user) {
+                if (user.data.status === 'ENABLED') {
+                  if (this.tokens.tokenExpired(verificationResponse.expireInMin,
+                    verificationResponse.createTimeStamp)) {
+                      SysLog.error('Renew Cookie using Expired Token Used By User Id :', id);
+                      next(new ExpiredTokenException(user));
+                  } else {
+                    this.blacklistTokens.create(verificationResponse, authToken).then(async () => {
+                      this.tokens.removeByUuid(verificationResponse.uuid);
+                      const tokenData = await this.createToken(user);
+                      if (SysEnv.CookieAuth()) {
+                        response.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
+                        response.send(user);
+                      } else {
+                        const authUser = DTOGenerator.defineProperty(user, 'token', tokenData)
+                        response.send (authUser);
+                      }
+                    })
+                  }
                 } else {
-                  this.blacklistTokens.create(verificationResponse, cookies.Authorization).then(async () => {
-                    this.tokens.removeByUuid(verificationResponse.uuid);
-                    const tokenData = await this.createToken(user);
-                    if (SysEnv.CookieAuth()) {
-                      response.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
-                      response.send(user);
-                    } else {
-                      const authUser = DTOGenerator.defineProperty(user, 'token', tokenData)
-                      response.send (authUser);
-                    }
-                  })
+                  SysLog.error('Authentication Token used by Invalid User Id :', id);
+                  next(new InvalidUserStatusException(user));
                 }
               } else {
-                SysLog.error('Authentication Token used by Invalid User Id :', id);
-                next(new InvalidUserStatusException(user));
+                SysLog.error('Renew Cookie by Invalid User Id :', id);
+                next(new WrongAuthenticationTokenException());
               }
-            } else {
-              SysLog.error('Renew Cookie by Invalid User Id :', id);
-              next(new WrongAuthenticationTokenException());
             }
-          }
-        });
-      };
+          });
+        } else {
+          next(new AuthenticationTokenMissingException());
+        }
+       };
 }
 
 export default AuthenticationController;
