@@ -1,3 +1,4 @@
+import { AdvertisementsController } from './server/controllers/advertisement.controller';
 import { PropertiesController } from './server/controllers/properties.controller';
 import { TokensController } from './server/controllers/tokens.controller';
 import { LogsController } from './server/controllers/logs.controller';
@@ -36,7 +37,8 @@ const app = new App (
     new LogsController(),
     new TokensController(),
     new BlacklistController(),
-    new PropertiesController
+    new PropertiesController(),
+    new AdvertisementsController()
   ],
   port
 );

@@ -24,8 +24,8 @@ export const logs_schema: schemaIfc[] = [
       index: []
     },
     {    fieldName: 'entryDate',
-      sqlType: 'DATETIME',
-      size: 0,
+      sqlType: 'VARCHAR(25)',
+      size: 25,
       allowNull: false,
       excludeFromUpdate: true,
       trim: false,

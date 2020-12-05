@@ -31,6 +31,36 @@ export const entities_schema: schemaIfc[] = [
         ],
     index: [],
     default: 'OK'
+  },
+  {    fieldName: 'date_field',
+    sqlType: 'VARCHAR(25)',
+    size: 25,
+    allowNull: false,
+    excludeFromUpdate: true,
+    trim: false,
+    enum: [],
+    index: []
+  },
+  {    fieldName: 'entities_code',
+  sqlType: 'VARCHAR(100)',
+  size: 100,
+  allowNull: false,
+  default: '',
+  excludeFromUpdate: false,
+  trim: true,
+  enum: [],
+  index: []
+  },
+  {    fieldName: 'INDEX',
+    sqlType: undefined,
+    index: [
+      {
+        name: 'entities_code_idx',
+        columns: ['site_code', 'entities_code'],
+        unique: true
+      }
+    ],
+    enum: []
   }
 ];
 

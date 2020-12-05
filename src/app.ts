@@ -1,6 +1,4 @@
-import { AccountDTO } from './dtos/accounts.DTO';
-import { UserAccountsDTO } from './dtos/userAccounts.DTO';
-import { CreateUserDTO } from './dtos/CreateUserDTO';
+
 import { AccountModel } from './server/models/account.model';
 import { serverCfg } from './config/db.config';
 import { UserAccountModel } from './server/models/userAccount.model';
@@ -17,7 +15,6 @@ import ServerTooBusyException from './exceptions/ServerTooBusyException';
 import rateLimit = require('express-rate-limit');
 import SysEnv from './modules/SysEnv';
 import CommonFn from './modules/CommonFnModule';
-import { AccountTypeEnum } from './schemas/accounts.schema';
 import cors = require('cors');
 
 
@@ -60,12 +57,12 @@ class App {
 
   private initializeMiddlewares() {
     const corsOptions = {
-      origin: 'http://localhost:4200',
+      origin: SysEnv.VALID_CORS_ORIGIN,
       optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
     }
     this.app.use(cors(corsOptions));
-    this.app.use(express.urlencoded({ limit: "1kb", extended: true }));
-    this.app.use(express.json({ limit: "1kb" }));
+    this.app.use(express.urlencoded({ limit: "4kb", extended: true }));
+    this.app.use(express.json({ limit: "10mb" }));
     // this.app.use(express.multipart({ limit:"10mb" }));
     // this.app.use(express.limit("5kb")); // this will be valid for every other content type
     this.app.use(this.loggerMiddleware);
@@ -96,10 +93,9 @@ class App {
       const accounts = new AccountModel();
       const account = await accounts.find({
         site_code: SysEnv.SITE_CODE,
-        account_type: AccountTypeEnum.ADMIN
+        account_type: 'ADMIN'
       });
       if (CommonFn.isUndefined(account)) {
-
         const newAccount = await accounts.create({
           account_type: 'ADMIN',
           account_code: 'ADMIN_ACCOUNT',

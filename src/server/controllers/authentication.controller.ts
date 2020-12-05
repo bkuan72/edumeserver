@@ -50,7 +50,7 @@ class AuthenticationController implements Controller {
         this.initializeRoutes();
       }
       private initializeRoutes() {
-        this.router.post(`${this.path}/logout`, this.loggingOut);
+        this.router.post(`${this.path}/logout`, authMiddleware, this.loggingOut);
         this.router.post(`${this.path}/renew/token`, authMiddleware, this.renewAuthCookie);
         this.router.post(`${this.path}/register`, validationUserRegistrationMiddleware(users_schema), this.registration);
         this.router.post(`${this.path}/login`, validationMiddleware(loginDTO_schema), this.loggingIn);
@@ -59,7 +59,7 @@ class AuthenticationController implements Controller {
       private createToken = async (user: ResponseUserDTO): Promise <TokenData> => {
         return new Promise ((resolve) => {
           const generateToken = (adminUser: boolean) => {
-            const expiresIn = this.tokenExpireInMin * 60; // an hour
+            const expiresIn = this.tokenExpireInMin * 60; // convert to millisec
             const timestamp = new Date();
             const dataStoredInToken: DataStoredInToken = {
               user_id: user.data.id,
@@ -183,7 +183,7 @@ class AuthenticationController implements Controller {
             if (SysEnv.CookieAuth()) {
               response.setHeader('Set-Cookie', ['Authorization=;Max-age=0']);
             }
-            response.send (200);
+            response.send ({ status: 'ok'});
           });
         } else {
           next(new AuthenticationTokenMissingException());

@@ -4,7 +4,7 @@ interface DataStoredInToken {
   adminUser: boolean;
   site_code: string;
   createTimeStamp: string;
-  expireInMin: number
+  expireInMin: number;
 }
 
 export default DataStoredInToken;

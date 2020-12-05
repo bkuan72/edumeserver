@@ -5,6 +5,7 @@ import { users_schema, users_schema_table } from './users.schema';
 import { token_schema, tokens_schema_table, blacklist_tokens_schema_table } from './tokens.schema';
 import { accounts_schema, accounts_schema_table } from './accounts.schema';
 import { userAccounts_schema, userAccounts_schema_table } from './userAccounts.schema';
+import { advertisements_schema, advertisements_schema_table } from './advertisements.schema';
 
 export const sysTables: tableIfc[] = [
   {
@@ -34,5 +35,9 @@ export const sysTables: tableIfc[] = [
   {
     name: properties_schema_table,
     schema: properties_schema
+  },
+  {
+    name: advertisements_schema_table,
+    schema: advertisements_schema
   }
 ];

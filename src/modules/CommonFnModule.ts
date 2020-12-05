@@ -57,6 +57,7 @@ export class CommonFn {
   static isString(obj: any) {
     return typeof(obj) === 'string';
   }
+
 }
 
 export default CommonFn;

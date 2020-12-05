@@ -8,7 +8,7 @@ import SqlStr = require('sqlstring');
 import { bcryptHash, cryptoStr } from './cryto';
 import CommonFn from './CommonFnModule';
 import DTOGenerator from './ModelGenerator';
-import SysLog from './SysLog';
+import e = require('express');
 /**
  * SqlFormatter Class
  * This class provide helper functions for formatting SQL syntax
@@ -81,10 +81,18 @@ export class SqlFormatter {
             lresolve();
           }
         } else {
-          if (addPropEqual) {
-            valueArray.push(prop.fieldName + ' = ' + SqlStr.escape(obj[prop.fieldName]));
+          if (typeof(obj[prop.fieldName]) == 'object') {
+            if (addPropEqual) {
+              valueArray.push(prop.fieldName + ' = ' + SqlStr.escape(JSON.stringify(obj[prop.fieldName])));
+            } else {
+              valueArray.push(SqlStr.escape(JSON.stringify(obj[prop.fieldName])));
+            }
           } else {
-          valueArray.push(SqlStr.escape(obj[prop.fieldName]));
+            if (addPropEqual) {
+              valueArray.push(prop.fieldName + ' = ' + SqlStr.escape(obj[prop.fieldName]));
+            } else {
+            valueArray.push(SqlStr.escape(obj[prop.fieldName]));
+            }
           }
           lresolve();
         }

@@ -17,7 +17,8 @@ import {
         NODE_ENV: str(),
         MIN_LAG: num(),
         MIN_LAG_INTERVAL: num(),
-        VALID_CORS_ORIGIN: str()
+        VALID_CORS_ORIGIN: str(),
+        COOKIE_AUTH: str()
     });
   }
 
