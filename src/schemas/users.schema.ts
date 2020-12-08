@@ -102,6 +102,15 @@ export const users_schema: schemaIfc[] = [
     enum: [],
     index: []
   },
+  {    fieldName: 'avatar',
+    sqlType: 'TEXT',
+    allowNull: false,
+    excludeFromUpdate: false,
+    default: '',
+    trim: true,
+    enum: [],
+    index: []
+  },
   {    fieldName: 'language',
     sqlType: 'VARCHAR(2)',
     size: 2,
