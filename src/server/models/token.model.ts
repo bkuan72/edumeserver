@@ -134,8 +134,8 @@ export class TokenModel {
     return new Promise((resolve) => {
       dbConnection.DB.sql(sql).execute()
       .then((result) => {
+        const respTokenDTOArray: TokenDTO[] = [];
         if (result.rows.length) {
-          const respTokenDTOArray: TokenDTO[] = [];
           result.rows.forEach((rowData: any) => {
             const data = SqlFormatter.transposeResultSet(token_schema,
               ignoreExclSelect,
@@ -147,7 +147,7 @@ export class TokenModel {
           resolve(respTokenDTOArray);
           return;
         }
-        // not found with the id
+        // not found with the id return undefined
         resolve(undefined);
       })
       .catch((err) => {
@@ -163,8 +163,8 @@ export class TokenModel {
     return new Promise ((resolve) => {
       dbConnection.DB.sql(SqlFormatter.formatSelect(this.tableName, token_schema)).execute()
       .then((result) => {
+        const respTokenDTOArray:TokenDTO[] = [];
         if (result.rows.length) {
-          const respTokenDTOArray:TokenDTO[] = [];
           result.rows.forEach((rowData: any) => {
             const data = SqlFormatter.transposeResultSet(token_schema,
               undefined,
@@ -177,7 +177,7 @@ export class TokenModel {
           return;
         }
         // not found
-        resolve(undefined);
+        resolve(respTokenDTOArray);
       })
       .catch((err) => {
         SysLog.error('error: ', err);

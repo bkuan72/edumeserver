@@ -133,8 +133,9 @@ export class EntityModel {
     return new Promise((resolve) => {
       dbConnection.DB.sql(sql).execute()
       .then((result) => {
+        const respEntityDTOArray: any[] = [];
         if (result.rows.length) {
-          const respEntityDTOArray: any[] = [];
+
           result.rows.forEach((rowData: any) => {
             const data = SqlFormatter.transposeResultSet(this.schema,
               ignoreExclSelect,
@@ -147,7 +148,7 @@ export class EntityModel {
           return;
         }
         // not found with the id
-        resolve(undefined);
+        resolve(respEntityDTOArray);
       })
       .catch((err) => {
         SysLog.error(JSON.stringify(err));
@@ -162,8 +163,9 @@ export class EntityModel {
     return new Promise ((resolve) => {
       dbConnection.DB.sql(SqlFormatter.formatSelect(this.tableName, this.schema)).execute()
       .then((result) => {
+        const respEntityDTOArray:any[] = [];
         if (result.rows.length) {
-          const respEntityDTOArray:any[] = [];
+
           result.rows.forEach((rowData: any) => {
             const data = SqlFormatter.transposeResultSet(this.schema,
               undefined,
@@ -176,7 +178,7 @@ export class EntityModel {
           return;
         }
         // not found
-        resolve(undefined);
+        resolve(respEntityDTOArray);
       })
       .catch((err) => {
         SysLog.error(JSON.stringify(err));

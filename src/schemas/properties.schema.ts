@@ -51,6 +51,21 @@ export const properties_schema: schemaIfc[] = [
         ],
     index: [],
     default: 'OK'
+  },
+  {    fieldName: 'lastUpdateUsec',
+  sqlType: 'BIGINT',
+  default: '0',
+  excludeFromUpdate: true
+  },
+  {    fieldName: 'INDEX',
+    sqlType: undefined,
+    index: [
+      {
+        name: 'last_upd_usec_idx',
+        columns: [ 'site_code', 'lastUpdatedUsec'],
+        unique: false
+      }
+    ]
   }
 ];
 

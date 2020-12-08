@@ -150,12 +150,14 @@ class ModelGenerator {
                 }
                 if (colProp.sqlType?.includes('ENUM', 0)) {
                     let foundEnum = false;
-                    colProp.enum.some((val) => {
-                        if (val === postDTO[colProp.fieldName]) {
-                            foundEnum = true;
-                            return true;
-                        }
-                    });
+                    if (colProp.enum) {
+                        colProp.enum.some((val) => {
+                            if (val === postDTO[colProp.fieldName]) {
+                                foundEnum = true;
+                                return true;
+                            }
+                        });
+                    }
                     if (!foundEnum) {
                         error += colProp.fieldName + ' undefined enum value, ';
                     }

@@ -30,73 +30,84 @@ export class SqlFormatter {
     addPropEqual: boolean
   ): Promise<void> => {
     return new Promise((lresolve) => {
-      if (prop.uuidProperty) {
-        if (prop.fieldName === 'id') {
-          if (addPropEqual) {
-            valueArray.push(prop.fieldName + ' = UUID_TO_BIN(@uuidId)');
-          } else {
-            valueArray.push('UUID_TO_BIN(@uuidId)');
-          }
+      if (prop.fieldName === 'lastUpdateUsec') {
+        const dt = new Date();
+        if (addPropEqual) {
+          valueArray.push(prop.fieldName + ' = ' + SqlStr.escape(dt.valueOf().toString()));
         } else {
-          if (addPropEqual) {
-            valueArray.push(prop.fieldName + ' = UUID_TO_BIN('+ SqlStr.escape(obj[prop.fieldName]) +')');
-          } else {
-            valueArray.push('UUID_TO_BIN('+ SqlStr.escape(obj[prop.fieldName]) +')');
-          }
+          valueArray.push(SqlStr.escape(dt.valueOf().toString()));
         }
         lresolve();
       } else {
-        if (typeof(obj[prop.fieldName]) === 'string') {
-          if (
-            prop.encrypt !== undefined &&
-            prop.encrypt &&
-            !CommonFn.isEmpty(obj[prop.fieldName])
-          ) {
-            const escStrValue = obj[prop.fieldName];
-            if (prop.bcryptIt !== undefined && prop.bcryptIt) {
-              bcryptHash(escStrValue).then((secret) => {
-                if (addPropEqual) {
-                  valueArray.push(prop.fieldName + ' = ' + SqlStr.escape(secret));
-                } else {
-                valueArray.push(SqlStr.escape(secret));
-                }
-                lresolve();
-              });
+        if (prop.uuidProperty) {
+          if (prop.fieldName === 'id') {
+            if (addPropEqual) {
+              valueArray.push(prop.fieldName + ' = UUID_TO_BIN(@uuidId)');
             } else {
-              cryptoStr(escStrValue).then((secret) => {
-                if (addPropEqual) {
-                  valueArray.push(prop.fieldName + ' = ' + SqlStr.escape(secret));
-                } else {
-                valueArray.push(SqlStr.escape(secret));
-                }
-                lresolve();
-              });
+              valueArray.push('UUID_TO_BIN(@uuidId)');
             }
           } else {
             if (addPropEqual) {
-              valueArray.push(prop.fieldName + ' = ' + SqlStr.escape(obj[prop.fieldName]));
+              valueArray.push(prop.fieldName + ' = UUID_TO_BIN('+ SqlStr.escape(obj[prop.fieldName]) +')');
             } else {
-            valueArray.push(SqlStr.escape(obj[prop.fieldName]));
-            }
-            lresolve();
-          }
-        } else {
-          if (typeof(obj[prop.fieldName]) == 'object') {
-            if (addPropEqual) {
-              valueArray.push(prop.fieldName + ' = ' + SqlStr.escape(JSON.stringify(obj[prop.fieldName])));
-            } else {
-              valueArray.push(SqlStr.escape(JSON.stringify(obj[prop.fieldName])));
-            }
-          } else {
-            if (addPropEqual) {
-              valueArray.push(prop.fieldName + ' = ' + SqlStr.escape(obj[prop.fieldName]));
-            } else {
-            valueArray.push(SqlStr.escape(obj[prop.fieldName]));
+              valueArray.push('UUID_TO_BIN('+ SqlStr.escape(obj[prop.fieldName]) +')');
             }
           }
           lresolve();
+        } else {
+          if (typeof(obj[prop.fieldName]) === 'string') {
+            if (
+              prop.encrypt !== undefined &&
+              prop.encrypt &&
+              !CommonFn.isEmpty(obj[prop.fieldName])
+            ) {
+              const escStrValue = obj[prop.fieldName];
+              if (prop.bcryptIt !== undefined && prop.bcryptIt) {
+                bcryptHash(escStrValue).then((secret) => {
+                  if (addPropEqual) {
+                    valueArray.push(prop.fieldName + ' = ' + SqlStr.escape(secret));
+                  } else {
+                  valueArray.push(SqlStr.escape(secret));
+                  }
+                  lresolve();
+                });
+              } else {
+                cryptoStr(escStrValue).then((secret) => {
+                  if (addPropEqual) {
+                    valueArray.push(prop.fieldName + ' = ' + SqlStr.escape(secret));
+                  } else {
+                  valueArray.push(SqlStr.escape(secret));
+                  }
+                  lresolve();
+                });
+              }
+            } else {
+              if (addPropEqual) {
+                valueArray.push(prop.fieldName + ' = ' + SqlStr.escape(obj[prop.fieldName]));
+              } else {
+              valueArray.push(SqlStr.escape(obj[prop.fieldName]));
+              }
+              lresolve();
+            }
+          } else {
+            if (typeof(obj[prop.fieldName]) == 'object') {
+              if (addPropEqual) {
+                valueArray.push(prop.fieldName + ' = ' + SqlStr.escape(JSON.stringify(obj[prop.fieldName])));
+              } else {
+                valueArray.push(SqlStr.escape(JSON.stringify(obj[prop.fieldName])));
+              }
+            } else {
+              if (addPropEqual) {
+                valueArray.push(prop.fieldName + ' = ' + SqlStr.escape(obj[prop.fieldName]));
+              } else {
+              valueArray.push(SqlStr.escape(obj[prop.fieldName]));
+              }
+            }
+            lresolve();
+          }
         }
       }
+
     });
   };
 
@@ -188,7 +199,9 @@ export class SqlFormatter {
                 case 'enum':
                     if (column.sqlType?.includes('ENUM')) {
                         sql += "("
-                        sql = SqlFormatter.appendStrList (sql, column.enum);
+                        if (column.enum) {
+                          sql = SqlFormatter.appendStrList (sql, column.enum);
+                        }
                         sql += ")";
                     }
                     break;

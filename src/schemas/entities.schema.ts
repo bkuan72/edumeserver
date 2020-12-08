@@ -9,9 +9,7 @@ export const entities_schema: schemaIfc[] = [
     primaryKey: true,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true,
-    enum: [],
-    index: []
+    excludeFromUpdate: true
   },
   {    fieldName: 'site_code',
   sqlType: 'VARCHAR(20)',
@@ -19,9 +17,7 @@ export const entities_schema: schemaIfc[] = [
   allowNull: false,
   default: '',
   excludeFromUpdate: true,
-  trim: true,
-  enum: [],
-  index: []
+  trim: true
   },
   {    fieldName: 'status',
     sqlType: 'ENUM',
@@ -29,7 +25,6 @@ export const entities_schema: schemaIfc[] = [
     enum: ['OK',
         'DELETED'
         ],
-    index: [],
     default: 'OK'
   },
   {    fieldName: 'date_field',
@@ -37,9 +32,7 @@ export const entities_schema: schemaIfc[] = [
     size: 25,
     allowNull: false,
     excludeFromUpdate: true,
-    trim: false,
-    enum: [],
-    index: []
+    trim: false
   },
   {    fieldName: 'entities_code',
   sqlType: 'VARCHAR(100)',
@@ -47,9 +40,12 @@ export const entities_schema: schemaIfc[] = [
   allowNull: false,
   default: '',
   excludeFromUpdate: false,
-  trim: true,
-  enum: [],
-  index: []
+  trim: true
+  },
+  {    fieldName: 'lastUpdateUsec',
+  sqlType: 'BIGINT',
+  default: '0',
+  excludeFromUpdate: true
   },
   {    fieldName: 'INDEX',
     sqlType: undefined,
@@ -58,9 +54,13 @@ export const entities_schema: schemaIfc[] = [
         name: 'entities_code_idx',
         columns: ['site_code', 'entities_code'],
         unique: true
+      },
+      {
+        name: 'last_upd_usec_idx',
+        columns: [ 'site_code', 'lastUpdatedUsec'],
+        unique: false
       }
-    ],
-    enum: []
+    ]
   }
 ];
 

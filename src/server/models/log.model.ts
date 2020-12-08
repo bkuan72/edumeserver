@@ -33,17 +33,21 @@ export class LogModel extends EntityModel {
       SysLog.info('findByLogDate SQL: ' + sql);
       dbConnection.DB.sql(sql).execute()
       .then((result) => {
+        const respEntityDTOArray: any[] = [];
         if (result.rows.length) {
-          const data = SqlFormatter.transposeResultSet(this.schema,
-            undefined,
-            undefined,
-            result.rows[0]);
-            const respEntityDTO = new this.responseDTO(data);
-            resolve(respEntityDTO);
+          result.rows.forEach((rowData) => {
+            const data = SqlFormatter.transposeResultSet(this.schema,
+              undefined,
+              undefined,
+              rowData);
+              const respEntityDTO = new this.responseDTO(data);
+              respEntityDTOArray.push(respEntityDTO);
+          });
+            resolve(respEntityDTOArray);
             return;
           }
           // not found Customer with the id
-          resolve(undefined);
+          resolve(respEntityDTOArray);
       })
       .catch((err) => {
         SysLog.error(JSON.stringify(err));

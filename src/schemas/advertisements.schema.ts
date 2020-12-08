@@ -76,7 +76,7 @@ export const advertisements_schema: schemaIfc[] = [
     sqlType: 'VARCHAR(25)',
     size: 25,
     allowNull: false,
-    excludeFromUpdate: true,
+    excludeFromUpdate: false,
     trim: false,
     enum: [],
     index: []
@@ -85,7 +85,7 @@ export const advertisements_schema: schemaIfc[] = [
     sqlType: 'VARCHAR(25)',
     size: 25,
     allowNull: false,
-    excludeFromUpdate: true,
+    excludeFromUpdate: false,
     trim: false,
     enum: [],
     index: []
@@ -94,7 +94,7 @@ export const advertisements_schema: schemaIfc[] = [
     sqlType: 'VARCHAR(25)',
     size: 25,
     allowNull: false,
-    excludeFromUpdate: true,
+    excludeFromUpdate: false,
     trim: false,
     enum: [],
     index: []
@@ -108,6 +108,11 @@ export const advertisements_schema: schemaIfc[] = [
     index: [],
     default: 'OK'
   },
+  {    fieldName: 'lastUpdateUsec',
+  sqlType: 'BIGINT',
+  default: '0',
+  excludeFromUpdate: true
+  },
   {    fieldName: 'INDEX',
     sqlType: undefined,
     index: [
@@ -115,6 +120,11 @@ export const advertisements_schema: schemaIfc[] = [
         name: 'advert_date_pri_idx',
         columns: ['site_code', 'start_date', 'priority_code'],
         unique: true
+      },
+      {
+        name: 'last_upd_usec_idx',
+        columns: [ 'site_code', 'lastUpdatedUsec'],
+        unique: false
       }
     ],
     enum: []

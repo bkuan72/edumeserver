@@ -107,8 +107,9 @@ export class UserModel {
     return new Promise((resolve) => {
       dbConnection.DB.sql(sql).execute()
       .then((result) => {
+        const respUserDTOArray:ResponseUserDTO[] = [];
         if (result.rows.length) {
-          const respUserDTOArray:ResponseUserDTO[] = [];
+
           result.rows.forEach((rowData: any[]) => {
             const data = SqlFormatter.transposeResultSet(users_schema,
                                                         ignoreExclSelect,
@@ -121,7 +122,7 @@ export class UserModel {
           return;
         }
         // not found with the id
-        resolve(undefined);
+        resolve(respUserDTOArray);
       })
       .catch((err) => {
         SysLog.error(JSON.stringify(err));
@@ -135,8 +136,9 @@ export class UserModel {
     return new Promise ((resolve) => {
       dbConnection.DB.sql(SqlFormatter.formatSelect(this.tableName, users_schema)).execute()
       .then((result) => {
+        const respUserDTOArray:ResponseUserDTO[] = [];
         if (result.rows.length) {
-          const respUserDTOArray:ResponseUserDTO[] = [];
+
           result.rows.forEach((rowData: any) => {
             const data = SqlFormatter.transposeResultSet(users_schema,
               undefined,
@@ -149,7 +151,7 @@ export class UserModel {
           return;
         }
         // not found
-        resolve(undefined);
+        resolve(respUserDTOArray);
       })
       .catch((err) => {
         SysLog.error(JSON.stringify(err));
@@ -165,7 +167,6 @@ export class UserModel {
         sql += SqlFormatter.formatWhereAND('', {id: userId}, users_schema);
         dbConnection.DB.sql(sql).execute()
         .then((result) => {
-
           SysLog.info('updated user: ', { id: userId, ...userDTO });
           this.findById(userId).then((respUserDTO) => {
             resolve(respUserDTO);

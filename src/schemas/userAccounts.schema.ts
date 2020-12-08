@@ -77,6 +77,13 @@ export const userAccounts_schema: schemaIfc[] = [
     index: [],
     default: 'OK'
   },
+  {    fieldName: 'lastUpdateUsec',
+  sqlType: 'BIGINT',
+  default: '0',
+  excludeFromUpdate: true,
+  enum: [],
+  index: []
+  },
   {    fieldName: 'INDEX',
     sqlType: undefined,
     index: [
@@ -85,6 +92,11 @@ export const userAccounts_schema: schemaIfc[] = [
         columns: ['site_code', 'user_id'],
         unique: true
       },
+      {
+        name: 'last_upd_usec_idx',
+        columns: [ 'site_code', 'lastUpdatedUsec'],
+        unique: false
+      }
     ],
     enum:[]
   }

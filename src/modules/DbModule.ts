@@ -22,8 +22,8 @@ export interface schemaIfc  {
     size?: number;                  // size of VARCHAR
     allowNull?: boolean;            // allow null value
     default?: string;               // default value
-    enum: string[];         // ENUM values
-    index: indexIfc[];      // array of index
+    enum?: string[];         // ENUM values
+    index?: indexIfc[];      // array of index
 
     primaryKey?: boolean;           // is a primary key
     trim?: boolean;                 // right trim the String
@@ -342,10 +342,12 @@ class Database {
                 tableProperties.forEach((column: schemaIfc) => {
                     if (column.fieldName == 'INDEX') {
                         let prom: Promise<any>;
-                        if (column.index.length > 0) {
-                            column.index.forEach((idx: indexIfc) => {
-                                prom = this.DBM_createIndex (prom, db, tableName, idx);
-                            })
+                        if (column.index) {
+                            if (column.index.length > 0) {
+                                column.index.forEach((idx: indexIfc) => {
+                                    prom = this.DBM_createIndex (prom, db, tableName, idx);
+                                })
+                            }
                         }
                     }
                 })

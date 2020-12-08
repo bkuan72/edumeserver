@@ -154,6 +154,13 @@ export const users_schema: schemaIfc[] = [
     index: [],
     default: 'ENABLED'
   },
+  {    fieldName: 'lastUpdateUsec',
+  sqlType: 'BIGINT',
+  default: '0',
+  excludeFromUpdate: true,
+  enum: [],
+  index: []
+  },
   {    fieldName: 'INDEX',
     sqlType: undefined,
     index: [
@@ -171,9 +178,13 @@ export const users_schema: schemaIfc[] = [
         name: 'phone_idx',
         columns: ['site_code', 'phone_no'],
         unique: false
+      },
+      {
+        name: 'last_upd_usec_idx',
+        columns: [ 'site_code', 'lastUpdatedUsec'],
+        unique: false
       }
-    ],
-    enum: []
+    ]
   }
 ];
 

@@ -41,8 +41,9 @@ export class AdvertisementModel extends EntityModel {
     return new Promise((resolve) => {
       dbConnection.DB.sql(sql).execute()
       .then((result) => {
+        const respEntityDTOArray: any[] = [];
         if (result.rows.length) {
-          const respEntityDTOArray: any[] = [];
+
           result.rows.forEach((rowData: any) => {
             const data = SqlFormatter.transposeResultSet(this.schema,
               ignoreExclSelect,
@@ -55,7 +56,7 @@ export class AdvertisementModel extends EntityModel {
           return;
         }
         // not found with the id
-        resolve(undefined);
+        resolve(respEntityDTOArray);
       })
       .catch((err) => {
         SysLog.error(JSON.stringify(err));
