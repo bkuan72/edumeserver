@@ -1,3 +1,4 @@
+import { AboutDTO } from './../../dtos/about.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import {UserModel} from "../models/user.model";
@@ -26,6 +27,7 @@ export class UsersController implements Controller{
     this.router.get(this.path, authMiddleware, this.getAll);
     this.router.get(this.path+'/byUserId/:userId', authMiddleware, this.findById);
     this.router.patch(this.path+'/:userId', authMiddleware, validationUpdateMiddleware(users_schema), this.update);
+    this.router.get(this.path+'/profile-about/:userId', authMiddleware, this.getAbout);
     return;
   }
 
@@ -53,6 +55,29 @@ export class UsersController implements Controller{
     this.users.updateById(request.params.userId, request.body).then((respUserDTO) => {
       if (respUserDTO) {
         response.send(respUserDTO);
+      } else {
+        next(new DataNotFoundException(request.params.userId))
+      }
+    })
+  }
+
+  getAbout  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.users.findById(request.params.userId).then((respUserDTO) => {
+      if (respUserDTO) {
+        const aboutDTO = new AboutDTO();
+        aboutDTO.general.gender = respUserDTO?.data.gender;
+        aboutDTO.general.birthday = respUserDTO?.data.birthday;
+        aboutDTO.general.locations.push(respUserDTO?.data.city + ', ' + respUserDTO?.data.country);
+        aboutDTO.contact.address = respUserDTO?.data.address;
+        aboutDTO.contact.tel.push(respUserDTO?.data.phone_no);
+        aboutDTO.contact.tel.push(respUserDTO?.data.mobile_no);
+        aboutDTO.contact.websites.push(respUserDTO?.data.website);
+        aboutDTO.contact.emails.push(respUserDTO?.data.email);
+
+        //aboutDTO.friends // TODO need to implement friends api
+        //aboutDTO.groups // TODO need to implement groups api
+        aboutDTO
+        response.send(aboutDTO);
       } else {
         next(new DataNotFoundException(request.params.userId))
       }

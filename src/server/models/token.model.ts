@@ -100,7 +100,7 @@ export class TokenModel {
   updateById = async (tokenId: string, tokenDTO: any): Promise<TokenDTO | undefined> => {
     return new Promise ((resolve) => {
       SqlFormatter.formatUpdate(this.tableName, token_schema, tokenDTO).then ((sql) => {
-        sql += SqlFormatter.formatWhereAND('', {id: tokenId}, token_schema);
+        sql += SqlFormatter.formatWhereAND('', {id: tokenId}, this.tableName, token_schema);
         dbConnection.DB.sql(sql).execute()
         .then((result) => {
           SysLog.info('updated token: ', { id: tokenId, ...tokenDTO });
@@ -129,7 +129,7 @@ export class TokenModel {
       ignoreExclSelect,
       excludeSelectProp
     );
-    sql += SqlFormatter.formatWhereAND('', conditions, token_schema);
+    sql += SqlFormatter.formatWhereAND('', conditions, this.tableName, token_schema);
     SysLog.info('find SQL: ' + sql);
     return new Promise((resolve) => {
       dbConnection.DB.sql(sql).execute()

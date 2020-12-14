@@ -95,7 +95,7 @@ class App {
         site_code: SysEnv.SITE_CODE,
         account_type: 'ADMIN'
       });
-      if (CommonFn.isUndefined(account)) {
+      if (CommonFn.isUndefined(account) || account?.length === 0) {
         const newAccount = await accounts.create({
           account_type: 'ADMIN',
           account_code: 'ADMIN_ACCOUNT',
@@ -109,7 +109,7 @@ class App {
             site_code: SysEnv.SITE_CODE,
             email: serverCfg.defaultAdminEmail
            });
-           if (CommonFn.isUndefined(user)) {
+           if (CommonFn.isUndefined(user) || user?.length === 0) {
               const newUser = await users.create({
                 user_id: serverCfg.defaultAdminUserId,
                 email: serverCfg.defaultAdminEmail,
@@ -141,6 +141,7 @@ class App {
   public listen() {
     this.app.listen(this.port, () => {
       SysLog.info(`App listening on the port ${this.port}`);
+      console.log(`App listening on the port ${this.port}`);
     });
   }
 }

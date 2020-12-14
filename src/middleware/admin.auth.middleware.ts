@@ -1,3 +1,4 @@
+import { CommonFn } from './../modules/CommonFnModule';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { NextFunction, Response, Request } from 'express';
@@ -37,8 +38,9 @@ async function adminAuthMiddleware(request: Request, _response: Response, next: 
                   SysLog.error('Expired Token Used By User Id :', id);
                   next(new ExpiredTokenException(user));
                 } else {
+                  const deadToken = await blacklistTokens.find({ token: authToken})
                   if (
-                    await blacklistTokens.find({ token: authToken})
+                    deadToken != undefined && deadToken.length > 0
                  ) {
                     SysLog.error('Blacklisted Token Used by User Id :', id);
                       next(new WrongAuthenticationTokenException());

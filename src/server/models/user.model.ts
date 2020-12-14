@@ -102,7 +102,7 @@ export class UserModel {
           ignoreExclSelect?: boolean,
           excludeSelectProp?: string[]): Promise<ResponseUserDTO[] | undefined> => {
     let sql = SqlFormatter.formatSelect(this.tableName, users_schema, ignoreExclSelect, excludeSelectProp);
-    sql += SqlFormatter.formatWhereAND('', conditions, users_schema);
+    sql += SqlFormatter.formatWhereAND('', conditions, this.tableName, users_schema);
     SysLog.info('find SQL: ' + sql);
     return new Promise((resolve) => {
       dbConnection.DB.sql(sql).execute()
@@ -164,7 +164,7 @@ export class UserModel {
   updateById = async (userId: string, userDTO: any): Promise<ResponseUserDTO | undefined> => {
     return new Promise ((resolve) => {
       SqlFormatter.formatUpdate(this.tableName, users_schema, userDTO).then ((sql) => {
-        sql += SqlFormatter.formatWhereAND('', {id: userId}, users_schema);
+        sql += SqlFormatter.formatWhereAND('', {id: userId}, this.tableName, users_schema);
         dbConnection.DB.sql(sql).execute()
         .then((result) => {
           SysLog.info('updated user: ', { id: userId, ...userDTO });

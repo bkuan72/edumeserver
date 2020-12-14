@@ -1,3 +1,7 @@
+import { GroupsController } from './server/controllers/groups.controller';
+import { FriendsController } from './server/controllers/friends.controller';
+import { PostMediasController } from './server/controllers/postMedias.controller';
+import { PostCommentsController } from './server/controllers/postComments.controller';
 import { AdvertisementsController } from './server/controllers/advertisement.controller';
 import { PropertiesController } from './server/controllers/properties.controller';
 import { TokensController } from './server/controllers/tokens.controller';
@@ -17,6 +21,8 @@ import toobusy_js from 'toobusy-js';
 import SysEnv from './modules/SysEnv';
 import { blacklist_tokens_schema_table, tokens_schema_table } from './schemas/tokens.schema';
 import { BlacklistController } from './server/controllers/blacklist.controller';
+import { PostsController } from './server/controllers/posts.controller';
+import { UserGroupsController } from './server/controllers/userGroups.controller';
 
 // validate that all required environment variable is present
 SysEnv.init();
@@ -38,7 +44,13 @@ const app = new App (
     new TokensController(),
     new BlacklistController(),
     new PropertiesController(),
-    new AdvertisementsController()
+    new AdvertisementsController(),
+    new PostCommentsController(),
+    new PostsController(),
+    new PostMediasController(),
+    new FriendsController(),
+    new GroupsController(),
+    new UserGroupsController()
   ],
   port
 );

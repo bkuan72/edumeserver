@@ -97,7 +97,7 @@ export class UserAccountModel {
           ignoreExclSelect?: boolean,
           excludeSelectProp?: string[]): Promise<UserAccountsDTO[] | undefined> => {
     let sql = SqlFormatter.formatSelect(this.tableName, userAccounts_schema, ignoreExclSelect, excludeSelectProp);
-    sql += SqlFormatter.formatWhereAND('', conditions, userAccounts_schema);
+    sql += SqlFormatter.formatWhereAND('', conditions, this.tableName, userAccounts_schema);
     SysLog.info('find SQL: ' + sql);
     return new Promise((resolve) => {
       dbConnection.DB.sql(sql).execute()
@@ -157,7 +157,7 @@ export class UserAccountModel {
   updateById = async (userAccountId: string, UserAccountsDTO: any): Promise<UserAccountsDTO | undefined> => {
     return new Promise ((resolve) => {
       SqlFormatter.formatUpdate(this.tableName, userAccounts_schema, UserAccountsDTO).then ((sql) => {
-        sql += SqlFormatter.formatWhereAND('', {id: userAccountId}, userAccounts_schema);
+        sql += SqlFormatter.formatWhereAND('', {id: userAccountId}, this.tableName, userAccounts_schema);
         dbConnection.DB.sql(sql).execute()
         .then((result) => {
           SysLog.info('updated userAccount: ', { id: userAccountId, ...UserAccountsDTO });

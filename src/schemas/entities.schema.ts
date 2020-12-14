@@ -27,11 +27,17 @@ export const entities_schema: schemaIfc[] = [
         ],
     default: 'OK'
   },
+  {    fieldName: 'account_id',
+    sqlType: 'BINARY(16)',
+    primaryKey: false,
+    uuidProperty: true,
+    excludeFromUpdate: true
+  },
   {    fieldName: 'date_field',
     sqlType: 'VARCHAR(25)',
     size: 25,
     allowNull: false,
-    excludeFromUpdate: true,
+    excludeFromUpdate: false,
     trim: false
   },
   {    fieldName: 'entities_code',

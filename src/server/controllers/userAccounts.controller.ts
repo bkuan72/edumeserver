@@ -1,6 +1,5 @@
+import { CommonFn } from './../../modules/CommonFnModule';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-
-import {AccountModel} from "../models/account.model";
 import * as express from 'express';
 import Controller from "../../interfaces/controller.interface";
 import DataNotFoundException from "../../exceptions/DataNotFoundException";
@@ -15,13 +14,14 @@ import { UserAccountsDTO } from "../../dtos/userAccounts.DTO";
 import UserAccountAlreadyExistsException from "../../exceptions/UserAccountAlreadyExistException";
 import DbCreatingNewUserAccountException from "../../exceptions/DbCreatingNewUserAccountException";
 import SysEnv from "../../modules/SysEnv";
+import UserAccountModel from '../models/userAccount.model';
 
 
 
 export class UserAccountsController implements Controller{
   public path='/userAccounts';
   public router= express.Router();
-  private userAccounts = new AccountModel();
+  private userAccounts = new UserAccountModel();
   private siteCode = '';
 
   constructor() {
@@ -34,7 +34,7 @@ export class UserAccountsController implements Controller{
                     authMiddleware,
                     validationUserAccountRegistrationMiddleware(userAccounts_schema),
                     validationUserAccountMiddleware(),
-                    this.registration);
+                    this.create);
     this.router.get(this.path, authMiddleware, this.getAll);
     this.router.get(this.path+'/byUserAccountId/:userAccountId', authMiddleware, this.findById);
     this.router.patch(this.path+'/:userAccountId',
@@ -46,15 +46,16 @@ export class UserAccountsController implements Controller{
   }
 
 
-  private registration = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
+  private create = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
     const userAccount = new UserAccountsDTO(request.body);
     userAccount.data.site_code = this.siteCode;
+    const accounts = await this.userAccounts.find({
+      site_code: this.siteCode,
+      user_id: userAccount.data.user_id,
+      account_id: userAccount.data.account_id
+     })
     if (
-      await this.userAccounts.find({
-        site_code: this.siteCode,
-        user_id: userAccount.data.user_id,
-        account_id: userAccount.data.account_id
-       })
+      CommonFn.isUndefined(accounts) || accounts?.length === 0
     ) {
       next(new UserAccountAlreadyExistsException(userAccount.data.user_id, userAccount.data.account_id));
     } else {
