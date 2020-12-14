@@ -173,7 +173,7 @@ class Database {
                                 } else {
                                     alterSql += ', '
                                 }
-                                alterSql += ' ADD COLUMN ' + SqlFormatter.formatColumnDefinition(column);
+                                alterSql += ' ADD COLUMN ' + SqlFormatter.formatColumnDefinition(table.name, column);
                             }
                         }
                     });
@@ -328,7 +328,7 @@ class Database {
                     } else {
                         sql += ", ";
                     }
-                    sql += SqlFormatter.formatColumnDefinition(column);
+                    sql += SqlFormatter.formatColumnDefinition(tableName, column);
                 }
             });
 

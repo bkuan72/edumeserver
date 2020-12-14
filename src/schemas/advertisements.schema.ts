@@ -23,6 +23,15 @@ export const advertisements_schema: schemaIfc[] = [
   enum: [],
   index: []
   },
+  {    fieldName: 'account_id',
+    sqlType: 'BINARY(16)',
+    primaryKey: false,
+    default: '',
+    uuidProperty: true,
+    excludeFromUpdate: true,
+    enum: [],
+    index: []
+  },
   {    fieldName: 'header',
   sqlType: 'VARCHAR(100)',
   size: 100,

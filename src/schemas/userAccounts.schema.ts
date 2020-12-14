@@ -37,9 +37,7 @@ export const userAccounts_schema: schemaIfc[] = [
     primaryKey: false,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true,
-    enum: [],
-    index: []
+    excludeFromUpdate: true
   },
   {    fieldName: 'acc_type',
     sqlType: 'ENUM',

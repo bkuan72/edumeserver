@@ -110,11 +110,12 @@ class AuthenticationController implements Controller {
 
       private registration = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
         const user = new CreateUserDTO(request.body);
+        const existingUser =  await this.users.find({
+                              site_code: this.siteCode,
+                              email: user.data.email
+                            });
         if (
-          await this.users.find({
-            site_code: this.siteCode,
-            email: user.data.email
-           })
+          existingUser !== undefined &&  existingUser.length > 0
         ) {
           SysLog.error(`User With That Email Already Exists Exception: ${user.data.email}`);
           next(new UserWithThatEmailAlreadyExistsException(user.data.email));
@@ -142,7 +143,7 @@ class AuthenticationController implements Controller {
         const logInData = new LoginDTO(request.body);
         logInData.data.siteCode = this.siteCode;
         const user = await this.users.find({ email: logInData.data.email }, true, true);
-        if (user) {
+        if (user && user.length > 0) {
           const isPasswordMatching = await bcryptCompare(logInData.data.password, user[0].data.password);
           if (isPasswordMatching) {
             if (user[0].data.status === 'ENABLED') {
