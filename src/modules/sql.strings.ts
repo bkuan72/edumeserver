@@ -25,6 +25,7 @@ export class SqlFormatter {
    */
   static formatValueArray = (
     obj: any,
+    table: string,
     prop: schemaIfc,
     valueArray: string[],
     addPropEqual: boolean
@@ -160,8 +161,11 @@ export class SqlFormatter {
       sql += ");";
       return sql;
   }
-
-  static formatColumnDefinition = (column: schemaIfc) => {
+/**
+ * This function formats the database column definition based on column schema
+ * @param column  - column schema
+ */
+  static formatColumnDefinition = (table: string, column: schemaIfc) => {
     let sql = '';
     if (column.fieldName != 'INDEX') {
         for (const prop in column) {
@@ -251,7 +255,7 @@ export class SqlFormatter {
         if (CommonFn.hasProperty(obj, prop.fieldName)) {
           promiseChain = promiseChain
             .then(async () => {
-              return await SqlFormatter.formatValueArray(obj, prop, valueArray, false);
+              return await SqlFormatter.formatValueArray(obj, table, prop, valueArray, false);
             })
             .then(() => {
               cnt++;
@@ -346,7 +350,8 @@ export class SqlFormatter {
               } else {
                 sql += ', ';
               }
-              sql += 'BIN_TO_UUID(' + prop.fieldName + ') ' + prop.fieldName;
+              sql += 'BIN_TO_UUID(' +  prop.fieldName + ') ';
+              sql +=  prop.fieldName;
             } else {
               if (first) {
                 first = false;
@@ -367,6 +372,7 @@ export class SqlFormatter {
   /**
    * This function transpose the data return from SQL statement into
    * an object defined with properties from the columns array
+   * NOTE make sure the sequencing of the column matches the SELECT statement
    *
    * @param columns - array of columns name
    * @param dataRow - data rows returned by SQL statement
@@ -464,6 +470,7 @@ export class SqlFormatter {
               .then(async () => {
                 return await SqlFormatter.formatValueArray(
                   data,
+                  table,
                   colProp,
                   valueArray,
                   true
@@ -500,7 +507,7 @@ export class SqlFormatter {
    * @param schema - entity schema
    * @param opt - where statement AND/OR syntax
    */
-  static formatWhere(whereSql: string, conditions: any, schema: schemaIfc[], opt: string) {
+  static formatWhere(whereSql: string, conditions: any, table: string,  schema: schemaIfc[], opt: string) {
     let sql = ' ';
     let first = true;
     if (whereSql.length === 0) {
@@ -538,8 +545,8 @@ export class SqlFormatter {
    * @param conditions - condition data object
    * @param schema - entity schema
    */
-  static formatWhereAND(whereSql: string, conditions: any, schema: schemaIfc[]) {
-    return SqlFormatter.formatWhere(whereSql, conditions, schema, 'AND');
+  static formatWhereAND(whereSql: string, conditions: any, table: string, schema: schemaIfc[]) {
+    return SqlFormatter.formatWhere(whereSql, conditions, table, schema, 'AND');
   }
 
   /**
@@ -548,8 +555,19 @@ export class SqlFormatter {
    * @param conditions - condition data object
    * @param schema - entity schema
    */
-  static formatWhereOR(whereSql: string, conditions: any, schema: schemaIfc[]) {
-    return SqlFormatter.formatWhere(whereSql, conditions, schema, 'OR');
+  static formatWhereOR(whereSql: string, conditions: any, table: string, schema: schemaIfc[]) {
+    return SqlFormatter.formatWhere(whereSql, conditions, table, schema, 'OR');
+  }
+
+/**
+ * This function format column name using table and column field name 
+ * eg 'tableName'.'fielName'
+ * @param tableName - table name
+ * @param fieldName - database column field name
+ */
+  static fmtTableFieldStr(tableName: string, fieldName: string) {
+    const sql = tableName + '.' + fieldName;
+    return sql;
   }
 }
 
