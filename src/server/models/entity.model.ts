@@ -100,7 +100,7 @@ export class EntityModel {
   updateById = async (entityId: string, entityDTO: any): Promise<any | undefined> => {
     return new Promise ((resolve) => {
       SqlFormatter.formatUpdate(this.tableName, this.schema, entityDTO).then ((sql) => {
-        sql += SqlFormatter.formatWhereAND('', {id: entityId}, this.schema);
+        sql += SqlFormatter.formatWhereAND('', {id: entityId}, this.tableName, this.schema);
         dbConnection.DB.sql(sql).execute()
         .then((result) => {
           SysLog.info('updated entity: ', { id: entityId, ...entityDTO });
@@ -128,7 +128,7 @@ export class EntityModel {
       ignoreExclSelect,
       excludeSelectProp
     );
-    sql += SqlFormatter.formatWhereAND('', conditions, this.schema);
+    sql += SqlFormatter.formatWhereAND('', conditions,  this.tableName, this.schema);
     SysLog.info('find SQL: ' + sql);
     return new Promise((resolve) => {
       dbConnection.DB.sql(sql).execute()
