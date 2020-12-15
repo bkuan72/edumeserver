@@ -247,9 +247,9 @@ export class UserGroupModel {
     sql += 'BIN_TO_UUID('+SqlFormatter.fmtTableFieldStr(this.tableName, 'group_id') + '), ';
     sql += 'BIN_TO_UUID('+SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') + '), ';
     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'join_date') + ', ';
-    sql += SqlFormatter.fmtTableFieldStr(groups_schema_table, 'groups_name') + ', ';
+    sql += SqlFormatter.fmtTableFieldStr(groups_schema_table, 'group_name') + ', ';
     sql += SqlFormatter.fmtTableFieldStr(groups_schema_table, 'category') + ', ';
-    sql += SqlFormatter.fmtTableFieldStr(groups_schema_table, 'lastUpdateUsec') + ', ';
+    sql += SqlFormatter.fmtTableFieldStr(groups_schema_table, 'lastUpdateUsec');
     sql += ' FROM ' + this.tableName + ', ' + groups_schema_table;
     sql += ' WHERE ';
     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') + SqlStr.format(' = ?', [this.siteCode]) + ' AND ';
@@ -262,8 +262,8 @@ export class UserGroupModel {
       dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
+          const respUserGroupsDTOArray: UserGroupInfoDTO[] = [];
           if (result.rows.length) {
-            const respUserGroupsDTOArray: UserGroupInfoDTO[] = [];
             result.rows.forEach((rowData: any) => {
             const data = SqlFormatter.transposeColumnResultSet([
                 'id',
@@ -282,7 +282,7 @@ export class UserGroupModel {
             return;
           }
           // not found with the id
-          resolve(undefined);
+          resolve(respUserGroupsDTOArray);
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));

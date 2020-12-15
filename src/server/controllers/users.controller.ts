@@ -1,3 +1,4 @@
+import { CommonFn } from './../../modules/CommonFnModule';
 import { AboutDTO } from './../../dtos/about.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
@@ -67,16 +68,28 @@ export class UsersController implements Controller{
         const aboutDTO = new AboutDTO();
         aboutDTO.general.gender = respUserDTO?.data.gender;
         aboutDTO.general.birthday = respUserDTO?.data.birthday;
-        aboutDTO.general.locations.push(respUserDTO?.data.city + ', ' + respUserDTO?.data.country);
+        if (!CommonFn.isEmpty(respUserDTO?.data.city)) {
+          aboutDTO.general.locations.push(respUserDTO?.data.city);
+        }
+        if (!CommonFn.isEmpty(respUserDTO?.data.country)) {
+         aboutDTO.general.locations.push(respUserDTO?.data.country);
+        }
         aboutDTO.contact.address = respUserDTO?.data.address;
-        aboutDTO.contact.tel.push(respUserDTO?.data.phone_no);
-        aboutDTO.contact.tel.push(respUserDTO?.data.mobile_no);
-        aboutDTO.contact.websites.push(respUserDTO?.data.website);
-        aboutDTO.contact.emails.push(respUserDTO?.data.email);
+        if (!CommonFn.isEmpty(respUserDTO?.data.phone_no)) {
+          aboutDTO.contact.tel.push(respUserDTO?.data.phone_no);
+        }
+        if (!CommonFn.isEmpty(respUserDTO?.data.mobile_no)) {
+          aboutDTO.contact.tel.push(respUserDTO?.data.mobile_no);
+        }
+        if (!CommonFn.isEmpty(respUserDTO?.data.website)) {
+          aboutDTO.contact.websites.push(respUserDTO?.data.website);
+        }
+        if (!CommonFn.isEmpty(respUserDTO?.data.email)) {
+          aboutDTO.contact.emails.push(respUserDTO?.data.email);
+        }
 
         //aboutDTO.friends // TODO need to implement friends api
         //aboutDTO.groups // TODO need to implement groups api
-        aboutDTO
         response.send(aboutDTO);
       } else {
         next(new DataNotFoundException(request.params.userId))

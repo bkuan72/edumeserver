@@ -40,6 +40,7 @@ export class UserGroupsController implements Controller{
                         validationUpdateMiddleware(userGroups_schema),
                         validationUserGroupMiddleware(),
                          this.update);
+    this.router.get(this.path+'/byUserId/:userId', authMiddleware, this.findByUserId);
     return;
   }
 
@@ -47,22 +48,22 @@ export class UserGroupsController implements Controller{
   private create = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
     const userGroup = new UserGroupsDTO(request.body);
     userGroup.data.site_code = this.siteCode;
-    const accounts = await this.userGroups.find({
+    const groups = await this.userGroups.find({
       site_code: this.siteCode,
       user_id: userGroup.data.user_id,
-      account_id: userGroup.data.account_id
+      group_id: userGroup.data.group_id
      })
     if (
-      CommonFn.isUndefined(accounts) || accounts?.length === 0
+      CommonFn.isUndefined(groups) || groups?.length === 0
     ) {
-      next(new UserGroupAlreadyExistsException(userGroup.data.user_id, userGroup.data.account_id));
+      next(new UserGroupAlreadyExistsException(userGroup.data.user_id, userGroup.data.group_id));
     } else {
       userGroup.data.site_code = this.siteCode;
       const newUserGroup = await this.userGroups.create(userGroup);
       if (newUserGroup) {
         response.send(newUserGroup.data);
       } else {
-        next(new DbCreatingNewUserGroupException(userGroup.data.user_id, userGroup.data.account_id));
+        next(new DbCreatingNewUserGroupException(userGroup.data.user_id, userGroup.data.group_id));
       }
     }
   }
@@ -93,6 +94,16 @@ export class UserGroupsController implements Controller{
         response.send(respUserGroupsDTO);
       } else {
         next(new DataNotFoundException(request.params.userGroupId))
+      }
+    })
+  }
+
+  findByUserId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.userGroups.findByUserId(request.params.userId).then((respUserGroupsDTO) => {
+      if (respUserGroupsDTO) {
+        response.send(respUserGroupsDTO);
+      } else {
+        next(new DataNotFoundException(request.params.userId))
       }
     })
   }

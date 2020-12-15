@@ -9,7 +9,7 @@ import { token_schema, tokens_schema_table } from '../../schemas/tokens.schema';
 import { TokenDTO } from '../../dtos/tokens.DTO';
 import { uuidIfc } from './uuidIfc';
 import DataStoredInToken from '../../interfaces/DataStoredInToken';
-import CommonFn from '../../modules/CommonFnModule';
+import CommonFn, { DateAddIntervalEnum } from '../../modules/CommonFnModule';
 import SysLog from '../../modules/SysLog';
 import SysEnv from '../../modules/SysEnv';
 
@@ -242,7 +242,7 @@ export class TokenModel {
     const now = new Date();
     const min = expireInMin;
     const tokenDate = new Date(createTimeStamp);
-    const expiry = CommonFn.addMinutesToDate(min, tokenDate);
+    const expiry = CommonFn.dateAdd(tokenDate, DateAddIntervalEnum.MINUTE, min);
     // SysLog.info('now: ' + now.toUTCString());
     // SysLog.info('expiry: ' + expiry.toUTCString());
     if (now.valueOf() < expiry.valueOf()) {

@@ -1,3 +1,5 @@
+import { ActivitiesController } from './server/controllers/activities.controller';
+import { MediasController } from './server/controllers/medias.controller';
 import { GroupsController } from './server/controllers/groups.controller';
 import { FriendsController } from './server/controllers/friends.controller';
 import { PostMediasController } from './server/controllers/postMedias.controller';
@@ -50,7 +52,9 @@ const app = new App (
     new PostMediasController(),
     new FriendsController(),
     new GroupsController(),
-    new UserGroupsController()
+    new UserGroupsController(),
+    new MediasController(),
+    new ActivitiesController()
   ],
   port
 );

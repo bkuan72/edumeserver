@@ -1,3 +1,4 @@
+import { CommonFn, DateAddIntervalEnum } from './../../modules/CommonFnModule';
 import { FriendModel } from './friend.model';
 import { SqlFormatter } from './../../modules/sql.strings';
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -31,11 +32,12 @@ export class ActivityModel extends EntityModel {
     offSetDays: string
   ): Promise<any | undefined> => {
     return new Promise((resolve) => {
+      const fromDate = CommonFn.dateDeduct(new Date(), DateAddIntervalEnum.DAY, parseInt(offSetDays));
       let sql =
         SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += SqlStr.format('user_id = UUID_TO_BIN(?)', [userId]) + ' AND ';
-      sql += SqlStr.format('lastUpdateUsec >= ?', [parseInt(offSetDays)]);
+      sql += SqlStr.format('lastUpdateUsec >= ?', [fromDate?.valueOf()]);
       SysLog.info('findById SQL: ' + sql);
       dbConnection.DB.sql(sql)
         .execute()

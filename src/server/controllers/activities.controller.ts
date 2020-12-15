@@ -31,7 +31,7 @@ export class ActivitiesController implements Controller{
                     authMiddleware,
                     validationMiddleware(activities_schema),
                     this.newActivity);
-    this.router.get(this.path+'/activityList/:userId/offSetDays', authMiddleware, this.getActivitiesByUserId);
+    this.router.get(this.path+'/activityList/:userId/:offSetDays', authMiddleware, this.getActivitiesByUserId);
     this.router.get(this.path+'/byActivityId/:activityId', authMiddleware, this.findById);
     this.router.patch(this.path+'/:activityId', authMiddleware, validationUpdateMiddleware(activities_schema), this.update);
     return;

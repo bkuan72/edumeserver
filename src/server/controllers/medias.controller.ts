@@ -35,7 +35,7 @@ export class MediasController implements Controller{
     this.router.get(this.path, authMiddleware, this.getAll);
     this.router.get(this.path+'/byId/:id', authMiddleware, this.findById);
     this.router.patch(this.path+'/:id', authMiddleware, validationUpdateMiddleware(medias_schema), this.update);
-    this.router.get(this.path+'/byUserId/:id', authMiddleware, this.findByUserId);
+    this.router.get(this.path+'/byUserId/:userId', authMiddleware, this.findByUserId);
     return;
   }
 
@@ -82,7 +82,7 @@ export class MediasController implements Controller{
   findByUserId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.medias.findByUserId(request.params.userId).then((respMediaDTO) => {
       if (respMediaDTO) {
-        response.send(respMediaDTO.data);
+        response.send(respMediaDTO);
       } else {
         next(new DataNotFoundException(request.params.userId))
       }

@@ -1,3 +1,4 @@
+import CommonFn, { DateAddIntervalEnum } from './../../modules/CommonFnModule';
 import { FriendModel } from './friend.model';
 import { SqlFormatter } from '../../modules/sql.strings';
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -9,6 +10,7 @@ import { EntityModel } from './entity.model';
 import dbConnection from '../../modules/DbModule';
 import SysLog from '../../modules/SysLog';
 import SqlStr = require('sqlstring');
+import DTOGenerator from '../../modules/ModelGenerator';
 
 export class PostModel extends EntityModel {
   friends: FriendModel;
@@ -31,11 +33,12 @@ export class PostModel extends EntityModel {
     offSetDays: string
   ): Promise<any | undefined> => {
     return new Promise((resolve) => {
+      const fromDate = CommonFn.dateDeduct(new Date(), DateAddIntervalEnum.DAY, parseInt(offSetDays));
       let sql =
         SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += SqlStr.format('user_id = UUID_TO_BIN(?)', [userId]) + ' AND ';
-      sql += SqlStr.format('lastUpdateUsec >= ?', [parseInt(offSetDays)]);
+      sql += SqlStr.format('lastUpdateUsec >= ?', [fromDate?.valueOf()]);
       SysLog.info('findById SQL: ' + sql);
       dbConnection.DB.sql(sql)
         .execute()
@@ -71,11 +74,12 @@ export class PostModel extends EntityModel {
     offSetDays: string
   ): Promise<any | undefined> => {
     return new Promise((resolve) => {
+      const fromDate = CommonFn.dateDeduct(new Date(), DateAddIntervalEnum.DAY, parseInt(offSetDays));
       this.friends.findByUserId(userId).then((friends: any[]) => {
         let sql =
           SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
         sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
-        sql += SqlStr.format('lastUpdateUsec >= ?', [parseInt(offSetDays)]) + ' AND ';
+        sql += SqlStr.format('lastUpdateUsec >= ?', [fromDate?.valueOf()]) + ' AND ';
         sql += 'user_id IN (';
         sql += SqlStr.format('UUID_TO_BIN(?)', [userId]);
         friends.forEach((friend) => {
@@ -97,6 +101,7 @@ export class PostModel extends EntityModel {
                   rowData
                 );
                 const respPostDTO = new this.responseDTO(data) as PostDTO;
+                respPostDTO.data = DTOGenerator.defineProperty(respPostDTO.data, 'comments', []);
                 resPostDTOArray.push(respPostDTO.data);
               });
               resolve(resPostDTOArray);
