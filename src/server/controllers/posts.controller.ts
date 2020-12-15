@@ -30,8 +30,8 @@ export class PostsController implements Controller{
                     authMiddleware,
                     validationMiddleware(posts_schema),
                     this.newPost);
-    this.router.get(this.path+'/profile-timeline/byUserId/:userId/:offSetDays', authMiddleware, this.getTimeline);
-    this.router.get(this.path+'/byUserId/:userId/:offSetDays', authMiddleware, this.getPostByUserId);
+    this.router.get(this.path+'/profile-timeline/byUserIdOffSetDays/:userId/:offSetDays', authMiddleware, this.getTimeline);
+    this.router.get(this.path+'/byUserIOffSetDays/:userId/:offSetDays', authMiddleware, this.getPostByUserId);
     this.router.get(this.path+'/byPostId/:postId', authMiddleware, this.findById);
     this.router.put(this.path+'/likes/:postId', authMiddleware, this.updateLiked);
     this.router.put(this.path+'/share/:postId', authMiddleware, this.updateShared);
@@ -88,6 +88,7 @@ export class PostsController implements Controller{
       }
     })
   }
+
   updateLiked  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.posts.incrementLikesById(request.params.postId).then((respPostDTO) => {
       if (respPostDTO) {
