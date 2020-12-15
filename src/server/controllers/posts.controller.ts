@@ -30,7 +30,7 @@ export class PostsController implements Controller{
                     authMiddleware,
                     validationMiddleware(posts_schema),
                     this.newPost);
-    this.router.get(this.path+'/profile-timeline/:userId/:offSetDays', authMiddleware, this.getTimeline);
+    this.router.get(this.path+'/profile-timeline/byUserId/:userId/:offSetDays', authMiddleware, this.getTimeline);
     this.router.get(this.path+'/byUserId/:userId/:offSetDays', authMiddleware, this.getPostByUserId);
     this.router.get(this.path+'/byPostId/:postId', authMiddleware, this.findById);
     this.router.put(this.path+'/likes/:postId', authMiddleware, this.updateLiked);

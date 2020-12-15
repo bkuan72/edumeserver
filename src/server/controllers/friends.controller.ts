@@ -31,7 +31,7 @@ export class FriendsController implements Controller{
                     authMiddleware,
                     validationMiddleware(friends_schema),
                     this.newFriend);
-    this.router.get(this.path+'/friendList/:userId', authMiddleware, this.getFriendListByUserId);
+    this.router.get(this.path+'/friendList/byUserId/:userId', authMiddleware, this.getFriendListByUserId);
     this.router.get(this.path+'/byFriendId/:friendId', authMiddleware, this.findById);
     this.router.patch(this.path+'/:friendId', authMiddleware, validationUpdateMiddleware(friends_schema), this.update);
     return;

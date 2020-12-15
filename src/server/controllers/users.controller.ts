@@ -28,7 +28,7 @@ export class UsersController implements Controller{
     this.router.get(this.path, authMiddleware, this.getAll);
     this.router.get(this.path+'/byUserId/:userId', authMiddleware, this.findById);
     this.router.patch(this.path+'/:userId', authMiddleware, validationUpdateMiddleware(users_schema), this.update);
-    this.router.get(this.path+'/profile-about/:userId', authMiddleware, this.getAbout);
+    this.router.get(this.path+'/profile-about/byUserId/:userId', authMiddleware, this.getAbout);
     return;
   }
 
