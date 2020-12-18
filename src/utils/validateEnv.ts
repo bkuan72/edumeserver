@@ -15,10 +15,15 @@ import {
         DB_BCRYPT_SALT: num(),
         TOKEN_EXP_IN_MIN: num(),
         NODE_ENV: str(),
-        MIN_LAG: num(),
-        MIN_LAG_INTERVAL: num(),
         VALID_CORS_ORIGIN: str(),
-        COOKIE_AUTH: str()
+        COOKIE_AUTH: str(),
+        EMAIL_SERVICE: str(),
+        EMAIL: str(),
+        EMAIL_PASSWORD: str(),
+        MAILER_THEME: str(),
+        MAILER_PRODUCT_NAME: str(),
+        MAILER_PRODUCT_REGISTRATION_LINK: str(),
+        MAILER_PRODUCT_RESET_PWD_LINK: str(),
     });
   }
 
