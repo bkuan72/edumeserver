@@ -1,3 +1,4 @@
+import { schemaIfc } from './../../modules/DbModule';
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -13,171 +14,203 @@ import { uuidIfc } from './uuidIfc';
 import SysLog from '../../modules/SysLog';
 import { Column, Metadata, Row } from 'mysqlx/lib/types';
 import SysEnv from '../../modules/SysEnv';
+import { bcryptHash, cryptoStr } from '../../modules/cryto';
 
 export class UserModel {
-
   tableName = users_schema_table;
   siteCode = SysEnv.SITE_CODE;
 
-
-  constructor () {
+  constructor() {
     this.siteCode = SysEnv.SITE_CODE;
   }
   create = (userData: any): Promise<ResponseUserDTO | undefined> => {
     const newUser = new CreateUserDTO(userData);
     newUser.data.site_code = this.siteCode;
 
-    return new Promise (async (resolve) => {
-     SqlFormatter.formatInsert(
+    return new Promise(async (resolve) => {
+      SqlFormatter.formatInsert(
         newUser.data,
         this.tableName,
         users_schema
       ).then((sql) => {
-
-        dbConnection.DB.sql('SET @uuidId=UUID(); ').execute()
-        .then((result) => {
-          dbConnection.DB.sql(sql).execute()
-          .then((result2) => {
-            dbConnection.DB.sql('SELECT @uuidId;').execute()
-            .then((result3) => {
-              SysLog.info('created Entity: ', result3);
-              const newUuid: uuidIfc = { '@uuidId': result3.rows[0][0] }; // TODO
-              const respUserDTO = new ResponseUserDTO(newUser.data);
-              respUserDTO.data.password = '';
-              respUserDTO.data.id = newUuid['@uuidId'];
-              resolve(respUserDTO)
-            })
-            .catch((err) => {
-              SysLog.error(JSON.stringify(err));
-              resolve(undefined);
-              return;
-            });
+        dbConnection.DB.sql('SET @uuidId=UUID(); ')
+          .execute()
+          .then((result) => {
+            dbConnection.DB.sql(sql)
+              .execute()
+              .then((result2) => {
+                dbConnection.DB.sql('SELECT @uuidId;')
+                  .execute()
+                  .then((result3) => {
+                    SysLog.info('created Entity: ', result3);
+                    const newUuid: uuidIfc = { '@uuidId': result3.rows[0][0] }; // TODO
+                    const respUserDTO = new ResponseUserDTO(newUser.data);
+                    respUserDTO.data.password = '';
+                    respUserDTO.data.id = newUuid['@uuidId'];
+                    resolve(respUserDTO);
+                  })
+                  .catch((err) => {
+                    SysLog.error(JSON.stringify(err));
+                    resolve(undefined);
+                    return;
+                  });
+              })
+              .catch((err) => {
+                SysLog.error(JSON.stringify(err));
+                resolve(undefined);
+                return;
+              });
           })
           .catch((err) => {
             SysLog.error(JSON.stringify(err));
             resolve(undefined);
             return;
           });
-        })
-        .catch((err) => {
-          SysLog.error(JSON.stringify(err));
-          resolve(undefined)
-          return;
-        });
       });
     });
-
   };
 
   findById = (userId: string): Promise<ResponseUserDTO | undefined> => {
-    return new Promise ((resolve) => {
+    return new Promise((resolve) => {
       let sql =
-      SqlFormatter.formatSelect(this.tableName, users_schema) + ' WHERE ';
+        SqlFormatter.formatSelect(this.tableName, users_schema) + ' WHERE ';
       sql += SqlStr.format('id = UUID_TO_BIN(?)', [userId]);
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql).execute()
-      .then((result) => {
-        if (result.rows.length) {
-          const data = SqlFormatter.transposeResultSet(users_schema,
-            undefined,
-            undefined,
-            result.rows[0]);
-          const respUserDTO = new ResponseUserDTO(data);
-          resolve(respUserDTO);
-          return;
-        }
-        // not found Customer with the id
-        resolve(undefined);
-      })
-      .catch((err) => {
-        SysLog.error(JSON.stringify(err));
-        resolve(undefined);
-        return;
-      });
-    });
-  };
-
-  find = (conditions: any,
-          showPassword?: boolean,
-          ignoreExclSelect?: boolean,
-          excludeSelectProp?: string[]): Promise<ResponseUserDTO[] | undefined> => {
-    let sql = SqlFormatter.formatSelect(this.tableName, users_schema, ignoreExclSelect, excludeSelectProp);
-    sql += SqlFormatter.formatWhereAND('', conditions, this.tableName, users_schema);
-    SysLog.info('find SQL: ' + sql);
-    return new Promise((resolve) => {
-      dbConnection.DB.sql(sql).execute()
-      .then((result) => {
-        const respUserDTOArray:ResponseUserDTO[] = [];
-        if (result.rows.length) {
-
-          result.rows.forEach((rowData: any[]) => {
-            const data = SqlFormatter.transposeResultSet(users_schema,
-                                                        ignoreExclSelect,
-                                                        excludeSelectProp,
-                                                        rowData);
-            const respUserDTO = new ResponseUserDTO(data, showPassword);
-            respUserDTOArray.push(respUserDTO);
-          });
-          resolve (respUserDTOArray);
-          return;
-        }
-        // not found with the id
-        resolve(respUserDTOArray);
-      })
-      .catch((err) => {
-        SysLog.error(JSON.stringify(err));
-        resolve (undefined);
-        return;
-      });
-    });
-  };
-
-  getAll = (): Promise<ResponseUserDTO[] | undefined> => {
-    return new Promise ((resolve) => {
-      dbConnection.DB.sql(SqlFormatter.formatSelect(this.tableName, users_schema)).execute()
-      .then((result) => {
-        const respUserDTOArray:ResponseUserDTO[] = [];
-        if (result.rows.length) {
-
-          result.rows.forEach((rowData: any) => {
-            const data = SqlFormatter.transposeResultSet(users_schema,
-              undefined,
-              undefined,
-              rowData);
-            const respUserDTO = new ResponseUserDTO(data);
-            respUserDTOArray.push(respUserDTO);
-          });
-          resolve (respUserDTOArray);
-          return;
-        }
-        // not found
-        resolve(respUserDTOArray);
-      })
-      .catch((err) => {
-        SysLog.error(JSON.stringify(err));
-        resolve(undefined);
-        return;
-      });
-    });
-  };
-
-  updateById = async (userId: string, userDTO: any): Promise<ResponseUserDTO | undefined> => {
-    return new Promise ((resolve) => {
-      SqlFormatter.formatUpdate(this.tableName, users_schema, userDTO).then ((sql) => {
-        sql += SqlFormatter.formatWhereAND('', {id: userId}, this.tableName, users_schema);
-        dbConnection.DB.sql(sql).execute()
+      dbConnection.DB.sql(sql)
+        .execute()
         .then((result) => {
-          SysLog.info('updated user: ', { id: userId, ...userDTO });
-          this.findById(userId).then((respUserDTO) => {
+          if (result.rows.length) {
+            const data = SqlFormatter.transposeResultSet(
+              users_schema,
+              undefined,
+              undefined,
+              result.rows[0]
+            );
+            const respUserDTO = new ResponseUserDTO(data);
             resolve(respUserDTO);
-          })
+            return;
+          }
+          // not found Customer with the id
+          resolve(undefined);
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
           resolve(undefined);
           return;
         });
-      });
+    });
+  };
+
+  find = (
+    conditions: any,
+    showPassword?: boolean,
+    ignoreExclSelect?: boolean,
+    excludeSelectProp?: string[]
+  ): Promise<ResponseUserDTO[] | undefined> => {
+    let sql = SqlFormatter.formatSelect(
+      this.tableName,
+      users_schema,
+      ignoreExclSelect,
+      excludeSelectProp
+    );
+    sql += SqlFormatter.formatWhereAND(
+      '',
+      conditions,
+      this.tableName,
+      users_schema
+    );
+    SysLog.info('find SQL: ' + sql);
+    return new Promise((resolve) => {
+      dbConnection.DB.sql(sql)
+        .execute()
+        .then((result) => {
+          const respUserDTOArray: ResponseUserDTO[] = [];
+          if (result.rows.length) {
+            result.rows.forEach((rowData: any[]) => {
+              const data = SqlFormatter.transposeResultSet(
+                users_schema,
+                ignoreExclSelect,
+                excludeSelectProp,
+                rowData
+              );
+              const respUserDTO = new ResponseUserDTO(data, showPassword);
+              respUserDTOArray.push(respUserDTO);
+            });
+            resolve(respUserDTOArray);
+            return;
+          }
+          // not found with the id
+          resolve(respUserDTOArray);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(undefined);
+          return;
+        });
+    });
+  };
+
+  getAll = (): Promise<ResponseUserDTO[] | undefined> => {
+    return new Promise((resolve) => {
+      dbConnection.DB.sql(
+        SqlFormatter.formatSelect(this.tableName, users_schema)
+      )
+        .execute()
+        .then((result) => {
+          const respUserDTOArray: ResponseUserDTO[] = [];
+          if (result.rows.length) {
+            result.rows.forEach((rowData: any) => {
+              const data = SqlFormatter.transposeResultSet(
+                users_schema,
+                undefined,
+                undefined,
+                rowData
+              );
+              const respUserDTO = new ResponseUserDTO(data);
+              respUserDTOArray.push(respUserDTO);
+            });
+            resolve(respUserDTOArray);
+            return;
+          }
+          // not found
+          resolve(respUserDTOArray);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(undefined);
+          return;
+        });
+    });
+  };
+
+  updateById = async (
+    userId: string,
+    userDTO: any
+  ): Promise<ResponseUserDTO | undefined> => {
+    return new Promise((resolve) => {
+      SqlFormatter.formatUpdate(this.tableName, users_schema, userDTO).then(
+        (sql) => {
+          sql += SqlFormatter.formatWhereAND(
+            '',
+            { id: userId },
+            this.tableName,
+            users_schema
+          );
+          dbConnection.DB.sql(sql)
+            .execute()
+            .then((result) => {
+              SysLog.info('updated user: ', { id: userId, ...userDTO });
+              this.findById(userId).then((respUserDTO) => {
+                resolve(respUserDTO);
+              });
+            })
+            .catch((err) => {
+              SysLog.error(JSON.stringify(err));
+              resolve(undefined);
+              return;
+            });
+        }
+      );
     });
   };
 
@@ -185,21 +218,165 @@ export class UserModel {
     return new Promise((resolve) => {
       let sql = 'DELETE FROM users WHERE ';
       sql += SqlStr.format('id = UUID_TO_BIN(?)', [id]);
-      dbConnection.DB.sql(sql).execute()
-      .then((result) => {
-        if (result.rows.length == 0) {
-          // not found Customer with the id
+      dbConnection.DB.sql(sql)
+        .execute()
+        .then((result) => {
+          if (result.rows.length == 0) {
+            // not found Customer with the id
+            resolve(undefined);
+            return;
+          }
+          SysLog.info('deleted entities with id: ', id);
+          resolve(id);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
           resolve(undefined);
           return;
+        });
+    });
+  };
+
+  findByEmail = (email: string): Promise<ResponseUserDTO | undefined> => {
+    return new Promise((resolve) => {
+      let sql =
+        SqlFormatter.formatSelect(this.tableName, users_schema) + ' WHERE ';
+      sql += SqlStr.format('email = ?', [email]);
+      SysLog.info('findById SQL: ' + sql);
+      dbConnection.DB.sql(sql)
+        .execute()
+        .then((result) => {
+          if (result.rows.length) {
+            const data = SqlFormatter.transposeResultSet(
+              users_schema,
+              undefined,
+              undefined,
+              result.rows[0]
+            );
+            const respUserDTO = new ResponseUserDTO(data);
+            resolve(respUserDTO);
+            return;
+          }
+          // not found Customer with the id
+          resolve(undefined);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(undefined);
+          return;
+        });
+    });
+  };
+
+  updateRegConfirmKeyByEmail = async (
+    emailStr: string,
+    regConfirmKey: string
+  ): Promise<ResponseUserDTO | undefined> => {
+    return new Promise((resolve) => {
+      let sql = '';
+      sql += 'UPDATE ' + users_schema_table;
+      sql += ' SET users.reg_confirm_key = ' + SqlStr.escape(regConfirmKey);
+      sql += SqlFormatter.formatWhereAND(
+        '',
+        { email: emailStr },
+        this.tableName,
+        users_schema
+      );
+      dbConnection.DB.sql(sql)
+        .execute()
+        .then((result) => {
+          SysLog.info('updated user: ', { email: emailStr, regConfirmKey });
+          this.findByEmail(emailStr).then((respUserDTO) => {
+            resolve(respUserDTO);
+          });
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(undefined);
+          return;
+        });
+    });
+  };
+
+  updateResetPasswordKeyByEmail = async (
+    emailStr: string,
+    pwdResetKey: string
+  ): Promise<ResponseUserDTO | undefined> => {
+    return new Promise((resolve) => {
+      let sql = '';
+      sql += 'UPDATE ' + users_schema_table;
+      sql += ' SET users.pwd_reset_key = ' + SqlStr.escape(pwdResetKey);
+      sql += SqlFormatter.formatWhereAND(
+        '',
+        { email: emailStr },
+        this.tableName,
+        users_schema
+      );
+      dbConnection.DB.sql(sql)
+        .execute()
+        .then((result) => {
+          SysLog.info('updated user: ', { email: emailStr, pwdResetKey });
+          this.findByEmail(emailStr).then((respUserDTO) => {
+            resolve(respUserDTO);
+          });
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(undefined);
+          return;
+        });
+    });
+  };
+
+  updatePasswordNResetKeyByEmail = async (
+    emailStr: string,
+    newPassword: string
+  ): Promise<ResponseUserDTO | undefined> => {
+    return new Promise((resolve) => {
+      const doUpdatePassword = (encryptedPwd: string) => {
+        let sql = '';
+        sql += 'UPDATE ' + users_schema_table;
+        sql += ' SET users.pwd_reset_key = '+SqlStr.escape('');
+        sql += ' , users.password = '+SqlStr.escape(encryptedPwd);
+        sql += SqlFormatter.formatWhereAND(
+          '',
+          { email: emailStr },
+          this.tableName,
+          users_schema
+        );
+        dbConnection.DB.sql(sql)
+          .execute()
+          .then((result) => {
+            SysLog.info('updated user password:  ', { email: emailStr });
+            this.findByEmail(emailStr).then((respUserDTO) => {
+              resolve(respUserDTO);
+            });
+          })
+          .catch((err) => {
+            SysLog.error(JSON.stringify(err));
+            resolve(undefined);
+            return;
+          });
+      }
+
+      let passwdProp: any;
+      users_schema.some((prop) => {
+        if (prop.fieldName === 'password') {
+          passwdProp = prop;
+          return true;
         }
-        SysLog.info('deleted entities with id: ', id);
-        resolve(id);
-      })
-      .catch((err) => {
-        SysLog.error(JSON.stringify(err));
-        resolve(undefined);
-        return;
       });
+      if (passwdProp !== undefined) {
+        if (passwdProp.bcryptIt !== undefined && passwdProp.bcryptIt) {
+          bcryptHash(newPassword).then((secret) => {
+            doUpdatePassword(secret);
+          });
+        } else {
+          cryptoStr(newPassword).then((secret) => {
+            doUpdatePassword(secret);
+          });
+        }
+      }
     });
   };
 }

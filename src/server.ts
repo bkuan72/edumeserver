@@ -1,3 +1,6 @@
+import SysLog from './modules/SysLog';
+import toobusy_js from 'toobusy-js';
+import SysEnv from './modules/SysEnv';
 import { ActivitiesController } from './server/controllers/activities.controller';
 import { MediasController } from './server/controllers/medias.controller';
 import { GroupsController } from './server/controllers/groups.controller';
@@ -18,13 +21,12 @@ import { AccountsController } from './server/controllers/accounts.controller';
 import { UserAccountsController } from './server/controllers/userAccounts.controller';
 import * as cron from 'node-cron';
 import { TokenModel } from './server/models/token.model';
-import SysLog from './modules/SysLog';
-import toobusy_js from 'toobusy-js';
-import SysEnv from './modules/SysEnv';
 import { blacklist_tokens_schema_table, tokens_schema_table } from './schemas/tokens.schema';
 import { BlacklistController } from './server/controllers/blacklist.controller';
 import { PostsController } from './server/controllers/posts.controller';
 import { UserGroupsController } from './server/controllers/userGroups.controller';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import SysMailer from './modules/SysEmailerModule';
 
 // validate that all required environment variable is present
 SysEnv.init();

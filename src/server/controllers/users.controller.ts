@@ -27,6 +27,7 @@ export class UsersController implements Controller{
   public intializeRoutes() {
     this.router.get(this.path, authMiddleware, this.getAll);
     this.router.get(this.path+'/byUserId/:userId', authMiddleware, this.findById);
+    this.router.get(this.path+'/byEmail/:email', authMiddleware, this.findById);
     this.router.patch(this.path+'/:userId', authMiddleware, validationUpdateMiddleware(users_schema), this.update);
     this.router.get(this.path+'/profile-about/byUserId/:userId', authMiddleware, this.getAbout);
     return;
@@ -34,6 +35,15 @@ export class UsersController implements Controller{
 
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.users.findById(request.params.userId).then((respUserDTO) => {
+      if (respUserDTO) {
+        response.send(respUserDTO);
+      } else {
+        next(new DataNotFoundException(request.params.userId))
+      }
+    })
+  }
+  findByEmail  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.users.findByEmail(request.params.email).then((respUserDTO) => {
       if (respUserDTO) {
         response.send(respUserDTO);
       } else {
