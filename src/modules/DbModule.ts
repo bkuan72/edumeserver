@@ -6,8 +6,6 @@ import SysLog from './SysLog';
 import mysqlx from 'mysqlx';
 import Session from 'mysqlx/lib/Session';
 import SqlFormatter from './sql.strings';
-
-
 export interface indexIfc {
     name: string;
     columns: string[];
@@ -98,7 +96,7 @@ class Database {
                                 sysTables.forEach(table => {
                                     this.DBM_createTable(dbName, table.name, table.schema);
                                 });
-                                resolve();
+                                resolve(undefined);
                             })
                             .catch((err: any) => {
                                 reject(err);
@@ -108,7 +106,7 @@ class Database {
                         this.DBM_selectDatabase(dbName).then (() => {
                             sysTables.forEach(table => {
                                 this.DBM_tableExistCheck(dbName, table).finally(() =>{
-                                    resolve();
+                                    resolve(undefined);
                                 });
                             });
                         })
@@ -245,7 +243,7 @@ class Database {
             this.DB.sql("USE " + dbName).execute()
             .then((result) => {
                 SysLog.info("Database " + dbName + " Used " + JSON.stringify(result));
-                resolve();
+                resolve(undefined);
             })
             .catch((err) => {
                 reject (err);
@@ -261,7 +259,7 @@ class Database {
             this.DB.sql("CREATE DATABASE " + CommonFn.strWrapper(dbName)).execute()
             .then((result) => {
                 SysLog.info("Database created " + JSON.stringify(result));
-                resolve();
+                resolve(undefined);
             })
             .catch((err) => {
                 reject(err);
@@ -278,7 +276,7 @@ class Database {
                 this.DB.sql(sql).execute()
                 .then((result) => {
                     SysLog.info("Index created : " + JSON.stringify(result));
-                    resolve();
+                    resolve(undefined);
                 })
                 .catch((err) => {
                     SysLog.error ('Create Index SQL : ' + sql)
@@ -293,7 +291,7 @@ class Database {
                         this.DB.sql(sql).execute()
                         .then((result) => {
                             SysLog.info("Index created : " + JSON.stringify(result));
-                            resolve();
+                            resolve(undefined);
                         })
                         .catch((err) => {
                             SysLog.error ('Create Index SQL : ' + sql)
