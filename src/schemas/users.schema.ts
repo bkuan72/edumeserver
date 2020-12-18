@@ -23,16 +23,6 @@ export const users_schema: schemaIfc[] = [
     enum: [],
     index: []
   },
-  {    fieldName: 'user_id',
-    sqlType: 'VARCHAR(20)',
-    size: 20,
-    allowNull: false,
-    excludeFromUpdate: false,
-    default: '',
-    trim: true,
-    enum: [],
-    index: []
-  },
   {    fieldName: 'title',
     sqlType: 'ENUM',
     size: 10,
@@ -191,6 +181,14 @@ export const users_schema: schemaIfc[] = [
     excludeFromUpdate: false,
     index: [],
     default: 'ENABLED'
+  },
+  {    fieldName: 'reg_confirm_key',
+    sqlType: 'VARCHAR(60)',
+    size: 60
+  },
+  {    fieldName: 'pwd_reset_key',
+    sqlType: 'VARCHAR(60)',
+    size: 60
   },
   {    fieldName: 'lastUpdateUsec',
   sqlType: 'BIGINT',
