@@ -1,3 +1,4 @@
+import { CommonFn } from './../../modules/CommonFnModule';
 import { ResponseUserDTO } from './../../dtos/ResponseUserDTO';
 import { AccountModel } from './../models/account.model';
 import { UserAccountModel } from './../models/userAccount.model';
@@ -38,6 +39,7 @@ import AuthenticationTokenMissingException from '../../exceptions/Authentication
 import SysMailer from '../../modules/SysEmailerModule';
 import RegistrationKeyException from '../../exceptions/RegistrationKeyException';
 import ResetPasswordKeyException from '../../exceptions/ResetPasswordKeyException';
+import ResgistrationConfirmationException from '../../exceptions/RegistrationConfirmationException';
 
 class AuthenticationController implements Controller {
   public path = '/auth';
@@ -212,25 +214,29 @@ class AuthenticationController implements Controller {
         user[0].data.password
       );
       if (isPasswordMatching) {
-        if (user[0].data.status === 'ENABLED') {
-          user[0].data.password = undefined;
-          const tokenData = await this.createToken(user[0]);
-          if (SysEnv.CookieAuth()) {
-            response.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
-            response.send(user[0]);
+        if (CommonFn.isEmpty(user[0].data.reg_confirm_key)) {
+          if (user[0].data.status === 'ENABLED') {
+            user[0].data.password = undefined;
+            const tokenData = await this.createToken(user[0]);
+            if (SysEnv.CookieAuth()) {
+              response.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
+              response.send(user[0]);
+            } else {
+              const authUser = DTOGenerator.defineProperty(
+                user[0],
+                'token',
+                tokenData
+              );
+              response.send(authUser);
+            }
           } else {
-            const authUser = DTOGenerator.defineProperty(
-              user[0],
-              'token',
-              tokenData
+            SysLog.error(
+              `Invalid User Status,  Id : ${user[0].data.id}, email: ${user[0].data.email} Status: ${user[0].data.status}`
             );
-            response.send(authUser);
+            next(new InvalidUserStatusException(user[0]));
           }
         } else {
-          SysLog.error(
-            `Invalid User Status,  Id : ${user[0].data.id}, email: ${user[0].data.email} Status: ${user[0].data.status}`
-          );
-          next(new InvalidUserStatusException(user[0]));
+          next(new ResgistrationConfirmationException(user[0]));
         }
       } else {
         SysLog.error(`Wrong Password Exception: ${logInData.data.email}`);
