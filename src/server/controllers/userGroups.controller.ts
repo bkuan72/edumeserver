@@ -13,7 +13,7 @@ import UserGroupAlreadyExistsException from "../../exceptions/UserGroupAlreadyEx
 import DbCreatingNewUserGroupException from "../../exceptions/DbCreatingNewUserGroupException";
 import SysEnv from "../../modules/SysEnv";
 import UserGroupModel from '../models/userGroup.model';
-import validationUserGroupMiddleware from '../../middleware/validate.UserGroup.middleware';
+import validationUserGroupMiddleware from '../../middleware/validate.userGroup.middleware';
 
 
 
