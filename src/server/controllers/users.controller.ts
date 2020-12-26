@@ -18,7 +18,6 @@ export class UsersController implements Controller{
   public path='/users';
   public router= express.Router();
   private users = new UserModel();
-  private respUserDTO = new ResponseUserDTO();
 
   constructor() {
     this.intializeRoutes();
@@ -26,6 +25,7 @@ export class UsersController implements Controller{
 
   public intializeRoutes() {
     this.router.get(this.path, authMiddleware, this.getAll);
+    this.router.get(this.path+'/basicInfo/byUserId/:userId', this.getBasicUserInfo);
     this.router.get(this.path+'/byUserId/:userId', authMiddleware, this.findById);
     this.router.get(this.path+'/byEmail/:email', authMiddleware, this.findById);
     this.router.patch(this.path+'/:userId', authMiddleware, validationUpdateMiddleware(users_schema), this.update);
@@ -105,5 +105,20 @@ export class UsersController implements Controller{
         next(new DataNotFoundException(request.params.userId))
       }
     })
+  }
+
+  getBasicUserInfo  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.users.findById(request.params.userId)
+    .then((respUserDTO) => {
+      if (respUserDTO) {
+        response.send({
+          id: respUserDTO.data.id,
+          user_name: respUserDTO.data.user_name,
+          avatar: respUserDTO.data.avatar
+        });
+      } else {
+        next(new DataNotFoundException(request.params.userId))
+      }
+    });
   }
 }
