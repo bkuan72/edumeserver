@@ -39,7 +39,7 @@ import AuthenticationTokenMissingException from '../../exceptions/Authentication
 import SysMailer from '../../modules/SysEmailerModule';
 import RegistrationKeyException from '../../exceptions/RegistrationKeyException';
 import ResetPasswordKeyException from '../../exceptions/ResetPasswordKeyException';
-import ResgistrationConfirmationException from '../../exceptions/RegistrationConfirmationException';
+import RegistrationConfirmationException from '../../exceptions/RegistrationConfirmationException';
 
 class AuthenticationController implements Controller {
   public path = '/auth';
@@ -236,7 +236,7 @@ class AuthenticationController implements Controller {
             next(new InvalidUserStatusException(user[0]));
           }
         } else {
-          next(new ResgistrationConfirmationException(user[0]));
+          next(new RegistrationConfirmationException(user[0]));
         }
       } else {
         SysLog.error(`Wrong Password Exception: ${logInData.data.email}`);
