@@ -72,6 +72,7 @@ export class FriendModel extends EntityModel {
       sql += ' FROM ' + this.tableName + ', ' + users_schema_table;
       sql += ' WHERE ';
       sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') + SqlStr.format(' = ?', [this.siteCode]) + ' AND ';
+      sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'status') + ' != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') + SqlStr.format(' = UUID_TO_BIN(?)', [userId]) + ' AND ';
       sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'id') + ' = ' + SqlFormatter.fmtTableFieldStr(this.tableName, 'friend_id');
       SysLog.info('findById SQL: ' + sql);

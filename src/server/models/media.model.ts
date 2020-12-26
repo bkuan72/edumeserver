@@ -30,6 +30,7 @@ export class MediaModel extends EntityModel {
       let sql =
         SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
+      sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('user_id = UUID_TO_BIN(?)', [userId]);
       SysLog.info('findByUserId SQL: ' + sql);
       dbConnection.DB.sql(sql)

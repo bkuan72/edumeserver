@@ -37,6 +37,7 @@ export class PostModel extends EntityModel {
       let sql =
         SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
+      sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('user_id = UUID_TO_BIN(?)', [userId]) + ' AND ';
       sql += SqlStr.format('lastUpdateUsec >= ?', [fromDate?.valueOf()]);
       SysLog.info('findById SQL: ' + sql);
@@ -79,6 +80,7 @@ export class PostModel extends EntityModel {
         let sql =
           SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
         sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
+        sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
         sql += SqlStr.format('lastUpdateUsec >= ?', [fromDate?.valueOf()]) + ' AND ';
         sql += 'user_id IN (';
         sql += SqlStr.format('UUID_TO_BIN(?)', [userId]);

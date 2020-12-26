@@ -35,6 +35,7 @@ export class PostArticleModel extends EntityModel {
       let sql =
         SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
+      sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('post_id = UUID_TO_BIN(?)', [postId]) ;
       SysLog.info('findById SQL: ' + sql);
       dbConnection.DB.sql(sql)

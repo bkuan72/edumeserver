@@ -5,7 +5,6 @@ import { AboutDTO } from './../../dtos/about.DTO';
 import {UserModel} from "../models/user.model";
 import * as express from 'express';
 import Controller from "../../interfaces/controller.interface";
-import { ResponseUserDTO } from "../../dtos/ResponseUserDTO";
 import DataNotFoundException from "../../exceptions/DataNotFoundException";
 import NoDataException from "../../exceptions/NoDataExceptions";
 import { users_schema } from "../../schemas/users.schema";

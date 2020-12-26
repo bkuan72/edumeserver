@@ -35,6 +35,7 @@ export class AdvertisementModel extends EntityModel {
       excludeSelectProp
     );
     sql += ' WHERE site_code='+SqlStr.escape(siteCode) + ' AND ';
+    sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
     sql += ' header LIKE ' + SqlStr.escape('%'+searchStr+'%')+';';
 
     SysLog.info('find SQL: ' + sql);
