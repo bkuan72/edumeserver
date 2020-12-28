@@ -27,7 +27,7 @@ export class TokenModel {
   create = (
     dataInToken: DataStoredInToken,
     jwtSignToken: string
-  ): Promise<TokenDTO> => {
+  ): Promise<TokenDTO | undefined> => {
     return new Promise((resolve) => {
       const newToken = new TokenDTO(dataInToken);
       newToken.data.site_code = this.siteCode;

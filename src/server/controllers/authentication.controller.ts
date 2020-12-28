@@ -264,7 +264,7 @@ class AuthenticationController implements Controller {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       this.blacklistTokens
         .create(verificationResponse, authToken)
-        .then((tokenDTO: TokenDTO) => {
+        .then(() => {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           this.tokens.removeByUuid(verificationResponse.uuid);
           if (SysEnv.CookieAuth()) {
