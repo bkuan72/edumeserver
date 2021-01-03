@@ -33,7 +33,7 @@ async function adminAuthMiddleware(request: Request, _response: Response, next: 
             const user = await users.findById(id);
             if (user) {
               if (user.data.status === 'ENABLED') {
-                if (blacklistTokens.tokenExpired(verificationResponse.expireInMin,
+                if (blacklistTokens.tokenExpired(verificationResponse.expiryInSec,
                                                  verificationResponse.createTimeStamp)) {
                   SysLog.error('Expired Token Used By User Id :', id);
                   next(new ExpiredTokenException(user));

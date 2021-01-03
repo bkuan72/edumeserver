@@ -25,7 +25,6 @@ import { TokenData } from '../../interfaces/TokenData';
 import DataStoredInToken from '../../interfaces/DataStoredInToken';
 import { v4 as uuidv4 } from 'uuid';
 import { TokenModel } from '../models/token.model';
-import { TokenDTO } from '../../dtos/tokens.DTO';
 import SysLog from '../../modules/SysLog';
 import SysEnv from '../../modules/SysEnv';
 import InvalidUserStatusException from '../../exceptions/InvalidUserStatusException';
@@ -94,7 +93,7 @@ class AuthenticationController implements Controller {
   private createToken = async (user: ResponseUserDTO): Promise<TokenData> => {
     return new Promise((resolve) => {
       const generateToken = (adminUser: boolean) => {
-        const expiresIn = this.tokenExpireInMin * 60; // convert to millisec
+        const expiresIn = this.tokenExpireInMin * 60; // convert to seconds
         const timestamp = new Date();
         const dataStoredInToken: DataStoredInToken = {
           user_id: user.data.id,
@@ -102,7 +101,7 @@ class AuthenticationController implements Controller {
           adminUser: adminUser,
           site_code: this.siteCode,
           createTimeStamp: timestamp.toUTCString(),
-          expireInMin: expiresIn
+          expiryInSec: expiresIn
         };
         const authorization = jwt.sign(dataStoredInToken, SysEnv.JWT_SECRET, {
           expiresIn
@@ -298,7 +297,7 @@ class AuthenticationController implements Controller {
               if (user.data.status === 'ENABLED') {
                 if (
                   this.tokens.tokenExpired(
-                    verificationResponse.expireInMin,
+                    verificationResponse.expiresInSec,
                     verificationResponse.createTimeStamp
                   )
                 ) {

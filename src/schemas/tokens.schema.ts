@@ -49,7 +49,7 @@ export const token_schema: schemaIfc[] = [
     enum: [],
     index: []
   },
-  {    fieldName: 'expireInMin',
+  {    fieldName: 'expiryInSec',
     sqlType: 'INTEGER',
     allowNull: false,
     default: '0',

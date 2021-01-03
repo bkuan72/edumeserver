@@ -266,12 +266,12 @@ export class TokenModel {
     });
   };
 
-  tokenExpired = (expireInMin: number, createTimeStamp: string) => {
+  tokenExpired = (expiryInSec: number, createTimeStamp: string) => {
     let tokenExpired = true;
     const now = new Date();
-    const min = expireInMin;
+    const sec = expiryInSec;
     const tokenDate = new Date(createTimeStamp);
-    const expiry = CommonFn.dateAdd(tokenDate, DateAddIntervalEnum.MINUTE, min);
+    const expiry = CommonFn.dateAdd(tokenDate, DateAddIntervalEnum.SECOND, sec);
     // SysLog.info('now: ' + now.toUTCString());
     // SysLog.info('expiry: ' + expiry.toUTCString());
     if (now.valueOf() < expiry.valueOf()) {
@@ -296,7 +296,7 @@ export class TokenModel {
                 undefined,
                 rowData
               );
-              if (this.tokenExpired(token.expireInMin, token.createTimeStamp)) {
+              if (this.tokenExpired(token.expiryInSec, token.createTimeStamp)) {
                 this.remove(token.id).then(() => {
                   SysLog.info('Purged remove token');
                 });
