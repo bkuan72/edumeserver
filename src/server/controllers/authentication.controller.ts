@@ -261,16 +261,14 @@ class AuthenticationController implements Controller {
       ) as DataStoredInToken;
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      this.blacklistTokens
-        .create(verificationResponse, authToken)
-        .then(() => {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          this.tokens.removeByUuid(verificationResponse.uuid);
-          if (SysEnv.CookieAuth()) {
-            response.setHeader('Set-Cookie', ['Authorization=;Max-age=0']);
-          }
-          response.send({ status: 'ok' });
-        });
+      this.blacklistTokens.create(verificationResponse, authToken).then(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        this.tokens.removeByUuid(verificationResponse.uuid);
+        if (SysEnv.CookieAuth()) {
+          response.setHeader('Set-Cookie', ['Authorization=;Max-age=0']);
+        }
+        response.send({ status: 'ok' });
+      });
     } else {
       next(new AuthenticationTokenMissingException());
     }
@@ -297,7 +295,7 @@ class AuthenticationController implements Controller {
               if (user.data.status === 'ENABLED') {
                 if (
                   this.tokens.tokenExpired(
-                    verificationResponse.expiresInSec,
+                    verificationResponse.expiryInSec,
                     verificationResponse.createTimeStamp
                   )
                 ) {
@@ -307,25 +305,25 @@ class AuthenticationController implements Controller {
                   );
                   next(new ExpiredTokenException(user));
                 } else {
-                  this.blacklistTokens
-                    .create(verificationResponse, authToken)
-                    .then(async () => {
-                      this.tokens.removeByUuid(verificationResponse.uuid);
-                      const tokenData = await this.createToken(user);
-                      if (SysEnv.CookieAuth()) {
-                        response.setHeader('Set-Cookie', [
-                          this.createCookie(tokenData)
-                        ]);
-                        response.send(user);
-                      } else {
-                        const authUser = DTOGenerator.defineProperty(
-                          user,
-                          'token',
-                          tokenData
-                        );
-                        response.send(authUser);
-                      }
-                    });
+                  // this.blacklistTokens
+                  //   .create(verificationResponse, authToken)
+                  //   .then(async () => {
+                  this.tokens.removeByUuid(verificationResponse.uuid);
+                  const tokenData = await this.createToken(user);
+                  if (SysEnv.CookieAuth()) {
+                    response.setHeader('Set-Cookie', [
+                      this.createCookie(tokenData)
+                    ]);
+                    response.send(user);
+                  } else {
+                    const authUser = DTOGenerator.defineProperty(
+                      user,
+                      'token',
+                      tokenData
+                    );
+                    response.send(authUser);
+                  }
+                  // });
                 }
               } else {
                 SysLog.error(
@@ -376,26 +374,26 @@ class AuthenticationController implements Controller {
     if (existingUser) {
       const resetPasswordKey = uuidv4();
 
-        this.users.updateResetPasswordKeyByEmail(email, resetPasswordKey)
-        .then ((responseUserDto) => {
+      this.users
+        .updateResetPasswordKeyByEmail(email, resetPasswordKey)
+        .then((responseUserDto) => {
           if (responseUserDto) {
             SysMailer.mailResetPasswordConfirmation(responseUserDto)
-            .then(() => {
-              responseUserDto.data.pwd_reset_key = '';
-              response.send(responseUserDto.data);
-            })
-            .catch(() => {
-              next(new ResetPasswordKeyException(email, ''));
-            });
+              .then(() => {
+                responseUserDto.data.pwd_reset_key = '';
+                response.send(responseUserDto.data);
+              })
+              .catch(() => {
+                next(new ResetPasswordKeyException(email, ''));
+              });
           } else {
             next(new ResetPasswordKeyException(email, ''));
           }
-        })
-
+        });
     } else {
       next(new ResetPasswordKeyException(email, ''));
     }
-  }
+  };
 
   private validateResetPasswordKey = async (
     request: express.Request,
@@ -405,14 +403,14 @@ class AuthenticationController implements Controller {
     const existingUser = await this.users.findByEmail(email);
     if (existingUser) {
       if (existingUser.data.pwd_reset_key !== resetPasswordKey) {
-        response.send({ valid: false});
+        response.send({ valid: false });
       } else {
-        response.send({ valid: true});
+        response.send({ valid: true });
       }
     } else {
-      response.send({ valid: false});
+      response.send({ valid: false });
     }
-  }
+  };
 
   private resetPassword = async (
     request: express.Request,
@@ -425,15 +423,17 @@ class AuthenticationController implements Controller {
       if (existingUser.data.pwd_reset_key !== resetPasswordKey) {
         next(new ResetPasswordKeyException(email, resetPasswordKey));
       } else {
-        this.users.updatePasswordNResetKeyByEmail(email, newPassword).then((responseUserDto) => {
-          if (responseUserDto) {
-            responseUserDto.data.password = '';
-            responseUserDto.data.pwd_reset_key = '';
-            response.send(responseUserDto.data);
-          } else {
-            next(new ResetPasswordKeyException(email, resetPasswordKey));
-          }
-        })
+        this.users
+          .updatePasswordNResetKeyByEmail(email, newPassword)
+          .then((responseUserDto) => {
+            if (responseUserDto) {
+              responseUserDto.data.password = '';
+              responseUserDto.data.pwd_reset_key = '';
+              response.send(responseUserDto.data);
+            } else {
+              next(new ResetPasswordKeyException(email, resetPasswordKey));
+            }
+          });
       }
     } else {
       next(new ResetPasswordKeyException(email, resetPasswordKey));
