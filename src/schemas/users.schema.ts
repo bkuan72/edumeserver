@@ -4,196 +4,202 @@ import DTOGenerator from '../modules/ModelGenerator';
 export const users_schema_table = 'users';
 
 export const users_schema: schemaIfc[] = [
-  {    fieldName: 'id',
+  {
+    fieldName: 'id',
     sqlType: 'BINARY(16) PRIMARY KEY',
     primaryKey: true,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true,
-    enum: [],
-    index: []
+    excludeFromUpdate: true
   },
-  {    fieldName: 'site_code',
+  {
+    fieldName: 'site_code',
     sqlType: 'VARCHAR(20)',
     size: 20,
     allowNull: false,
     default: '',
     excludeFromUpdate: true,
-    trim: true,
-    enum: [],
-    index: []
+    trim: true
   },
-  {    fieldName: 'title',
+  {
+    fieldName: 'title',
     sqlType: 'ENUM',
     size: 10,
-    enum: ['Mr', 'Ms', 'Mrs', 'Dr', 'Madam', 'Sir','N/A'],
+    enum: ['Mr', 'Ms', 'Mrs', 'Dr', 'Madam', 'Sir', 'N/A'],
     excludeFromUpdate: false,
-    index: [],
     default: 'N/A'
   },
-  {    fieldName: 'user_name',
+  {
+    fieldName: 'user_name',
     sqlType: 'VARCHAR(60)',
     size: 60,
     allowNull: false,
     excludeFromUpdate: false,
-    default: '',
-    enum: [],
-    index: []
+    default: ''
   },
-  {    fieldName: 'password',
+  {
+    fieldName: 'first_name',
+    sqlType: 'VARCHAR(60)',
+    size: 60,
+    allowNull: false,
+    excludeFromUpdate: false,
+    default: ''
+  },
+  {
+    fieldName: 'last_name',
+    sqlType: 'VARCHAR(60)',
+    size: 60,
+    allowNull: false,
+    excludeFromUpdate: false,
+    default: ''
+  },
+  {
+    fieldName: 'password',
     sqlType: 'VARCHAR(256)',
     size: 20,
     allowNull: false,
     default: '',
     trim: true,
-    enum: [],
-    index: [],
     encrypt: true,
     bcryptIt: true,
     excludeFromSelect: true
   },
-  {    fieldName: 'email',
+  {
+    fieldName: 'email',
     sqlType: 'VARCHAR(60)',
     size: 60,
     allowNull: false,
     excludeFromUpdate: false,
     default: '',
-    trim: true,
-    enum: [],
-    index: []
+    trim: true
   },
-  {    fieldName: 'phone_no',
+  {
+    fieldName: 'phone_no',
     sqlType: 'VARCHAR(30)',
     size: 30,
     allowNull: false,
     excludeFromUpdate: false,
     default: '',
-    trim: true,
-    enum: [],
-    index: []
+    trim: true
   },
-  {    fieldName: 'mobile_no',
+  {
+    fieldName: 'mobile_no',
     sqlType: 'VARCHAR(30)',
     size: 30,
     allowNull: false,
     excludeFromUpdate: false,
     default: '',
-    trim: true,
-    enum: [],
-    index: []
+    trim: true
   },
-  {    fieldName: 'website',
+  {
+    fieldName: 'website',
     sqlType: 'VARCHAR(255)',
     size: 255,
     allowNull: false,
     excludeFromUpdate: false,
     default: '',
-    trim: true,
-    enum: [],
-    index: []
+    trim: true
   },
-  {    fieldName: 'avatar',
-    sqlType: 'TEXT',
-    trim: true,
-  },
-  {    fieldName: 'language',
+  { fieldName: 'avatar', sqlType: 'TEXT', trim: true },
+  {
+    fieldName: 'language',
     sqlType: 'VARCHAR(2)',
     size: 2,
     allowNull: false,
     excludeFromUpdate: false,
     default: 'EN',
-    trim: true,
-    enum: [],
-    index: []
+    trim: true
   },
-  {    fieldName: 'address',
+  {
+    fieldName: 'address',
     sqlType: 'VARCHAR(255)',
     size: 255,
     allowNull: false,
     excludeFromUpdate: false,
     default: '',
-    trim: true,
-    enum: [],
-    index: []
+    trim: true
   },
-  {    fieldName: 'city',
+  {
+    fieldName: 'address2',
+    sqlType: 'VARCHAR(255)',
+    size: 255,
+    allowNull: false,
+    excludeFromUpdate: false,
+    default: '',
+    trim: true
+  },
+  {
+    fieldName: 'city',
     sqlType: 'VARCHAR(40)',
     size: 40,
     allowNull: false,
     excludeFromUpdate: false,
     default: '',
-    trim: true,
-    enum: [],
-    index: []
+    trim: true
   },
-  {    fieldName: 'country',
+  {
+    fieldName: 'state',
     sqlType: 'VARCHAR(40)',
     size: 40,
     allowNull: false,
     excludeFromUpdate: false,
     default: '',
-    trim: true,
-    enum: [],
-    index: []
+    trim: true
   },
-  {    fieldName: 'gender',
+  {
+    fieldName: 'country',
+    sqlType: 'VARCHAR(40)',
+    size: 40,
+    allowNull: false,
+    excludeFromUpdate: false,
+    default: '',
+    trim: true
+  },
+  {
+    fieldName: 'gender',
     sqlType: 'VARCHAR(10)',
     size: 10,
     allowNull: false,
     excludeFromUpdate: false,
     default: '',
-    trim: true,
-    enum: [],
-    index: []
+    trim: true
   },
-  {    fieldName: 'birthday',
+  {
+    fieldName: 'birthday',
     sqlType: 'VARCHAR(20)',
     size: 20,
     allowNull: false,
     excludeFromUpdate: false,
     default: '',
-    trim: true,
-    enum: [],
-    index: []
+    trim: true
   },
-  {    fieldName: 'post_code',
+  {
+    fieldName: 'post_code',
     sqlType: 'VARCHAR(10)',
     size: 10,
     allowNull: false,
     excludeFromUpdate: false,
     default: '',
-    trim: true,
-    enum: [],
-    index: []
+    trim: true
   },
-  {    fieldName: 'status',
+  {
+    fieldName: 'status',
     sqlType: 'ENUM',
     size: 10,
-    enum: ['ENABLED',
-      'DISABLED',
-      'BLOCKED',
-      'RETRY_LOCKED_OUT'
-      ],
+    enum: ['ENABLED', 'DISABLED', 'BLOCKED', 'RETRY_LOCKED_OUT'],
     excludeFromUpdate: false,
-    index: [],
     default: 'ENABLED'
   },
-  {    fieldName: 'reg_confirm_key',
-    sqlType: 'VARCHAR(60)',
-    size: 60
+  { fieldName: 'reg_confirm_key', sqlType: 'VARCHAR(60)', size: 60 },
+  { fieldName: 'pwd_reset_key', sqlType: 'VARCHAR(60)', size: 60 },
+  {
+    fieldName: 'lastUpdateUsec',
+    sqlType: 'BIGINT',
+    default: '0',
+    excludeFromUpdate: true
   },
-  {    fieldName: 'pwd_reset_key',
-    sqlType: 'VARCHAR(60)',
-    size: 60
-  },
-  {    fieldName: 'lastUpdateUsec',
-  sqlType: 'BIGINT',
-  default: '0',
-  excludeFromUpdate: true,
-  enum: [],
-  index: []
-  },
-  {    fieldName: 'INDEX',
+  {
+    fieldName: 'INDEX',
     sqlType: undefined,
     index: [
       {
@@ -213,7 +219,7 @@ export const users_schema: schemaIfc[] = [
       },
       {
         name: 'last_upd_usec_idx',
-        columns: [ 'site_code', 'lastUpdatedUsec'],
+        columns: ['site_code', 'lastUpdatedUsec'],
         unique: false
       }
     ]
@@ -222,9 +228,9 @@ export const users_schema: schemaIfc[] = [
 
 export enum UserStatusEnum {
   'ENABLED',
-      'DISABLED',
-      'BLOCKED',
-      'RETRY_LOCKED_OUT'
+  'DISABLED',
+  'BLOCKED',
+  'RETRY_LOCKED_OUT'
 }
 
 export enum UserTitleEnum {
