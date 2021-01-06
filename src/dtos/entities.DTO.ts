@@ -18,3 +18,17 @@ export class EntityDTO {
     }
   }
 }
+
+export class UpdEntityDTO {
+  data: EntityData;
+  constructor(propertyData?: any) {
+    this.data = DTOGenerator.genUpdateSchemaModel(entities_schema);
+    if (!CommonFn.isUndefined(propertyData)) {
+      for (const prop in propertyData) {
+        if (CommonFn.hasProperty(this.data, prop)) {
+          this.data[prop] = propertyData[prop];
+        }
+      }
+    }
+  }
+}

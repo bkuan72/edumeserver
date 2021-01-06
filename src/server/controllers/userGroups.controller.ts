@@ -7,13 +7,14 @@ import NoDataException from "../../exceptions/NoDataExceptions";
 import { userGroups_schema } from "../../schemas/userGroups.schema";
 import validationUpdateMiddleware from "../../middleware/validate.update.dto.middleware";
 import authMiddleware from "../../middleware/auth.middleware";
-import { UserGroupsDTO } from "../../dtos/userGroups.DTO";
+import { UpdUserGroupsDTO, UserGroupsDTO } from "../../dtos/userGroups.DTO";
 
 import UserGroupAlreadyExistsException from "../../exceptions/UserGroupAlreadyExistException";
 import DbCreatingNewUserGroupException from "../../exceptions/DbCreatingNewUserGroupException";
 import SysEnv from "../../modules/SysEnv";
 import UserGroupModel from '../models/userGroup.model';
 import validationUserGroupMiddleware from '../../middleware/validate.userGroup.middleware';
+import adminAuthMiddleware from '../../middleware/admin.auth.middleware';
 
 
 
@@ -41,7 +42,22 @@ export class UserGroupsController implements Controller{
                         validationUserGroupMiddleware(),
                          this.update);
     this.router.get(this.path+'/byUserId/:userId', authMiddleware, this.findByUserId);
+    this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
+    this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     return;
+  }
+
+  apiDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new UserGroupsDTO();
+    response.send(dto.data);
+  }
+  apiUpdDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new UpdUserGroupsDTO();
+    response.send(dto.data);
+  }
+  apiSchema  = (request: express.Request, response: express.Response) => {
+    response.send(userGroups_schema);
   }
 
 

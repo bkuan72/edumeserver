@@ -1,3 +1,4 @@
+import { PostCommentDTO, UpdPostCommentDTO } from './../../dtos/postComments.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import {PostCommentModel} from "../models/postComment.model";
@@ -12,6 +13,7 @@ import validationMiddleware from "../../middleware/validation.middleware";
 
 import PostDataFailedException from "../../exceptions/PostDataFailedException";
 import SysEnv from "../../modules/SysEnv";
+import adminAuthMiddleware from '../../middleware/admin.auth.middleware';
 
 
 
@@ -35,7 +37,22 @@ export class PostCommentsController implements Controller{
     this.router.get(this.path+'/byPostId/:postId', authMiddleware, this.getByPostId);
     this.router.get(this.path+'/byId/:id', authMiddleware, this.findById);
     this.router.patch(this.path+'/:id', authMiddleware, validationUpdateMiddleware(postComments_schema), this.update);
+    this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
+    this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     return;
+  }
+
+  apiDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new PostCommentDTO();
+    response.send(dto.data);
+  }
+  apiUpdDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new UpdPostCommentDTO();
+    response.send(dto.data);
+  }
+  apiSchema  = (request: express.Request, response: express.Response) => {
+    response.send(postComments_schema);
   }
 
   newPostComment  = (request: express.Request, response: express.Response, next: express.NextFunction) => {

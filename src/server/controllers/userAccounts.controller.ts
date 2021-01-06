@@ -1,3 +1,4 @@
+import { UpdUserAccountsDTO } from './../../dtos/userAccounts.DTO';
 import { CommonFn } from './../../modules/CommonFnModule';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import * as express from 'express';
@@ -15,6 +16,7 @@ import UserAccountAlreadyExistsException from "../../exceptions/UserAccountAlrea
 import DbCreatingNewUserAccountException from "../../exceptions/DbCreatingNewUserAccountException";
 import SysEnv from "../../modules/SysEnv";
 import UserAccountModel from '../models/userAccount.model';
+import adminAuthMiddleware from '../../middleware/admin.auth.middleware';
 
 
 
@@ -42,7 +44,22 @@ export class UserAccountsController implements Controller{
                         validationUpdateMiddleware(userAccounts_schema),
                         validationUserAccountMiddleware(),
                          this.update);
+    this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
+    this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     return;
+  }
+
+  apiDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new UserAccountsDTO();
+    response.send(dto.data);
+  }
+  apiUpdDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new UpdUserAccountsDTO();
+    response.send(dto.data);
+  }
+  apiSchema  = (request: express.Request, response: express.Response) => {
+    response.send(userAccounts_schema);
   }
 
 

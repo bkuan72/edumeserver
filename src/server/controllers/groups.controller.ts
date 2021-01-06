@@ -1,3 +1,4 @@
+import { GroupDTO, UpdGroupDTO } from './../../dtos/groups.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import {GroupModel} from "../models/group.model";
@@ -12,6 +13,7 @@ import validationMiddleware from "../../middleware/validation.middleware";
 
 import PostDataFailedException from "../../exceptions/PostDataFailedException";
 import SysEnv from "../../modules/SysEnv";
+import adminAuthMiddleware from "../../middleware/admin.auth.middleware";
 
 
 
@@ -35,7 +37,22 @@ export class GroupsController implements Controller{
     this.router.get(this.path+'/byAccountId/:accountId', authMiddleware, this.getByAccountId);
     this.router.get(this.path+'/byId/:id', authMiddleware, this.findById);
     this.router.patch(this.path+'/:id', authMiddleware, validationUpdateMiddleware(groups_schema), this.update);
+    this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
+    this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     return;
+  }
+
+  apiDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new GroupDTO();
+    response.send(dto.data);
+  }
+  apiUpdDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new UpdGroupDTO();
+    response.send(dto.data);
+  }
+  apiSchema  = (request: express.Request, response: express.Response) => {
+    response.send(groups_schema);
   }
 
   newGroup  = (request: express.Request, response: express.Response, next: express.NextFunction) => {

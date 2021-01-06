@@ -1,5 +1,5 @@
 import { CommonFn } from './../../modules/CommonFnModule';
-import { ResponseUserDTO } from './../../dtos/ResponseUserDTO';
+import { ResponseUserDTO, CreateUserDTO } from '../../dtos/userDTO';
 import { AccountModel } from './../models/account.model';
 import { UserAccountModel } from './../models/userAccount.model';
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -17,7 +17,6 @@ import validationMiddleware from '../../middleware/validation.middleware';
 import { LoginDTO } from '../../dtos/login.DTO';
 import { bcryptCompare } from '../../modules/cryto';
 import UserModel from '../models/user.model';
-import { CreateUserDTO } from '../../dtos/CreateUserDTO';
 import WrongCredentialsException from '../../exceptions/WrongCredentialsException';
 import UserWithThatEmailAlreadyExistsException from '../../exceptions/UserWithThatEmailAlreadyExistsException';
 import DbCreatingNewUserException from '../../exceptions/DbCreatingUserException';

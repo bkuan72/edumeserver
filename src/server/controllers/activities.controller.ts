@@ -11,8 +11,9 @@ import validationMiddleware from "../../middleware/validation.middleware";
 
 import PostDataFailedException from "../../exceptions/PostDataFailedException";
 import SysEnv from "../../modules/SysEnv";
-import { ActivityDTO } from "../../dtos/activities.DTO";
+import { ActivityDTO, UpdActivityDTO } from "../../dtos/activities.DTO";
 import NoDataException from "../../exceptions/NoDataExceptions";
+import adminAuthMiddleware from "../../middleware/admin.auth.middleware";
 
 export class ActivitiesController implements Controller{
   public path='/activities';
@@ -34,7 +35,22 @@ export class ActivitiesController implements Controller{
     this.router.get(this.path+'/activityList/byUserIdOffSetDays/:userId/:offSetDays', authMiddleware, this.getActivitiesByUserId);
     this.router.get(this.path+'/byActivityId/:activityId', authMiddleware, this.findById);
     this.router.patch(this.path+'/:activityId', authMiddleware, validationUpdateMiddleware(activities_schema), this.update);
+    this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
+    this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     return;
+  }
+
+  apiDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new ActivityDTO();
+    response.send(dto.data);
+  }
+  apiUpdDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new UpdActivityDTO();
+    response.send(dto.data);
+  }
+  apiSchema  = (request: express.Request, response: express.Response) => {
+    response.send(activities_schema);
   }
 
   newActivity  = (request: express.Request, response: express.Response, next: express.NextFunction) => {

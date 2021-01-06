@@ -1,3 +1,4 @@
+import { UpdPostDTO } from './../../dtos/posts.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import {PostModel} from "../models/post.model";
@@ -12,6 +13,7 @@ import validationMiddleware from "../../middleware/validation.middleware";
 import PostDataFailedException from "../../exceptions/PostDataFailedException";
 import SysEnv from "../../modules/SysEnv";
 import { PostDTO } from "../../dtos/posts.DTO";
+import adminAuthMiddleware from "../../middleware/admin.auth.middleware";
 
 export class PostsController implements Controller{
   public path='/posts';
@@ -36,7 +38,21 @@ export class PostsController implements Controller{
     this.router.put(this.path+'/likes/:postId', authMiddleware, this.updateLiked);
     this.router.put(this.path+'/share/:postId', authMiddleware, this.updateShared);
     this.router.patch(this.path+'/:postId', authMiddleware, validationUpdateMiddleware(posts_schema), this.update);
+    this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
+    this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     return;
+  }
+  apiDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new PostDTO();
+    response.send(dto.data);
+  }
+  apiUpdDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new UpdPostDTO();
+    response.send(dto.data);
+  }
+  apiSchema  = (request: express.Request, response: express.Response) => {
+    response.send(posts_schema);
   }
 
   newPost  = (request: express.Request, response: express.Response, next: express.NextFunction) => {

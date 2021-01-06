@@ -1,3 +1,4 @@
+import { AdvertisementDTO, UpdAdvertisementDTO } from './../../dtos/advertisements.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import {AdvertisementModel} from "../models/advertisement.model";
@@ -12,6 +13,7 @@ import validationMiddleware from "../../middleware/validation.middleware";
 
 import PostDataFailedException from "../../exceptions/PostDataFailedException";
 import SysEnv from "../../modules/SysEnv";
+import adminAuthMiddleware from '../../middleware/admin.auth.middleware';
 
 export class AdvertisementsController implements Controller{
   public path='/advertisements';
@@ -34,7 +36,22 @@ export class AdvertisementsController implements Controller{
     this.router.get(this.path+'/byAdvertisementId/:advertisementId', authMiddleware, this.findById);
     this.router.patch(this.path+'/:advertisementId', authMiddleware, validationUpdateMiddleware(advertisements_schema), this.update);
     this.router.get(this.path+'/search/:searchStr', this.searchAdvertisement);
+    this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
+    this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     return;
+  }
+
+  apiDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new AdvertisementDTO();
+    response.send(dto.data);
+  }
+  apiUpdDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new UpdAdvertisementDTO();
+    response.send(dto.data);
+  }
+  apiSchema  = (request: express.Request, response: express.Response) => {
+    response.send(advertisements_schema);
   }
 
   newAdvertisement  = (request: express.Request, response: express.Response, next: express.NextFunction) => {

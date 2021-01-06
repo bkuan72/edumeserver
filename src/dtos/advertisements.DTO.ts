@@ -18,3 +18,18 @@ export class AdvertisementDTO {
     }
   }
 }
+
+
+export class UpdAdvertisementDTO {
+  data: AdvertisementData;
+  constructor(advertisementData?: any) {
+    this.data = DTOGenerator.genUpdateSchemaModel(advertisements_schema);
+    if (!CommonFn.isUndefined(advertisementData)) {
+      for (const prop in advertisementData) {
+        if (CommonFn.hasProperty(this.data, prop)) {
+          this.data[prop] = advertisementData[prop];
+        }
+      }
+    }
+  }
+}

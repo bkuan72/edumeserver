@@ -39,3 +39,17 @@ export class UserGroupInfoDTO {
     this.category = '';
   }
 }
+
+export class UpdUserGroupsDTO {
+  data: UserGroupData;
+  constructor(userGroupData?: any) {
+    this.data = DTOGenerator.genUpdateSchemaModel(userGroups_schema);
+    if (!CommonFn.isUndefined(userGroupData)) {
+      for (const prop in userGroupData) {
+        if (CommonFn.hasProperty(this.data, prop)) {
+          this.data[prop] = userGroupData[prop];
+        }
+      }
+    }
+  }
+}

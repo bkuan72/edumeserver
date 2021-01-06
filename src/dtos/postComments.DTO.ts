@@ -18,3 +18,17 @@ export class PostCommentDTO {
     }
   }
 }
+
+export class UpdPostCommentDTO {
+  data: PostCommentData;
+  constructor(propertyData?: any) {
+    this.data = DTOGenerator.genUpdateSchemaModel(postComments_schema);
+    if (!CommonFn.isUndefined(propertyData)) {
+      for (const prop in propertyData) {
+        if (CommonFn.hasProperty(this.data, prop)) {
+          this.data[prop] = propertyData[prop];
+        }
+      }
+    }
+  }
+}

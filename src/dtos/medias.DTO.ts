@@ -18,3 +18,17 @@ export class MediaDTO {
     }
   }
 }
+
+export class UpdMediaDTO {
+  data: MediaData;
+  constructor(propertyData?: any) {
+    this.data = DTOGenerator.genUpdateSchemaModel(medias_schema);
+    if (!CommonFn.isUndefined(propertyData)) {
+      for (const prop in propertyData) {
+        if (CommonFn.hasProperty(this.data, prop)) {
+          this.data[prop] = propertyData[prop];
+        }
+      }
+    }
+  }
+}

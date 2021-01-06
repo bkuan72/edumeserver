@@ -18,3 +18,17 @@ export class UserAccountsDTO {
     }
   }
 }
+
+export class UpdUserAccountsDTO {
+  data: UserAccountsData;
+  constructor(userAccountData?: any) {
+    this.data = DTOGenerator.genUpdateSchemaModel(userAccounts_schema);
+    if (!CommonFn.isUndefined(userAccountData)) {
+      for (const prop in userAccountData) {
+        if (CommonFn.hasProperty(this.data, prop)) {
+          this.data[prop] = userAccountData[prop];
+        }
+      }
+    }
+  }
+}

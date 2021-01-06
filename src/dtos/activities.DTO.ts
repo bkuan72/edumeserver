@@ -18,3 +18,17 @@ export class ActivityDTO {
     }
   }
 }
+
+export class UpdActivityDTO {
+  data: ActivityData;
+  constructor(activityData?: any) {
+    this.data = DTOGenerator.genUpdateSchemaModel(activities_schema);
+    if (!CommonFn.isUndefined(activityData)) {
+      for (const prop in activityData) {
+        if (CommonFn.hasProperty(this.data, prop)) {
+          this.data[prop] = activityData[prop];
+        }
+      }
+    }
+  }
+}

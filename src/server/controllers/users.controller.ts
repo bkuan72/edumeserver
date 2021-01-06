@@ -1,3 +1,4 @@
+import { ResponseUserDTO, UpdUserDTO } from '../../dtos/userDTO';
 import { CommonFn } from './../../modules/CommonFnModule';
 import { AboutDTO } from './../../dtos/about.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
@@ -10,6 +11,7 @@ import NoDataException from "../../exceptions/NoDataExceptions";
 import { users_schema } from "../../schemas/users.schema";
 import validationUpdateMiddleware from "../../middleware/validate.update.dto.middleware";
 import authMiddleware from "../../middleware/auth.middleware";
+import adminAuthMiddleware from '../../middleware/admin.auth.middleware';
 
 
 
@@ -29,7 +31,22 @@ export class UsersController implements Controller{
     this.router.get(this.path+'/byEmail/:email', authMiddleware, this.findById);
     this.router.patch(this.path+'/:userId', authMiddleware, validationUpdateMiddleware(users_schema), this.update);
     this.router.get(this.path+'/profile-about/byUserId/:userId', authMiddleware, this.getAbout);
+    this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
+    this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     return;
+  }
+
+  apiDTO  = (request: express.Request, response: express.Response) => {
+    const user = new ResponseUserDTO();
+    response.send(user.data);
+  }
+  apiUpdDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new UpdUserDTO();
+    response.send(dto.data);
+  }
+  apiSchema  = (request: express.Request, response: express.Response) => {
+    response.send(users_schema);
   }
 
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {

@@ -12,6 +12,8 @@ import validationMiddleware from "../../middleware/validation.middleware";
 
 import PostDataFailedException from "../../exceptions/PostDataFailedException";
 import SysEnv from "../../modules/SysEnv";
+import { PropertyDTO, UpdPropertyDTO } from "../../dtos/properties.DTO";
+import adminAuthMiddleware from "../../middleware/admin.auth.middleware";
 
 
 
@@ -35,7 +37,21 @@ export class PropertiesController implements Controller{
     this.router.get(this.path, authMiddleware, this.getAll);
     this.router.get(this.path+'/byId/:id',  authMiddleware, this.findById);
     this.router.patch(this.path+'/:id', authMiddleware, validationUpdateMiddleware(properties_schema), this.update);
+    this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
+    this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     return;
+  }
+  apiDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new PropertyDTO();
+    response.send(dto.data);
+  }
+  apiUpdDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new UpdPropertyDTO();
+    response.send(dto.data);
+  }
+  apiSchema  = (request: express.Request, response: express.Response) => {
+    response.send(properties_schema);
   }
 
   newProperty  = (request: express.Request, response: express.Response, next: express.NextFunction) => {

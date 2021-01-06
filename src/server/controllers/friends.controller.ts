@@ -11,8 +11,9 @@ import validationMiddleware from "../../middleware/validation.middleware";
 
 import PostDataFailedException from "../../exceptions/PostDataFailedException";
 import SysEnv from "../../modules/SysEnv";
-import { FriendDTO } from "../../dtos/friends.DTO";
+import { FriendDTO, UpdFriendDTO } from "../../dtos/friends.DTO";
 import NoDataException from "../../exceptions/NoDataExceptions";
+import adminAuthMiddleware from "../../middleware/admin.auth.middleware";
 
 export class FriendsController implements Controller{
   public path='/friends';
@@ -26,6 +27,8 @@ export class FriendsController implements Controller{
       this.intializeRoutes();
   }
 
+
+
   public intializeRoutes() {
     this.router.post(this.path,
                     authMiddleware,
@@ -34,7 +37,22 @@ export class FriendsController implements Controller{
     this.router.get(this.path+'/friendList/byUserId/:userId', authMiddleware, this.getFriendListByUserId);
     this.router.get(this.path+'/byFriendId/:friendId', authMiddleware, this.findById);
     this.router.patch(this.path+'/:friendId', authMiddleware, validationUpdateMiddleware(friends_schema), this.update);
+    this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
+    this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     return;
+  }
+
+  apiDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new FriendDTO();
+    response.send(dto.data);
+  }
+  apiUpdDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new UpdFriendDTO();
+    response.send(dto.data);
+  }
+  apiSchema  = (request: express.Request, response: express.Response) => {
+    response.send(friends_schema);
   }
 
   newFriend  = (request: express.Request, response: express.Response, next: express.NextFunction) => {

@@ -1,3 +1,4 @@
+import { PostMediaDTO, UpdPostMediaDTO } from './../../dtos/postMedias.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import {PostMediaModel} from "../models/postMedia.model";
@@ -12,6 +13,7 @@ import validationMiddleware from "../../middleware/validation.middleware";
 
 import PostDataFailedException from "../../exceptions/PostDataFailedException";
 import SysEnv from "../../modules/SysEnv";
+import adminAuthMiddleware from "../../middleware/admin.auth.middleware";
 
 
 
@@ -35,7 +37,21 @@ export class PostMediasController implements Controller{
     this.router.get(this.path+'/byPostId/:postId', authMiddleware, this.getByPostId);
     this.router.get(this.path+'/byId/:id', authMiddleware, this.findById);
     this.router.patch(this.path+'/:id', authMiddleware, validationUpdateMiddleware(postMedias_schema), this.update);
+    this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
+    this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     return;
+  }
+  apiDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new PostMediaDTO();
+    response.send(dto.data);
+  }
+  apiUpdDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new UpdPostMediaDTO();
+    response.send(dto.data);
+  }
+  apiSchema  = (request: express.Request, response: express.Response) => {
+    response.send(postMedias_schema);
   }
 
   newPostMedia  = (request: express.Request, response: express.Response, next: express.NextFunction) => {

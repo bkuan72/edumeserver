@@ -18,3 +18,17 @@ export class PostArticleDTO {
     }
   }
 }
+
+export class UpdPostArticleDTO {
+  data: PostArticleData;
+  constructor(postArticleData?: any) {
+    this.data = DTOGenerator.genUpdateSchemaModel(postArticles_schema);
+    if (!CommonFn.isUndefined(postArticleData)) {
+      for (const prop in postArticleData) {
+        if (CommonFn.hasProperty(this.data, prop)) {
+          this.data[prop] = postArticleData[prop];
+        }
+      }
+    }
+  }
+}

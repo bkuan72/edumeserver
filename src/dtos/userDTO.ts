@@ -27,3 +27,31 @@ export class ResponseUserDTO {
     }
   }
 }
+
+export class CreateUserDTO {
+  data: UserData;
+  constructor(user?: any) {
+    this.data = DTOGenerator.genSchemaModel(users_schema);
+    if (!CommonFn.isUndefined(user)) {
+      for (const prop in user) {
+        if (CommonFn.hasProperty(this.data, prop)) {
+          this.data[prop] = user[prop];
+        }
+      }
+    }
+  }
+}
+
+export class UpdUserDTO {
+  data: UserData;
+  constructor(user?: any) {
+    this.data = DTOGenerator.genUpdateSchemaModel(users_schema, ['password']);
+    if (!CommonFn.isUndefined(user)) {
+      for (const prop in user) {
+        if (CommonFn.hasProperty(this.data, prop)) {
+          this.data[prop] = user[prop];
+        }
+      }
+    }
+  }
+}

@@ -4,16 +4,4 @@ import CommonFn from '../modules/CommonFnModule';
 import DTOGenerator from '../modules/ModelGenerator';
 import { UserData, users_schema } from "../schemas/users.schema";
 
-export class CreateUserDTO {
-  data: UserData;
-  constructor(user?: any) {
-    this.data = DTOGenerator.genSchemaModel(users_schema);
-    if (!CommonFn.isUndefined(user)) {
-      for (const prop in user) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = user[prop];
-        }
-      }
-    }
-  }
-}
+
