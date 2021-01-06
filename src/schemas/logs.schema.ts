@@ -9,9 +9,7 @@ export const logs_schema: schemaIfc[] = [
       primaryKey: true,
       default: '',
       uuidProperty: true,
-      excludeFromUpdate: true,
-      enum: [],
-      index: []
+      excludeFromUpdate: true
     },
     {    fieldName: 'site_code',
       sqlType: 'VARCHAR(20)',
@@ -19,39 +17,29 @@ export const logs_schema: schemaIfc[] = [
       allowNull: false,
       default: '',
       excludeFromUpdate: true,
-      trim: true,
-      enum: [],
-      index: []
+      trim: true
     },
     {    fieldName: 'entryDate',
       sqlType: 'VARCHAR(25)',
       size: 25,
       allowNull: false,
       excludeFromUpdate: true,
-      trim: false,
-      enum: [],
-      index: []
+      trim: false
     },
     {    fieldName: 'level',
       sqlType: 'INT',
       size: 0,
       allowNull: false,
       excludeFromUpdate: true,
-      trim: true,
-      enum: [],
-      index: []
+      trim: true
     },
     {    fieldName: 'message',
       sqlType: 'TEXT',
-      excludeFromUpdate: true,
-      enum: [],
-      index: []
+      excludeFromUpdate: true
     },
     {    fieldName: 'extraInfo',
       sqlType: 'TEXT',
-      excludeFromUpdate: true,
-      enum: [],
-      index: []
+      excludeFromUpdate: true
     }
 ];
 

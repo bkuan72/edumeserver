@@ -7,18 +7,14 @@ export const loginDTO_schema: schemaIfc[] = [
         size: 20,
         allowNull: false,
         default: '',
-        trim: true,
-        enum: [],
-        index: []
+        trim: true
     },
     {        fieldName: 'email',
         sqlType: 'VARCHAR(60)',
         size: 60,
         allowNull: false,
         default: '',
-        trim: true,
-        enum: [],
-        index: []
+        trim: true
     },
     {        fieldName: 'password',
         sqlType: 'VARCHAR(256)',
@@ -26,8 +22,6 @@ export const loginDTO_schema: schemaIfc[] = [
         allowNull: false,
         default: '',
         trim: true,
-        enum: [],
-        index: [],
         encrypt: true,
         bcryptIt: true,
         excludeFromSelect: true

@@ -9,9 +9,7 @@ export const advertisements_schema: schemaIfc[] = [
     primaryKey: true,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true,
-    enum: [],
-    index: []
+    excludeFromUpdate: true
   },
   {    fieldName: 'site_code',
   sqlType: 'VARCHAR(20)',
@@ -19,18 +17,14 @@ export const advertisements_schema: schemaIfc[] = [
   allowNull: false,
   default: '',
   excludeFromUpdate: true,
-  trim: true,
-  enum: [],
-  index: []
+  trim: true
   },
   {    fieldName: 'account_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true,
-    enum: [],
-    index: []
+    excludeFromUpdate: true
   },
   {    fieldName: 'header',
   sqlType: 'VARCHAR(100)',
@@ -38,9 +32,7 @@ export const advertisements_schema: schemaIfc[] = [
   allowNull: false,
   default: '',
   excludeFromUpdate: false,
-  trim: true,
-  enum: [],
-  index: []
+  trim: true
   },
   {    fieldName: 'sub_header',
   sqlType: 'VARCHAR(100)',
@@ -48,9 +40,7 @@ export const advertisements_schema: schemaIfc[] = [
   allowNull: false,
   default: '',
   excludeFromUpdate: false,
-  trim: true,
-  enum: [],
-  index: []
+  trim: true
   },
   {    fieldName: 'url',
   sqlType: 'VARCHAR(100)',
@@ -58,18 +48,14 @@ export const advertisements_schema: schemaIfc[] = [
   allowNull: false,
   default: '',
   excludeFromUpdate: false,
-  trim: true,
-  enum: [],
-  index: []
+  trim: true
   },
   {    fieldName: 'excerpt',
   sqlType: 'TEXT',
   size: 0,
   allowNull: true,
   excludeFromUpdate: false,
-  trim: true,
-  enum: [],
-  index: []
+  trim: true
   },
   {    fieldName: 'keywords',
   sqlType: 'VARCHAR(100)',
@@ -77,36 +63,28 @@ export const advertisements_schema: schemaIfc[] = [
   allowNull: false,
   default: '',
   excludeFromUpdate: false,
-  trim: true,
-  enum: [],
-  index: []
+  trim: true
   },
   {    fieldName: 'start_date',
     sqlType: 'VARCHAR(25)',
     size: 25,
     allowNull: false,
     excludeFromUpdate: false,
-    trim: false,
-    enum: [],
-    index: []
+    trim: false
   },
   {    fieldName: 'end_date',
     sqlType: 'VARCHAR(25)',
     size: 25,
     allowNull: false,
     excludeFromUpdate: false,
-    trim: false,
-    enum: [],
-    index: []
+    trim: false
   },
   {    fieldName: 'priority_code',
     sqlType: 'VARCHAR(25)',
     size: 25,
     allowNull: false,
     excludeFromUpdate: false,
-    trim: false,
-    enum: [],
-    index: []
+    trim: false
   },
   {    fieldName: 'status',
     sqlType: 'ENUM',
@@ -114,7 +92,6 @@ export const advertisements_schema: schemaIfc[] = [
     enum: ['OK',
         'DELETED'
         ],
-    index: [],
     default: 'OK'
   },
   {    fieldName: 'lastUpdateUsec',

@@ -9,9 +9,7 @@ export const userAccounts_schema: schemaIfc[] = [
     primaryKey: true,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true,
-    enum: [],
-    index: []
+    excludeFromUpdate: true
   },
   {    fieldName: 'site_code',
     sqlType: 'VARCHAR(20)',
@@ -19,18 +17,14 @@ export const userAccounts_schema: schemaIfc[] = [
     allowNull: false,
     default: '',
     excludeFromUpdate: true,
-    trim: true,
-    enum: [],
-    index: []
+    trim: true
   },
   {    fieldName: 'user_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true,
-    enum: [],
-    index: []
+    excludeFromUpdate: true
   },
   {    fieldName: 'account_id',
     sqlType: 'BINARY(16)',
@@ -45,25 +39,18 @@ export const userAccounts_schema: schemaIfc[] = [
     enum: ['HOLDER',
         'SUB_USER'
         ],
-    index: [],
     default: 'HOLDER'
   },
   {    fieldName: 'allow_notification',
     sqlType: 'TINYINT(1)',
-    enum: [],
-    index: [],
     default: '0'
   },
   {    fieldName: 'allow_promo',
     sqlType: 'TINYINT(1)',
-    enum: [],
-    index: [],
     default: '0'
   },
   {    fieldName: 'test',
     sqlType: 'TINYINT(1)',
-    enum: [],
-    index: [],
     default: '0'
   },
   {    fieldName: 'status',
@@ -72,15 +59,12 @@ export const userAccounts_schema: schemaIfc[] = [
     enum: ['OK',
         'DELETED'
         ],
-    index: [],
     default: 'OK'
   },
   {    fieldName: 'lastUpdateUsec',
   sqlType: 'BIGINT',
   default: '0',
-  excludeFromUpdate: true,
-  enum: [],
-  index: []
+  excludeFromUpdate: true
   },
   {    fieldName: 'INDEX',
     sqlType: undefined,

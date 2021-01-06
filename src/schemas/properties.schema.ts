@@ -9,9 +9,7 @@ export const properties_schema: schemaIfc[] = [
     primaryKey: true,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true,
-    enum: [],
-    index: []
+    excludeFromUpdate: true
   },
   {    fieldName: 'site_code',
   sqlType: 'VARCHAR(20)',
@@ -19,9 +17,7 @@ export const properties_schema: schemaIfc[] = [
   allowNull: false,
   default: '',
   excludeFromUpdate: true,
-  trim: true,
-  enum: [],
-  index: []
+  trim: true
   },
   {    fieldName: 'name',
   sqlType: 'VARCHAR(255)',
@@ -29,9 +25,7 @@ export const properties_schema: schemaIfc[] = [
   allowNull: false,
   default: '',
   excludeFromUpdate: true,
-  trim: true,
-  enum: [],
-  index: []
+  trim: true
   },
   {    fieldName: 'value',
   sqlType: 'VARCHAR(255)',
@@ -39,9 +33,7 @@ export const properties_schema: schemaIfc[] = [
   allowNull: false,
   default: '',
   excludeFromUpdate: false,
-  trim: true,
-  enum: [],
-  index: []
+  trim: true
   },
   {    fieldName: 'status',
     sqlType: 'ENUM',
@@ -49,7 +41,6 @@ export const properties_schema: schemaIfc[] = [
     enum: ['OK',
         'DELETED'
         ],
-    index: [],
     default: 'OK'
   },
   {    fieldName: 'lastUpdateUsec',

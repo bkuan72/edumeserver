@@ -9,9 +9,7 @@ export const accounts_schema: schemaIfc[] = [
     primaryKey: true,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true,
-    enum: [],
-    index: []
+    excludeFromUpdate: true
   },
   {    fieldName: 'site_code',
     sqlType: 'VARCHAR(20)',
@@ -19,15 +17,12 @@ export const accounts_schema: schemaIfc[] = [
     allowNull: false,
     default: '',
     excludeFromUpdate: true,
-    trim: true,
-    enum: [],
-    index: []
+    trim: true
   },
   {    fieldName: 'account_type',
     sqlType: 'ENUM',
     size: 10,
     enum: ['SERVICE', 'NORMAL', 'ADMIN'],
-    index: [],
     default: 'NORMAL'
   },
   {    fieldName: 'account_code',
@@ -35,41 +30,32 @@ export const accounts_schema: schemaIfc[] = [
     size: 20,
     allowNull: false,
     default: '',
-    trim: true,
-    enum: [],
-    index: []
+    trim: true
   },
   {    fieldName: 'description',
     sqlType: 'VARCHAR(50)',
     size: 50,
     allowNull: false,
     default: '',
-    trim: true,
-    enum: [],
-    index: []
+    trim: true
   },
   {    fieldName: 'website',
     sqlType: 'VARCHAR(120)',
     size: 120,
     allowNull: false,
     default: '',
-    trim: true,
-    enum: [],
-    index: []
+    trim: true
   },
   {    fieldName: 'status',
     sqlType: 'ENUM',
     size: 10,
     enum: ['PENDING', 'APPROVED', 'SUSPENDED', 'DELETED'],
-    index: [],
     default: 'PENDING'
   },
   {    fieldName: 'lastUpdateUsec',
   sqlType: 'BIGINT',
   default: '0',
-  excludeFromUpdate: true,
-  enum: [],
-  index: []
+  excludeFromUpdate: true
   },
   {    fieldName: 'INDEX',
     sqlType: undefined,
