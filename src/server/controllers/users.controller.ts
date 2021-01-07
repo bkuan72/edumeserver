@@ -29,7 +29,7 @@ export class UsersController implements Controller{
     this.router.get(this.path+'/basicInfo/byUserId/:userId', this.getBasicUserInfo);
     this.router.get(this.path+'/byUserId/:userId', authMiddleware, this.findById);
     this.router.get(this.path+'/byEmail/:email', authMiddleware, this.findById);
-    this.router.patch(this.path+'/:userId', authMiddleware, validationUpdateMiddleware(users_schema), this.update);
+    this.router.patch(this.path+'/byUserId/:userId', authMiddleware, validationUpdateMiddleware(users_schema), this.update);
     this.router.get(this.path+'/profile-about/byUserId/:userId', authMiddleware, this.getAbout);
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
     this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
@@ -94,6 +94,7 @@ export class UsersController implements Controller{
         const aboutDTO = new AboutDTO();
         aboutDTO.general.gender = respUserDTO?.data.gender;
         aboutDTO.general.birthday = respUserDTO?.data.birthday;
+        aboutDTO.general.about = respUserDTO?.data.about_me;
         if (!CommonFn.isEmpty(respUserDTO?.data.city)) {
           aboutDTO.general.locations.push(respUserDTO?.data.city);
         }
@@ -113,7 +114,15 @@ export class UsersController implements Controller{
         if (!CommonFn.isEmpty(respUserDTO?.data.email)) {
           aboutDTO.contact.emails.push(respUserDTO?.data.email);
         }
-
+        if (!CommonFn.isEmpty(respUserDTO?.data.occupation)) {
+          aboutDTO.work.occupation =  respUserDTO?.data.occupation;
+        }
+        if (!CommonFn.isEmpty(respUserDTO?.data.skills)) {
+          aboutDTO.work.skills =  respUserDTO?.data.skills;
+        }
+        if (!CommonFn.isEmpty(respUserDTO?.data.jobs)) {
+          aboutDTO.work.jobs =  respUserDTO?.data.jobs;
+        }
         //aboutDTO.friends // TODO need to implement friends api
         //aboutDTO.groups // TODO need to implement groups api
         response.send(aboutDTO);
