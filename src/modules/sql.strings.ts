@@ -190,14 +190,18 @@ export class SqlFormatter {
                     }
                     break;
                 case 'default':
-                    if (column.sqlType?.includes('VARCHAR')) {
-                        sql += " ";
-                        sql += "DEFAULT '"+ column[prop];
-                        sql += "'";
+                    if (!column.sqlType?.includes('TEXT') && !column.sqlType?.includes('BLOB')) {
+                        if (column.sqlType?.includes('VARCHAR')) {
+                          sql += " ";
+                          sql += "DEFAULT '"+ column[prop];
+                          sql += "'";
+                      } else {
+                          sql += " ";
+                          sql += "DEFAULT '"+ column[prop]?.toString();
+                          sql += "'";
+                      }
                     } else {
-                        sql += " ";
-                        sql += "DEFAULT '"+ column[prop]?.toString();
-                        sql += "'";
+                      sql += " ";
                     }
                     break;
                 case 'enum':
