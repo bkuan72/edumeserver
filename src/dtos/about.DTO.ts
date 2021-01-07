@@ -2,15 +2,13 @@ export class AboutDTO {
     general: {
         gender: string,
         birthday: string,
-        locations: string[]
+        locations: string[],
+        about: string,
     };
     work: {
         occupation: string,
         skills: string,
-        jobs: {
-            company: string,
-            date: string
-        }[]
+        jobs: string
     };
     contact: {
         address: string;
@@ -32,12 +30,13 @@ export class AboutDTO {
         this.general = {
             gender: '',
             birthday: '',
-            locations: []
+            locations: [],
+            about: ''
         };
         this.work = {
             occupation: '',
             skills: '',
-            jobs: []
+            jobs: ''
         };
         this.contact = {
             address: '',
