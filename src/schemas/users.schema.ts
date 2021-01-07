@@ -120,7 +120,7 @@ export const users_schema: schemaIfc[] = [
     trim: true
   },
   {
-    fieldName: 'address2',
+    fieldName: 'suburb',
     sqlType: 'VARCHAR(255)',
     size: 255,
     allowNull: false,
@@ -181,6 +181,22 @@ export const users_schema: schemaIfc[] = [
     excludeFromUpdate: false,
     default: '',
     trim: true
+  },
+  {
+    fieldName: 'about_me',
+    sqlType: 'TEXT'
+  },
+  {
+    fieldName: 'occupation',
+    sqlType: 'TEXT'
+  },
+  {
+    fieldName: 'skills',
+    sqlType: 'TEXT'
+  },
+  {
+    fieldName: 'jobs',
+    sqlType: 'TEXT'
   },
   {
     fieldName: 'status',
