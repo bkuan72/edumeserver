@@ -176,8 +176,8 @@ class ModelGenerator {
                 }
             }
             else {
-                if (colProp.sqlType?.includes('VARCHAR') || colProp.sqlType?.includes('BLOB') || colProp.sqlType?.includes('ENUM')) {
-                    error += colProp.fieldName + ' invalid property type, ';
+                if (colProp.sqlType?.includes('VARCHAR') || colProp.sqlType?.includes('TEXT') || colProp.sqlType?.includes('BLOB') || colProp.sqlType?.includes('ENUM')) {
+                    error += colProp.fieldName + ' invalid property value, ';
                 }
             }
         }
