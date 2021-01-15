@@ -91,13 +91,15 @@ class AuthenticationController implements Controller {
 
   private createToken = async (user: ResponseUserDTO): Promise<TokenData> => {
     return new Promise((resolve) => {
-      const generateToken = (adminUser: boolean) => {
+      const generateToken = (adminUser: boolean, devUser: boolean, bizUser: boolean) => {
         const expiresIn = this.tokenExpireInMin * 60; // convert to seconds
         const timestamp = new Date();
         const dataStoredInToken: DataStoredInToken = {
           user_id: user.data.id,
           uuid: uuidv4(),
           adminUser: adminUser,
+          devUser: devUser,
+          bizUser: bizUser,
           site_code: this.siteCode,
           createTimeStamp: timestamp.toUTCString(),
           expiryInSec: expiresIn
@@ -114,27 +116,32 @@ class AuthenticationController implements Controller {
       };
 
       this.userAccounts
-        .find({
-          site_code: this.siteCode,
-          user_id: user.data.id,
-          status: 'OK'
-        })
-        .then((userAccount) => {
-          if (userAccount && userAccount.length > 0) {
-            this.accounts
-              .findById(userAccount[0].data.account_id)
-              .then((account) => {
-                generateToken(account.data.account_type === 'ADMIN');
-              })
-              .catch(() => {
-                generateToken(false);
-              });
+        .getUserAccountTypes(this.siteCode,
+          user.data.id,
+          'OK')
+        .then((userAccountTypes) => {
+          if (userAccountTypes && userAccountTypes.length > 0) {
+            let adminUser = false;
+            let devUser = false;
+            let bizUser = false;
+            userAccountTypes.forEach((accountType) => {
+              if (accountType.account_type == 'ADMIN') {
+                adminUser = true;
+              } else
+              if (accountType.account_type == 'DEV') {
+                devUser = true;
+              } else
+              if (accountType.account_type == 'SERVICE') {
+                bizUser = true;
+              }
+            })
+            generateToken(adminUser, devUser, bizUser);
           } else {
-            generateToken(false);
+            generateToken(false, false, false);
           }
         })
         .catch(() => {
-          generateToken(false);
+          generateToken(false, false, false);
         });
     });
   };
