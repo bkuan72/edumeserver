@@ -1,0 +1,31 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"cSpell.words": [
+			"Mailgen",
+			"Usec",
+			"builtins",
+			"mysqlx",
+			"outro"
+		],
+		"sqltools.connections": [
+			{
+				"mysqlOptions": {
+					"authProtocol": "default"
+				},
+				"previewLimit": 50,
+				"server": "localhost",
+				"port": 3306,
+				"driver": "MySQL",
+				"name": "edumedb",
+				"database": "testdb",
+				"username": "admin",
+				"password": "BK72.admin"
+			}
+		]
+	}
+}
