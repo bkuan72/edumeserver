@@ -22,8 +22,9 @@ export const accounts_schema: schemaIfc[] = [
   {    fieldName: 'account_type',
     sqlType: 'ENUM',
     size: 10,
-    enum: ['SERVICE', 'NORMAL', 'ADMIN'],
-    default: 'NORMAL'
+    enum: ['SERVICE', 'NORMAL', 'ADMIN', 'DEV'],
+    default: 'NORMAL',
+    excludeFromUpdate: true
   },
   {    fieldName: 'account_code',
     sqlType: 'VARCHAR(20)',
@@ -78,7 +79,8 @@ export const accounts_schema: schemaIfc[] = [
 export enum AccountTypeEnum {
   'SERVICE',
   'NORMAL',
-  'ADMIN'
+  'ADMIN',
+  'DEV'
 }
 
 export enum AccountStatusEnum {
