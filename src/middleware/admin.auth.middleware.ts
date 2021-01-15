@@ -1,4 +1,3 @@
-import { CommonFn } from './../modules/CommonFnModule';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { NextFunction, Response, Request } from 'express';
