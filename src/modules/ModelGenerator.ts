@@ -33,6 +33,19 @@ class ModelGenerator {
         }
         return excl;
     }
+    public genCreateSchemaModel(schema: schemaIfc[], excludeProps?: string[]) {
+        let obj = Object.create(null);
+        schema.forEach((prop) => {
+            if (prop.fieldName !== 'id' &&
+                prop.fieldName !== 'site_code' &&
+                prop.fieldName !== 'lastUpdateUsec' &&
+                prop.fieldName !== "INDEX" && 
+                !this.excludeFromDTO(prop, excludeProps)) {
+                obj = this.defineProperty(obj, prop.fieldName, prop.default);
+            }
+        });
+        return obj;
+    }
 
     public genSchemaModel(schema: schemaIfc[], excludeProps?: string[]) {
         let obj = Object.create(null);
