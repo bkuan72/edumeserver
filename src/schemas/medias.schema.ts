@@ -65,7 +65,8 @@ export const medias_schema: schemaIfc[] = [
     sqlType: 'TEXT',
     allowNull: true,
     excludeFromUpdate: false,
-    trim: true
+    trim: true,
+    default: ''
   },
   {
     fieldName: 'preview',

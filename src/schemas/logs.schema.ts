@@ -35,11 +35,13 @@ export const logs_schema: schemaIfc[] = [
     },
     {    fieldName: 'message',
       sqlType: 'TEXT',
-      excludeFromUpdate: true
+      excludeFromUpdate: true,
+      default: ''
     },
     {    fieldName: 'extraInfo',
       sqlType: 'TEXT',
-      excludeFromUpdate: true
+      excludeFromUpdate: true,
+      default: ''
     }
 ];
 

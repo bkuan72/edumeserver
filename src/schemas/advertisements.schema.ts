@@ -52,7 +52,7 @@ export const advertisements_schema: schemaIfc[] = [
   },
   {    fieldName: 'excerpt',
   sqlType: 'TEXT',
-  size: 0,
+  default: '',
   allowNull: true,
   excludeFromUpdate: false,
   trim: true

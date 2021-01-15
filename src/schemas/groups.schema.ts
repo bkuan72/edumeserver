@@ -58,8 +58,7 @@ export const groups_schema: schemaIfc[] = [
     allowNull: true,
     excludeFromUpdate: false,
     trim: true,
-    enum: [],
-    index: []
+    default: ''
   },
   {
     fieldName: 'preview',
@@ -69,12 +68,18 @@ export const groups_schema: schemaIfc[] = [
     excludeFromUpdate: false,
     trim: true
   },
-  { fieldName: 'title', sqlType: 'TEXT', excludeFromUpdate: false, trim: true },
+  { fieldName: 'title',
+    sqlType: 'TEXT',
+    excludeFromUpdate: false,
+    trim: true,
+    default: ''
+  },
   {
     fieldName: 'excerpt',
     sqlType: 'TEXT',
     excludeFromUpdate: false,
-    trim: true
+    trim: true,
+    default: ''
   },
   {
     fieldName: 'category',

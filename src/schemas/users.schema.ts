@@ -100,7 +100,11 @@ export const users_schema: schemaIfc[] = [
     default: '',
     trim: true
   },
-  { fieldName: 'avatar', sqlType: 'TEXT', trim: true },
+  { fieldName: 'avatar', 
+    sqlType: 'TEXT', 
+    trim: true,
+    default: ''
+   },
   {
     fieldName: 'language',
     sqlType: 'VARCHAR(2)',
@@ -184,19 +188,23 @@ export const users_schema: schemaIfc[] = [
   },
   {
     fieldName: 'about_me',
-    sqlType: 'TEXT'
+    sqlType: 'TEXT',
+    default: ''
   },
   {
     fieldName: 'occupation',
-    sqlType: 'TEXT'
+    sqlType: 'TEXT',
+    default: ''
   },
   {
     fieldName: 'skills',
-    sqlType: 'TEXT'
+    sqlType: 'TEXT',
+    default: ''
   },
   {
     fieldName: 'jobs',
-    sqlType: 'TEXT'
+    sqlType: 'TEXT',
+    default: ''
   },
   {
     fieldName: 'status',
