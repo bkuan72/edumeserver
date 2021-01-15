@@ -55,3 +55,17 @@ export class UpdUserDTO {
     }
   }
 }
+
+export class InsertUserDTO {
+  data: UserData;
+  constructor(user?: any) {
+    this.data = DTOGenerator.genCreateSchemaModel(users_schema);
+    if (!CommonFn.isUndefined(user)) {
+      for (const prop in user) {
+        if (CommonFn.hasProperty(this.data, prop)) {
+          this.data[prop] = user[prop];
+        }
+      }
+    }
+  }
+}

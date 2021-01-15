@@ -53,3 +53,17 @@ export class UpdUserGroupsDTO {
     }
   }
 }
+
+export class InsertUserGroupsDTO {
+  data: UserGroupData;
+  constructor(userGroupData?: any) {
+    this.data = DTOGenerator.genCreateSchemaModel(userGroups_schema);
+    if (!CommonFn.isUndefined(userGroupData)) {
+      for (const prop in userGroupData) {
+        if (CommonFn.hasProperty(this.data, prop)) {
+          this.data[prop] = userGroupData[prop];
+        }
+      }
+    }
+  }
+}

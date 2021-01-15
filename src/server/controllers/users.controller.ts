@@ -1,4 +1,4 @@
-import { ResponseUserDTO, UpdUserDTO } from '../../dtos/userDTO';
+import { InsertUserDTO, ResponseUserDTO, UpdUserDTO } from '../../dtos/userDTO';
 import { CommonFn } from './../../modules/CommonFnModule';
 import { AboutDTO } from './../../dtos/about.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
@@ -12,6 +12,7 @@ import { users_schema } from "../../schemas/users.schema";
 import validationUpdateMiddleware from "../../middleware/validate.update.dto.middleware";
 import authMiddleware from "../../middleware/auth.middleware";
 import adminAuthMiddleware from '../../middleware/admin.auth.middleware';
+import devAuthMiddleware from '../../middleware/dev.auth.middleware';
 
 
 
@@ -32,14 +33,19 @@ export class UsersController implements Controller{
     this.router.patch(this.path+'/byUserId/:userId', authMiddleware, validationUpdateMiddleware(users_schema), this.update);
     this.router.get(this.path+'/profile-about/byUserId/:userId', authMiddleware, this.getAbout);
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
-    this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
-    this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
+    this.router.get(this.path+'/InsDTO', devAuthMiddleware, this.apiInsDTO);
+    this.router.get(this.path+'/updDTO', devAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/schema', devAuthMiddleware, this.apiSchema);
     return;
   }
 
   apiDTO  = (request: express.Request, response: express.Response) => {
     const user = new ResponseUserDTO();
     response.send(user.data);
+  }
+  apiInsDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new InsertUserDTO();
+    response.send(dto.data);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UpdUserDTO();

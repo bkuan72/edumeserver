@@ -19,6 +19,52 @@ export class PostDTO {
   }
 }
 
+export class TimelinePostDTO {
+  data: any;
+  constructor(postData?: any) {
+    this.data = DTOGenerator.genSchemaModel(posts_schema);
+    if (!CommonFn.isUndefined(postData)) {
+      for (const prop in postData) {
+        if (CommonFn.hasProperty(this.data, prop)) {
+          this.data[prop] = postData[prop];
+        }
+      }
+    }
+    this.data = DTOGenerator.defineProperty(
+      this.data,
+      'comments',
+      []
+    );
+    this.data = DTOGenerator.defineProperty(
+      this.data,
+      'user',
+      {
+        name: '',
+        avatar: ''
+      }
+    );
+    this.data = DTOGenerator.defineProperty(
+      this.data,
+      'media',
+      {
+        type: '',
+        preview: '',
+        embed: ''
+      }
+    );
+    this.data = DTOGenerator.defineProperty(
+      this.data,
+      'article',
+      {
+        media: { type: '', preview: ''},
+        title: '',
+        subtitle: '',
+        excerpt: ''
+      }
+    );
+  }
+}
+
 export class UpdPostDTO {
   data: PostData;
   constructor(postData?: any) {
