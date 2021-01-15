@@ -95,43 +95,78 @@ class App {
         site_code: SysEnv.SITE_CODE,
         account_type: 'ADMIN'
       });
+      const dev = await accounts.find({
+        site_code: SysEnv.SITE_CODE,
+        account_type: 'DEV'
+      });
+      let newDev;
+      if (CommonFn.isUndefined(dev) || dev?.length === 0) {
+        newDev = await accounts.create({
+          account_type: 'DEV',
+          account_code: 'DEV_ACCOUNT',
+          description: 'Dev Account',
+          website: '',
+          status: 'APPROVED'
+        });
+      }
+      let newAccount;
       if (CommonFn.isUndefined(account) || account?.length === 0) {
-        const newAccount = await accounts.create({
+        newAccount = await accounts.create({
           account_type: 'ADMIN',
           account_code: 'ADMIN_ACCOUNT',
           description: 'Admin Account',
           website: '',
           status: 'APPROVED'
         });
-        if (newAccount) {
-          const users = new UserModel();
-          const user = await users.find({
-            site_code: SysEnv.SITE_CODE,
-            email: serverCfg.defaultAdminEmail
-           });
-           if (CommonFn.isUndefined(user) || user?.length === 0) {
-              const newUser = await users.create({
-                user_id: serverCfg.defaultAdminUserId,
-                email: serverCfg.defaultAdminEmail,
-                title: 'N/A',
-                user_name: serverCfg.defaultAdminUserName,
-                password: serverCfg.defaultAdminPassword,
-                phone_no: serverCfg.defaultAdminPhoneNo,
-                mobile_no: serverCfg.defaultAdminPhoneNo,
-                website: '',
-                language: 'EN',
-                status: 'ENABLED'
-                });
-              if (newUser) {
-                const userAccounts = new UserAccountModel();
-                userAccounts.create({
-                  user_id: newUser.data.id,
-                  account_id: newAccount.data.id
-                });
-             }
-           }
-        }
       }
+      if (newAccount || newDev) {
+        const users = new UserModel();
+        const user = await users.find({
+          site_code: SysEnv.SITE_CODE,
+          email: serverCfg.defaultAdminEmail
+          });
+          if (CommonFn.isUndefined(user) || user?.length === 0) {
+            const newUser = await users.create({
+              user_id: serverCfg.defaultAdminUserId,
+              email: serverCfg.defaultAdminEmail,
+              title: 'N/A',
+              user_name: serverCfg.defaultAdminUserName,
+              password: serverCfg.defaultAdminPassword,
+              phone_no: serverCfg.defaultAdminPhoneNo,
+              mobile_no: serverCfg.defaultAdminPhoneNo,
+              website: '',
+              language: 'EN',
+              status: 'ENABLED'
+              });
+            if (newUser) {
+              const userAccounts = new UserAccountModel();
+              userAccounts.create({
+                user_id: newUser.data.id,
+                account_id: newAccount.data.id
+              });
+              userAccounts.create({
+                user_id: newUser.data.id,
+                account_id: newDev.data.id
+              });
+            }
+          } else {
+            if (user && newAccount) {
+              const userAccounts = new UserAccountModel();
+              userAccounts.create({
+                user_id: user[0].data.id,
+                account_id: newAccount.data.id
+              });
+            }
+            if (user && newDev) {
+              const userAccounts = new UserAccountModel();
+              userAccounts.create({
+                user_id: user[0].data.id,
+                account_id: newDev.data.id
+              });
+            }
+          }
+      }
+
     })
     .catch((err) => {
       throw(err);
