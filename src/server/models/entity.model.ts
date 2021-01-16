@@ -121,7 +121,8 @@ export class EntityModel {
     conditions: any,
     ignoreExclSelect?: boolean,
     excludeSelectProp?: string[]
-  ): Promise<any[] | undefined> => {
+  ): Promise<any[]> => {
+    const respEntityDTOArray: any[] = [];
     let sql = SqlFormatter.formatSelect(
       this.tableName,
       this.schema,
@@ -133,7 +134,7 @@ export class EntityModel {
     return new Promise((resolve) => {
       dbConnection.DB.sql(sql).execute()
       .then((result) => {
-        const respEntityDTOArray: any[] = [];
+
         if (result.rows.length) {
 
           result.rows.forEach((rowData: any) => {
@@ -152,7 +153,7 @@ export class EntityModel {
       })
       .catch((err) => {
         SysLog.error(JSON.stringify(err));
-        resolve(undefined);
+        resolve(respEntityDTOArray);
         return;
       });
     });
