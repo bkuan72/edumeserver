@@ -11,6 +11,7 @@ import { uuidIfc } from './uuidIfc';
 import { UserAccountsDTO } from '../../dtos/userAccounts.DTO';
 import SysLog from '../../modules/SysLog';
 import SysEnv from '../../modules/SysEnv';
+import { accounts_schema_table } from '../../schemas/accounts.schema';
 
 export class UserAccountModel {
 
@@ -176,7 +177,7 @@ export class UserAccountModel {
 
   remove = (id: string): Promise<string | undefined> => {
     return new Promise((resolve) => {
-      let sql = 'DELETE FROM userAccounts WHERE ';
+      let sql = 'DELETE FROM '+ userAccounts_schema_table +' WHERE ';
       sql += SqlStr.format('id = UUID_TO_BIN(?)', [id]);
       dbConnection.DB.sql(sql).execute()
       .then((result) => {
@@ -191,6 +192,56 @@ export class UserAccountModel {
       .catch((err) => {
         SysLog.error(JSON.stringify(err));
         resolve(undefined);
+        return;
+      });
+    });
+  };
+
+  /**
+   * Function returns an array of user account types
+   * respDTO
+   * [{
+   *  account_type: string,
+   *  user_id: string,
+   *  id: string
+   * }]
+   * @param siteCode - website site_code
+   * @param userId   - user.id
+   * @param status   - status of user_account
+   */
+  getUserAccountTypes = async (siteCode: string, userId: string, status: string): Promise<any[]> => {
+    return new Promise((resolve) => {
+      const userAccountTypes: any[] = [];
+      let sql = 'SELECT ' + accounts_schema_table+ '.account_type';
+      sql += ', BIN_TO_UUID(' + userAccounts_schema_table +'.user_id)';
+      sql += ', BIN_TO_UUID(' + userAccounts_schema_table +'.id)';
+      sql += ' FROM '+ userAccounts_schema_table;
+      sql += ' INNER JOIN ' + accounts_schema_table + ' ON ' + userAccounts_schema_table + '.account_id = ' + accounts_schema_table + '.id'
+      sql += ' WHERE ' + userAccounts_schema_table+ '.site_code = ' + SqlStr.escape(siteCode) + ' AND ';
+      sql += userAccounts_schema_table+ '.status = ' + SqlStr.escape(status) + ' AND ';
+      sql += SqlStr.format(userAccounts_schema_table+ '.user_id = UUID_TO_BIN(?);', [userId]);
+      dbConnection.DB.sql(sql).execute()
+      .then((result) => {
+        if (result.rows.length == 0) {
+          // not found Customer with the id
+          resolve(userAccountTypes);
+          return;
+        }
+        SysLog.info('get user accounts with id: ', userId);
+        result.rows.forEach(data => {
+          const userAccount = SqlFormatter.transposeColumnResultSet(
+            ['account_type',
+            'user_id',
+            'id'],
+            data
+          )
+          userAccountTypes.push(userAccount);
+        });
+        resolve(userAccountTypes);
+      })
+      .catch((err) => {
+        SysLog.error(JSON.stringify(err));
+        resolve(userAccountTypes);
         return;
       });
     });
