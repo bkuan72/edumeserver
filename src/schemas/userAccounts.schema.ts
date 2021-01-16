@@ -70,13 +70,13 @@ export const userAccounts_schema: schemaIfc[] = [
     sqlType: undefined,
     index: [
       {
-        name: 'user_id_idx',
-        columns: ['site_code', 'user_id'],
+        name: 'user_account_id_idx',
+        columns: ['site_code', 'user_id', 'account_id'],
         unique: true
       },
       {
         name: 'last_upd_usec_idx',
-        columns: [ 'site_code', 'lastUpdatedUsec'],
+        columns: [ 'site_code', 'lastUpdateUsec'],
         unique: false
       }
     ],

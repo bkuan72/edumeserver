@@ -77,12 +77,12 @@ export const activities_schema: schemaIfc[] = [
     index: [
       {
         name: 'last_upd_usec_idx',
-        columns: ['site_code', 'user_id', 'lastUpdatedUsec'],
+        columns: ['site_code', 'user_id', 'lastUpdateUsec'],
         unique: false
       },
       {
         name: 'last_timeline_idx',
-        columns: ['site_code', 'timeline_type', 'timeline_id', 'lastUpdatedUsec'],
+        columns: ['site_code', 'timeline_type', 'timeline_id', 'lastUpdateUsec'],
         unique: false
       }
     ]

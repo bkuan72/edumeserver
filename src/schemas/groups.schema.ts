@@ -111,7 +111,7 @@ export const groups_schema: schemaIfc[] = [
       },
       {
         name: 'last_upd_usec_idx',
-        columns: ['site_code', 'account_id', 'lastUpdatedUsec'],
+        columns: ['site_code', 'account_id', 'lastUpdateUsec'],
         unique: false
       }
     ]

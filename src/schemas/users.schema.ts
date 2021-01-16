@@ -227,11 +227,6 @@ export const users_schema: schemaIfc[] = [
     sqlType: undefined,
     index: [
       {
-        name: 'user_id_idx',
-        columns: ['site_code', 'user_id'],
-        unique: true
-      },
-      {
         name: 'email_idx',
         columns: ['site_code', 'email'],
         unique: true
@@ -243,7 +238,7 @@ export const users_schema: schemaIfc[] = [
       },
       {
         name: 'last_upd_usec_idx',
-        columns: ['site_code', 'lastUpdatedUsec'],
+        columns: ['site_code', 'lastUpdateUsec'],
         unique: false
       }
     ]

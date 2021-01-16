@@ -53,7 +53,7 @@ export const properties_schema: schemaIfc[] = [
     index: [
       {
         name: 'last_upd_usec_idx',
-        columns: [ 'site_code', 'lastUpdatedUsec'],
+        columns: [ 'site_code', 'lastUpdateUsec'],
         unique: false
       }
     ]
