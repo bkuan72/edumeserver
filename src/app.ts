@@ -1,3 +1,6 @@
+import { UserAccountsDTO } from './dtos/userAccounts.DTO';
+import { ResponseUserDTO } from './dtos/userDTO';
+import { AccountDTO } from './dtos/accounts.DTO';
 
 import { AccountModel } from './server/models/account.model';
 import { serverCfg } from './config/db.config';
@@ -14,7 +17,6 @@ import toobusy_js = require('toobusy-js');
 import ServerTooBusyException from './exceptions/ServerTooBusyException';
 import rateLimit = require('express-rate-limit');
 import SysEnv from './modules/SysEnv';
-import CommonFn from './modules/CommonFnModule';
 import cors = require('cors');
 
 
@@ -91,17 +93,24 @@ class App {
     dbConnection.DBM_connectDB()
     .then(async () => {
       const accounts = new AccountModel();
-      const account = await accounts.find({
-        site_code: SysEnv.SITE_CODE,
-        account_type: 'ADMIN'
+      const accountArray = await accounts.find({
+        site_code: SysEnv.SITE_CODE
       });
-      const dev = await accounts.find({
-        site_code: SysEnv.SITE_CODE,
-        account_type: 'DEV'
-      });
-      let newDev;
-      if (CommonFn.isUndefined(dev) || dev?.length === 0) {
-        newDev = await accounts.create({
+      let devAccount: AccountDTO | undefined;
+      let adminAccount: AccountDTO | undefined;
+      if (accountArray) {
+        accountArray.forEach((account) => {
+          if (account.data.account_type == 'ADMIN') {
+            adminAccount = account;
+          } else {
+            if (account.data.account_type == 'DEV') {
+              devAccount = account;
+            }
+          }
+        })
+      }
+      if (devAccount == undefined) {
+        devAccount = await accounts.create({
           account_type: 'DEV',
           account_code: 'DEV_ACCOUNT',
           description: 'Dev Account',
@@ -109,9 +118,8 @@ class App {
           status: 'APPROVED'
         });
       }
-      let newAccount;
-      if (CommonFn.isUndefined(account) || account?.length === 0) {
-        newAccount = await accounts.create({
+      if (adminAccount == undefined) {
+        adminAccount = await accounts.create({
           account_type: 'ADMIN',
           account_code: 'ADMIN_ACCOUNT',
           description: 'Admin Account',
@@ -119,52 +127,99 @@ class App {
           status: 'APPROVED'
         });
       }
-      if (newAccount || newDev) {
-        const users = new UserModel();
-        const user = await users.find({
-          site_code: SysEnv.SITE_CODE,
-          email: serverCfg.defaultAdminEmail
-          });
-          if (CommonFn.isUndefined(user) || user?.length === 0) {
-            const newUser = await users.create({
-              user_id: serverCfg.defaultAdminUserId,
-              email: serverCfg.defaultAdminEmail,
-              title: 'N/A',
-              user_name: serverCfg.defaultAdminUserName,
-              password: serverCfg.defaultAdminPassword,
-              phone_no: serverCfg.defaultAdminPhoneNo,
-              mobile_no: serverCfg.defaultAdminPhoneNo,
-              website: '',
-              language: 'EN',
-              status: 'ENABLED'
-              });
-            if (newUser) {
-              const userAccounts = new UserAccountModel();
-              userAccounts.create({
-                user_id: newUser.data.id,
-                account_id: newAccount.data.id
-              });
-              userAccounts.create({
-                user_id: newUser.data.id,
-                account_id: newDev.data.id
-              });
-            }
-          } else {
-            if (user && newAccount) {
-              const userAccounts = new UserAccountModel();
-              userAccounts.create({
-                user_id: user[0].data.id,
-                account_id: newAccount.data.id
-              });
-            }
-            if (user && newDev) {
-              const userAccounts = new UserAccountModel();
-              userAccounts.create({
-                user_id: user[0].data.id,
-                account_id: newDev.data.id
-              });
+
+      const users = new UserModel();
+      let adminUser: ResponseUserDTO | undefined;
+      let devUser: ResponseUserDTO | undefined;
+      const userArray = await users.find({
+                                          site_code: SysEnv.SITE_CODE
+                                          });
+      if (userArray) {
+        userArray.forEach((user) => {
+          if (user.data.email == serverCfg.defaultAdminEmail) {
+            adminUser = user;
+          } else; {
+            if (user.data.email == serverCfg.defaultDevEmail) {
+              devUser = user;
             }
           }
+        });
+      }
+
+      if (adminUser === undefined) {
+        adminUser = await users.create({
+          user_id: serverCfg.defaultAdminUserId,
+          email: serverCfg.defaultAdminEmail,
+          title: 'N/A',
+          user_name: serverCfg.defaultAdminUserName,
+          password: serverCfg.defaultAdminPassword,
+          phone_no: serverCfg.defaultAdminPhoneNo,
+          mobile_no: serverCfg.defaultAdminPhoneNo,
+          website: '',
+          language: 'EN',
+          status: 'ENABLED'
+          });
+      }
+
+
+      if (devUser === undefined) {
+        devUser = await users.create({
+          user_id: serverCfg.defaultDevUserId,
+          email: serverCfg.defaultDevEmail,
+          title: 'N/A',
+          user_name: serverCfg.defaultDevUserName,
+          password: serverCfg.defaultDevPassword,
+          phone_no: serverCfg.defaultDevPhoneNo,
+          mobile_no: serverCfg.defaultDevPhoneNo,
+          website: '',
+          language: 'EN',
+          status: 'ENABLED'
+          });
+      }
+
+      const userAccounts = new UserAccountModel();
+      let devUserAccount: UserAccountsDTO | undefined;
+      let devAdminUserAccount: UserAccountsDTO | undefined;
+      let adminUserAccount: UserAccountsDTO | undefined;
+      const userAccountArray = await userAccounts.find({
+        site_code: SysEnv.SITE_CODE
+      })
+      if (userAccountArray) {
+        userAccountArray.forEach((userAccount) => {
+          if (userAccount.data.account_id === adminAccount?.data.id &&
+              userAccount.data.user_id === adminUser?.data.id) {
+            adminUserAccount = userAccount;
+          } else {
+            if (userAccount.data.account_id === adminAccount?.data.id &&
+              userAccount.data.user_id === devUser?.data.id) {
+              devAdminUserAccount = userAccount;
+           } else {
+            if (userAccount.data.account_id === devAccount?.data.id &&
+              userAccount.data.user_id === devUser?.data.id) {
+              devUserAccount = userAccount;
+            }
+           }
+          }
+        });
+      }
+
+      if (adminUserAccount === undefined && adminUser && adminAccount) {
+        await userAccounts.create({
+          user_id: adminUser.data.id,
+          account_id: adminAccount.data.id
+        });
+      }
+      if (devAdminUserAccount === undefined && devUser && adminAccount) {
+        await userAccounts.create({
+          user_id: devUser.data.id,
+          account_id: adminAccount.data.id
+        });
+      }
+      if (devUserAccount === undefined && devUser && devAccount) {
+        await userAccounts.create({
+          user_id: devUser.data.id,
+          account_id: devAccount.data.id
+        });
       }
 
     })
@@ -174,9 +229,9 @@ class App {
   }
 
   public listen() {
+    console.log(`App listening on the port ${this.port}`);
     this.app.listen(this.port, () => {
       SysLog.info(`App listening on the port ${this.port}`);
-      console.log(`App listening on the port ${this.port}`);
     });
   }
 }
