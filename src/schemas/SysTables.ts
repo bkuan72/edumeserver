@@ -3,7 +3,7 @@ import { groups_schema, groups_schema_table } from './groups.schema';
 import { postArticles_schema, postArticles_schema_table } from './postArticles.schema';
 import { activities_schema, activities_schema_table } from './activities.schema';
 import { medias_schema, medias_schema_table } from './medias.schema';
-import { postComments_schema, postComments_schema_table } from './postComments.schema';
+import { userTimelineComments_schema, userTimelineComments_schema_table } from './userTimelineComments.schema';
 import { friends_schema, friends_schema_table } from './friends.schema';
 import { postMedias_schema, postMedias_schema_table } from './postMedias.schema';
 import { posts_schema, posts_schema_table } from './posts.schema';
@@ -15,6 +15,7 @@ import { token_schema, tokens_schema_table, blacklist_tokens_schema_table } from
 import { accounts_schema, accounts_schema_table } from './accounts.schema';
 import { userAccounts_schema, userAccounts_schema_table } from './userAccounts.schema';
 import { advertisements_schema, advertisements_schema_table } from './advertisements.schema';
+import { userTimelines_schema, userTimelines_schema_table } from './userTimelines.schema';
 
 export const sysTables: tableIfc[] = [
   {
@@ -58,8 +59,12 @@ export const sysTables: tableIfc[] = [
     schema: postMedias_schema
   },
   {
-    name: postComments_schema_table,
-    schema: postComments_schema
+    name: userTimelines_schema_table,
+    schema: userTimelines_schema
+  },
+  {
+    name: userTimelineComments_schema_table,
+    schema: userTimelineComments_schema
   },
   {
     name: friends_schema_table,

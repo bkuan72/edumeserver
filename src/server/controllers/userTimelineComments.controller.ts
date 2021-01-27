@@ -1,12 +1,12 @@
-import { PostCommentDTO, UpdPostCommentDTO } from './../../dtos/postComments.DTO';
+import { UserTimelineCommentDTO, UpdUserTimelineCommentDTO } from '../../dtos/userTimelineComments.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-import {PostCommentModel} from "../models/postComment.model";
+import {UserTimelineCommentModel} from "../models/userTimelineComment.model";
 import * as express from 'express';
 import Controller from "../../interfaces/controller.interface";
 import DataNotFoundException from "../../exceptions/DataNotFoundException";
 import NoDataException from "../../exceptions/NoDataExceptions";
-import { postComments_schema } from "../../schemas/postComments.schema";
+import { userTimelineComments_schema } from "../../schemas/userTimelineComments.schema";
 import validationUpdateMiddleware from "../../middleware/validate.update.dto.middleware";
 import authMiddleware from "../../middleware/auth.middleware";
 import validationMiddleware from "../../middleware/validation.middleware";
@@ -17,10 +17,10 @@ import adminAuthMiddleware from '../../middleware/admin.auth.middleware';
 
 
 
-export class PostCommentsController implements Controller{
-  public path='/postComments';
+export class UserTimelineCommentsController implements Controller{
+  public path='/userTimelineComments';
   public router= express.Router();
-  private postComments = new PostCommentModel();
+  private userTimelineComments = new UserTimelineCommentModel();
   siteCode = SysEnv.SITE_CODE;
 
 
@@ -32,11 +32,11 @@ export class PostCommentsController implements Controller{
   public intializeRoutes() {
     this.router.post(this.path,
                     authMiddleware,
-                    validationMiddleware(postComments_schema),
-                    this.newPostComment);
-    this.router.get(this.path+'/byPostId/:postId', authMiddleware, this.getByPostId);
+                    validationMiddleware(userTimelineComments_schema),
+                    this.newUserTimelineComment);
+    this.router.get(this.path+'/byTimelineId/:timelineId', authMiddleware, this.getByTimelineId);
     this.router.get(this.path+'/byId/:id', authMiddleware, this.findById);
-    this.router.patch(this.path+'/:id', authMiddleware, validationUpdateMiddleware(postComments_schema), this.update);
+    this.router.patch(this.path+'/:id', authMiddleware, validationUpdateMiddleware(userTimelineComments_schema), this.update);
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
     this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
@@ -44,21 +44,21 @@ export class PostCommentsController implements Controller{
   }
 
   apiDTO  = (request: express.Request, response: express.Response) => {
-    const dto = new PostCommentDTO();
+    const dto = new UserTimelineCommentDTO();
     response.send(dto.data);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
-    const dto = new UpdPostCommentDTO();
+    const dto = new UpdUserTimelineCommentDTO();
     response.send(dto.data);
   }
   apiSchema  = (request: express.Request, response: express.Response) => {
-    response.send(postComments_schema);
+    response.send(userTimelineComments_schema);
   }
 
-  newPostComment  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-      this.postComments.create(request.body).then((respPostCommentDTO) => {
-        if (respPostCommentDTO) {
-            response.send(respPostCommentDTO.data);
+  newUserTimelineComment  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+      this.userTimelineComments.create(request.body).then((respUserTimelineCommentDTO) => {
+        if (respUserTimelineCommentDTO) {
+            response.send(respUserTimelineCommentDTO.data);
           } else {
             next(new PostDataFailedException())
           }
@@ -66,9 +66,9 @@ export class PostCommentsController implements Controller{
   };
 
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-    this.postComments.findById(request.params.postId).then((respPostCommentDTO) => {
-      if (respPostCommentDTO) {
-        response.send(respPostCommentDTO.data);
+    this.userTimelineComments.findById(request.params.id).then((respUserTimelineCommentDTO) => {
+      if (respUserTimelineCommentDTO) {
+        response.send(respUserTimelineCommentDTO.data);
       } else {
         next(new DataNotFoundException(request.params.id))
       }
@@ -76,19 +76,19 @@ export class PostCommentsController implements Controller{
   }
 
   update  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-    this.postComments.updateById(request.params.id, request.body).then((respPostCommentDTO) => {
-      if (respPostCommentDTO) {
-        response.send(respPostCommentDTO);
+    this.userTimelineComments.updateById(request.params.id, request.body).then((respUserTimelineCommentDTO) => {
+      if (respUserTimelineCommentDTO) {
+        response.send(respUserTimelineCommentDTO);
       } else {
         next(new DataNotFoundException(request.params.id))
       }
     })
   }
 
-  getByPostId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-    this.postComments.findByPostId(request.params.postId).then((respPostCommentDTOArray) => {
-      if (respPostCommentDTOArray) {
-        response.send(respPostCommentDTOArray);
+  getByTimelineId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.userTimelineComments.findByTimelineId(request.params.timelineId).then((respUserTimelineCommentDTOArray) => {
+      if (respUserTimelineCommentDTOArray) {
+        response.send(respUserTimelineCommentDTOArray);
       } else {
         next(new NoDataException())
       }

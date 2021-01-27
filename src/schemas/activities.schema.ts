@@ -36,6 +36,13 @@ export const activities_schema: schemaIfc[] = [
     excludeFromUpdate: true
   },
   {
+    fieldName: 'timeline_user_id',
+    sqlType: 'BINARY(16)',
+    primaryKey: false,
+    uuidProperty: true,
+    excludeFromUpdate: true
+  },
+  {
     fieldName: 'timeline_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
@@ -43,11 +50,11 @@ export const activities_schema: schemaIfc[] = [
     excludeFromUpdate: true
   },
   {
-    fieldName: 'timeline_type',
+    fieldName: 'activity_type',
     sqlType: 'ENUM',
-    size: 7,
-    enum: ['USER', 'ACCOUNT', 'GROUP'],
-    default: 'USER'
+    size: 15,
+    enum: ['LIKES', 'SHARE', 'MESSAGED', 'FOLLOW_REQUEST', 'FRIEND_REQUEST', 'JOIN_REQUEST'],
+    default: 'LIKES'
   },
   {
     fieldName: 'site_code',
@@ -77,12 +84,12 @@ export const activities_schema: schemaIfc[] = [
     index: [
       {
         name: 'last_upd_usec_idx',
-        columns: ['site_code', 'user_id', 'lastUpdateUsec'],
+        columns: ['site_code', 'timeline_id', 'lastUpdateUsec'],
         unique: false
       },
       {
         name: 'last_timeline_idx',
-        columns: ['site_code', 'timeline_type', 'timeline_id', 'lastUpdateUsec'],
+        columns: ['site_code', 'timeline_user_id', 'activity_type', 'timeline_id', 'user_id'],
         unique: false
       }
     ]

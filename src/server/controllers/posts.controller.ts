@@ -1,4 +1,4 @@
-import { UpdPostDTO, TimelinePostDTO } from './../../dtos/posts.DTO';
+import { UpdPostDTO } from './../../dtos/posts.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import {PostModel} from "../models/post.model";
@@ -13,8 +13,8 @@ import validationMiddleware from "../../middleware/validation.middleware";
 import PostDataFailedException from "../../exceptions/PostDataFailedException";
 import SysEnv from "../../modules/SysEnv";
 import { PostDTO } from "../../dtos/posts.DTO";
-import adminAuthMiddleware from "../../middleware/admin.auth.middleware";
 import devAuthMiddleware from '../../middleware/dev.auth.middleware';
+
 
 export class PostsController implements Controller{
   public path='/posts';
@@ -33,15 +33,10 @@ export class PostsController implements Controller{
                     authMiddleware,
                     validationMiddleware(posts_schema),
                     this.newPost);
-    this.router.get(this.path+'/profile-timeline/byTimelineTypeNIdNOffSetDays/:timelineType/:timelineId/:offSetDays', authMiddleware, this.getTimeline);
     this.router.get(this.path+'/byUserIOffSetDays/:userId/:offSetDays', authMiddleware, this.getPostByUserId);
     this.router.get(this.path+'/byPostId/:postId', authMiddleware, this.findById);
-    this.router.put(this.path+'/likes/:postId', authMiddleware, this.updateLiked);
-    this.router.put(this.path+'/unlike/:postId', authMiddleware, this.updateUnlike);
-    this.router.put(this.path+'/share/:postId', authMiddleware, this.updateShared);
     this.router.patch(this.path+'/:postId', authMiddleware, validationUpdateMiddleware(posts_schema), this.update);
     this.router.get(this.path+'/DTO', devAuthMiddleware, this.apiDTO);
-    this.router.get(this.path+'/timelineDTO', devAuthMiddleware, this.apiTimelineDTO);
     this.router.get(this.path+'/updDTO', devAuthMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', devAuthMiddleware, this.apiSchema);
     return;
@@ -57,10 +52,7 @@ export class PostsController implements Controller{
   apiSchema  = (request: express.Request, response: express.Response) => {
     response.send(posts_schema);
   }
-  apiTimelineDTO  = (request: express.Request, response: express.Response) => {
-    const dto = new TimelinePostDTO();
-    response.send(dto.data);
-  }
+
   newPost  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
       this.posts.create(request.body).then((respPostDTO) => {
         if (respPostDTO) {
@@ -91,15 +83,7 @@ export class PostsController implements Controller{
     })
   }
 
-  getTimeline  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-    this.posts.findTimeline(request.params.timelineType, request.params.timelineId, request.params.offSetDays).then((respPostDTO: PostDTO[]) => {
-      if (respPostDTO) {
-        response.send(respPostDTO);
-      } else {
-        next(new DataNotFoundException(request.params.userId))
-      }
-    })
-  }
+
 
   getPostByUserId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.posts.findByUserId(request.params.userId,
@@ -112,39 +96,4 @@ export class PostsController implements Controller{
     })
   }
 
-  updateLiked  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-    this.posts.incrementLikesById(request.params.postId,
-                                  request.params.userId,
-                                  request.params.timelineType,
-                                  request.params.timelineId).then((respPostDTO) => {
-      if (respPostDTO) {
-        response.send(respPostDTO);
-      } else {
-        next(new DataNotFoundException(request.params.postId))
-      }
-    })
-  }
-
-  updateUnlike  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-    this.posts.decrementLikesById(request.params.postId,
-                                  request.params.userId,
-                                  request.params.timelineType,
-                                  request.params.timelineId).then((respPostDTO) => {
-      if (respPostDTO) {
-        response.send(respPostDTO);
-      } else {
-        next(new DataNotFoundException(request.params.postId))
-      }
-    })
-  }
-
-  updateShared  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-    this.posts.incrementShareById(request.params.postId).then((respPostDTO) => {
-      if (respPostDTO) {
-        response.send(respPostDTO);
-      } else {
-        next(new DataNotFoundException(request.params.postId))
-      }
-    })
-  }
 }

@@ -16,6 +16,7 @@ export const posts_schema: schemaIfc[] = [
     fieldName: 'post_date',
     sqlType: 'VARCHAR(25)',
     size: 25,
+    default: '',
     allowNull: false,
     excludeFromUpdate: true,
     trim: false
@@ -24,6 +25,7 @@ export const posts_schema: schemaIfc[] = [
     fieldName: 'post_type',
     sqlType: 'VARCHAR(25)',
     size: 25,
+    default: "post",
     allowNull: false,
     excludeFromUpdate: true,
     trim: true
@@ -33,25 +35,15 @@ export const posts_schema: schemaIfc[] = [
     sqlType: 'TEXT',
     allowNull: false,
     excludeFromUpdate: false,
-    trim: false
+    trim: false,
+    default: ''
   },
   {
     fieldName: 'user_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
-    excludeFromUpdate: true
-  },
-  {
-    fieldName: 'likes',
-    sqlType: 'INT',
-    default: '0',
-    excludeFromUpdate: true
-  },
-  {
-    fieldName: 'shared',
-    sqlType: 'INT',
-    default: '0',
+    default: '',
     excludeFromUpdate: true
   },
   {
@@ -82,7 +74,7 @@ export const posts_schema: schemaIfc[] = [
     index: [
       {
         name: 'last_upd_usec_idx',
-        columns: ['site_code', 'user_id', 'lastUpdatedUsec'],
+        columns: ['site_code', 'user_id', 'lastUpdateUsec'],
         unique: false
       }
     ]

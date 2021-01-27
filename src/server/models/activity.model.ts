@@ -27,8 +27,8 @@ export class ActivityModel extends EntityModel {
     this.friends = new FriendModel();
   }
 
-  findByUserId = (
-    userId: string,
+  findByTimelineUserId = (
+    timelineUserId: string,
     offSetDays: string
   ): Promise<any | undefined> => {
     return new Promise((resolve) => {
@@ -36,7 +36,7 @@ export class ActivityModel extends EntityModel {
       let sql =
         SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
-      sql += SqlStr.format('user_id = UUID_TO_BIN(?)', [userId]) + ' AND ';
+      sql += SqlStr.format('timeline_user_id = UUID_TO_BIN(?)', [timelineUserId]) + ' AND ';
       sql += 'status != '+ SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('lastUpdateUsec >= ?', [fromDate?.valueOf()]);
       SysLog.info('findById SQL: ' + sql);
@@ -64,6 +64,49 @@ export class ActivityModel extends EntityModel {
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
           resolve(undefined);
+          return;
+        });
+    });
+  };
+
+  findByTypeTimelineIdUserId = (
+    activityType: string,
+    timelineId: string,
+    userId: string
+  ): Promise<ActivityDTO[]> => {
+    return new Promise((resolve, reject) => {
+      const resActivityDTOArray: ActivityDTO[] = [];
+      let sql =
+        SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
+      sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
+      sql += 'activity_type = ' + SqlStr.escape(activityType) + ' AND ';
+      sql += SqlStr.format('user_id = UUID_TO_BIN(?)', [userId]) + ' AND ';
+      sql += SqlStr.format('timeline_id = UUID_TO_BIN(?)', [timelineId]);
+      SysLog.info('findById SQL: ' + sql);
+      dbConnection.DB.sql(sql)
+        .execute()
+        .then((result) => {
+
+          if (result.rows.length > 0) {
+            result.rows.forEach((rowData) => {
+              const data = SqlFormatter.transposeResultSet(
+                this.schema,
+                undefined,
+                undefined,
+                rowData
+              );
+              const respActivityDTO = new this.responseDTO(data) as ActivityDTO;
+              resActivityDTOArray.push(respActivityDTO.data);
+            });
+            resolve(resActivityDTOArray);
+            return;
+          }
+          // not found
+          resolve(resActivityDTOArray);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          reject(resActivityDTOArray);
           return;
         });
     });

@@ -1,9 +1,9 @@
 import { schemaIfc } from '../modules/DbModule';
 import DTOGenerator from '../modules/ModelGenerator';
 
-export const postComments_schema_table = 'post_comments';
+export const userTimelineComments_schema_table = 'user_timeline_comments';
 
-export const postComments_schema: schemaIfc[] = [
+export const userTimelineComments_schema: schemaIfc[] = [
   {
     fieldName: 'id',
     sqlType: 'BINARY(16) PRIMARY KEY',
@@ -29,18 +29,28 @@ export const postComments_schema: schemaIfc[] = [
     default: 'OK'
   },
   {
+    fieldName: 'timeline_id',
+    sqlType: 'BINARY(16)',
+    primaryKey: false,
+    uuidProperty: true,
+    excludeFromUpdate: true,
+    default: ''
+  },
+  {
     fieldName: 'post_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    default: ''
   },
   {
     fieldName: 'user_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    default: ''
   },
   {
     fieldName: 'date_comment',
@@ -48,13 +58,15 @@ export const postComments_schema: schemaIfc[] = [
     size: 25,
     allowNull: false,
     excludeFromUpdate: false,
-    trim: false
+    trim: false,
+    default: ''
   },
   {
     fieldName: 'message',
     sqlType: 'TEXT',
     excludeFromUpdate: false,
-    trim: true
+    trim: true,
+    default: ''
   },
   {
     fieldName: 'lastUpdateUsec',
@@ -67,13 +79,13 @@ export const postComments_schema: schemaIfc[] = [
     sqlType: undefined,
     index: [
       {
-        name: 'post_id_idx',
-        columns: ['site_code', 'post_id', 'date_comment'],
-        unique: true
+        name: 'timeline_idx',
+        columns: ['site_code', 'timeline_id', 'date_comment'],
+        unique: false
       }
     ]
   }
 ];
 
-const PostCommentSchemaModel = DTOGenerator.genSchemaModel(postComments_schema);
-export type PostCommentData = typeof PostCommentSchemaModel;
+const UserTimelineCommentSchemaModel = DTOGenerator.genSchemaModel(userTimelineComments_schema);
+export type UserTimelineCommentData = typeof UserTimelineCommentSchemaModel;

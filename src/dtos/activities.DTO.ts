@@ -16,7 +16,18 @@ export class ActivityDTO {
         }
       }
     }
+    this.data = DTOGenerator.defineProperty(
+      this.data,
+      'user',
+      {
+        id: '',
+        name: '',
+        avatar: ''
+      }
+    );
+
   }
+
 }
 
 export class UpdActivityDTO {

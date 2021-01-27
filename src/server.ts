@@ -1,3 +1,4 @@
+import { UserTimelinessController } from './server/controllers/userTimelines.controller';
 import SysLog from './modules/SysLog';
 import toobusy_js from 'toobusy-js';
 import SysEnv from './modules/SysEnv';
@@ -6,7 +7,7 @@ import { MediasController } from './server/controllers/medias.controller';
 import { GroupsController } from './server/controllers/groups.controller';
 import { FriendsController } from './server/controllers/friends.controller';
 import { PostMediasController } from './server/controllers/postMedias.controller';
-import { PostCommentsController } from './server/controllers/postComments.controller';
+import { UserTimelineCommentsController } from './server/controllers/userTimelineComments.controller';
 import { AdvertisementsController } from './server/controllers/advertisement.controller';
 import { PropertiesController } from './server/controllers/properties.controller';
 import { TokensController } from './server/controllers/tokens.controller';
@@ -49,14 +50,15 @@ const app = new App (
     new BlacklistController(),
     new PropertiesController(),
     new AdvertisementsController(),
-    new PostCommentsController(),
+    new UserTimelineCommentsController(),
     new PostsController(),
     new PostMediasController(),
     new FriendsController(),
     new GroupsController(),
     new UserGroupsController(),
     new MediasController(),
-    new ActivitiesController()
+    new ActivitiesController(),
+    new UserTimelinessController()
   ],
   port
 );

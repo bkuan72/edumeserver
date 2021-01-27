@@ -218,20 +218,17 @@ export class TokenModel {
     });
   };
 
-  remove = (id: string): Promise<string | undefined> => {
+  remove = (id: string): Promise<any | undefined> => {
     return new Promise((resolve) => {
       let sql = 'DELETE FROM ' + this.tableName + ' WHERE ';
       sql += SqlStr.format('id = UUID_TO_BIN(?)', [id]);
       dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
-          if (result.rows.length == 0) {
-            // not found token with the id
-            resolve(undefined);
-            return;
-          }
           SysLog.info('deleted ' + this.tableName + ' with id: ', id);
-          resolve(id);
+          resolve({
+            deleted_id: id
+          });
         })
         .catch((err) => {
           SysLog.error('error: ', err);
@@ -250,11 +247,6 @@ export class TokenModel {
       dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
-          if (result.rows.length == 0) {
-            // not found token with the uuid
-            resolve(undefined);
-            return;
-          }
           SysLog.info('deleted ' + this.tableName + ' with uuid: ', uuid);
           resolve(uuid);
         })
