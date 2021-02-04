@@ -533,9 +533,19 @@ export class SqlFormatter {
             !prop.excludeFromSelect) {
           if (ignoreExclFromSelect ||
             SqlFormatter.includeInSql(prop, fmtPropArr)) {
-            data = DTOGenerator.defineProperty(data,
-                                              prop.fieldName,
-                                              dataRow[idx++]);
+            if (prop.sqlType?.includes('BLOB')) { 
+              const blob = dataRow[idx++] as Buffer;
+              const blobString = blob.toString('utf-8');
+              data = DTOGenerator.defineProperty(data,
+                prop.fieldName,
+                blobString
+              );
+            } else {
+              data = DTOGenerator.defineProperty(data,
+                prop.fieldName,
+                dataRow[idx++]);
+            }
+
           }
         }
       }
