@@ -28,6 +28,12 @@ class App {
   public logger: any;
 
   constructor(controllers: any, port: number) {
+
+    this.app = express.default();
+    this.port = port;
+    this.connectToTheDatabase();
+    this.initializeMiddlewares();
+    this.initializeControllers(controllers);
     // The default maxLag value is 70ms, and the default check interval is 500ms.
     // This allows an "average" server to run at 90-100% CPU and keeps request latency
     // at around 200ms. For comparison, a maxLag value of 10ms results in 60-70% CPU usage,
@@ -37,11 +43,6 @@ class App {
     toobusy_js.onLag(function(currentLag: number) {
       SysLog.info("Event loop lag detected! Latency: " + currentLag + "ms");
     });
-    this.app = express.default();
-    this.port = port;
-    this.connectToTheDatabase();
-    this.initializeMiddlewares();
-    this.initializeControllers(controllers);
   }
 
   loggerMiddleware = (request: express.Request, response: express.Response, next: any) => {
