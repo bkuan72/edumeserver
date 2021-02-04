@@ -52,11 +52,11 @@ export class UserTimelineModel extends EntityModel {
                 rowData
               );
               const respUserTimelineDTO = new this.responseDTO(data) as UserTimelineDTO;
-              respUserTimelineDTO.data = DTOGenerator.defineProperty(respUserTimelineDTO.data, 'media', {
+              respUserTimelineDTO.data = DTOGenerator.defineProperty(respUserTimelineDTO.data, 'medias', [{
                                                                     type: respUserTimelineDTO.data.type,
                                                                     preview: respUserTimelineDTO.data.preview
 
-                                                                });
+                                                                }]);
               resUserTimelineDTOArray.push(respUserTimelineDTO.data);
             });
             resolve(resUserTimelineDTOArray);

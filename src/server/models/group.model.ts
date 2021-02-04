@@ -50,11 +50,11 @@ export class GroupModel extends EntityModel {
                 rowData
               );
               const respGroupDTO = new this.responseDTO(data) as GroupDTO;
-              respGroupDTO.data = DTOGenerator.defineProperty(respGroupDTO.data, 'media', {
+              respGroupDTO.data = DTOGenerator.defineProperty(respGroupDTO.data, 'medias', [{
                                                                     type: respGroupDTO.data.type,
                                                                     preview: respGroupDTO.data.preview
 
-                                                                });
+                                                                }]);
               resGroupDTOArray.push(respGroupDTO.data);
             });
             resolve(resGroupDTOArray);

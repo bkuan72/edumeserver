@@ -1,4 +1,3 @@
-import { CommonFn } from './../../modules/CommonFnModule';
 import { SqlFormatter } from './../../modules/sql.strings';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -51,11 +50,11 @@ export class PostArticleModel extends EntityModel {
                 rowData
               );
               const respPostArticleDTO = new this.responseDTO(data) as PostArticleDTO;
-              respPostArticleDTO.data = DTOGenerator.defineProperty(respPostArticleDTO.data, 'media', {
+              respPostArticleDTO.data = DTOGenerator.defineProperty(respPostArticleDTO.data, 'medias', [{
                                                                     type: respPostArticleDTO.data.type,
                                                                     preview: respPostArticleDTO.data.preview
 
-                                                                });
+                                                                }]);
               resPostArticleDTOArray.push(respPostArticleDTO.data);
             });
             resolve(resPostArticleDTOArray);

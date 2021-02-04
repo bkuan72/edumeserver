@@ -72,12 +72,8 @@ export class TimelinePostDTO {
     );
     this.data = DTOGenerator.defineProperty(
       this.data,
-      'media',
-      {
-        type: '',
-        preview: '',
-        embed: ''
-      }
+      'medias',
+      []
     );
     this.data = DTOGenerator.defineProperty(
       this.data,
