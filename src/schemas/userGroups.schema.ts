@@ -58,11 +58,6 @@ export const userGroups_schema: schemaIfc[] = [
         name: 'user_id_idx',
         columns: ['site_code', 'user_id', 'lastUpdateUsec'],
         unique: true
-      },
-      {
-        name: 'account_id_idx',
-        columns: ['site_code', 'account_id', 'lastUpdateUsec'],
-        unique: true
       }
     ]
   }
