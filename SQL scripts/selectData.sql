@@ -14,6 +14,7 @@ select * from posts;
 select BIN_TO_UUID(post_user_id), BIN_TO_UUID(timeline_user_id), likes from user_timelines;
 select * from user_timeline_comments;
 select BIN_TO_UUID(user_id), BIN_TO_UUID(timeline_user_id) from activities;
+select * from post_medias;
 
 delete from logs;
 delete from accounts;
@@ -24,6 +25,7 @@ delete from blacklist_tokens;
 delete from advertisements;
 
 delete from posts;
+delete from user_timeline_comments;
 delete from user_timelines;
 delete from activities;
 
@@ -42,8 +44,19 @@ drop table user_timelines;
 drop table post_comments;
 drop table activities;
 
+drop table advertisements;
+drop table userMedias;
+
+drop table adCategories;
+drop table adGroups;
+drop table adKeywords;
+drop table userGroups;
+drop table userMedias;
+drop table properties;
+
 
 ALTER TABLE accounts MODIFY account_type ENUM('ADMIN','DEV','NORMAL','SERVICE');
+ALTER TABLE activities MODIFY activity_type ENUM('LIKES', 'SHARE', 'MESSAGED', 'FOLLOW_REQUEST', 'FRIEND_REQUEST', 'JOIN_REQUEST');
 
 SELECT accounts.account_type,  BIN_TO_UUID(user_accounts.user_id)
 FROM user_accounts

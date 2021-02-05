@@ -10,41 +10,8 @@ export const posts_schema: schemaIfc[] = [
     primaryKey: true,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true
-  },
-  {
-    fieldName: 'post_date',
-    sqlType: 'VARCHAR(25)',
-    size: 25,
-    default: '',
-    allowNull: false,
     excludeFromUpdate: true,
-    trim: false
-  },
-  {
-    fieldName: 'post_type',
-    sqlType: 'VARCHAR(25)',
-    size: 25,
-    default: "post",
-    allowNull: false,
-    excludeFromUpdate: true,
-    trim: true
-  },
-  {
-    fieldName: 'message',
-    sqlType: 'TEXT',
-    allowNull: false,
-    excludeFromUpdate: false,
-    trim: false,
-    default: ''
-  },
-  {
-    fieldName: 'user_id',
-    sqlType: 'BINARY(16)',
-    primaryKey: false,
-    uuidProperty: true,
-    default: '',
-    excludeFromUpdate: true
+    description: 'unique record identifier'
   },
   {
     fieldName: 'site_code',
@@ -53,15 +20,56 @@ export const posts_schema: schemaIfc[] = [
     allowNull: false,
     default: '',
     excludeFromUpdate: true,
-    trim: true
+    trim: true,
+    description: 'website identifier'
   },
   {
     fieldName: 'status',
     sqlType: 'ENUM',
     size: 10,
     enum: ['OK', 'DELETED'],
-    default: 'OK'
+    default: 'OK',
+    description: 'status of post'
   },
+  {
+    fieldName: 'post_date',
+    sqlType: 'VARCHAR(25)',
+    size: 25,
+    default: '',
+    allowNull: false,
+    excludeFromUpdate: true,
+    trim: false,
+    description: 'date time post was uploaded'
+  },
+  {
+    fieldName: 'post_type',
+    sqlType: 'VARCHAR(25)',
+    size: 25,
+    default: "post",
+    allowNull: false,
+    excludeFromUpdate: true,
+    trim: true,
+    description: 'post type: post, something, video, article'
+  },
+  {
+    fieldName: 'message',
+    sqlType: 'TEXT',
+    allowNull: false,
+    excludeFromUpdate: false,
+    trim: false,
+    default: '',
+    description: 'message in post'
+  },
+  {
+    fieldName: 'user_id',
+    sqlType: 'BINARY(16)',
+    primaryKey: false,
+    uuidProperty: true,
+    default: '',
+    excludeFromUpdate: true,
+    description: 'link to users table - post user'
+  },
+
   {
     fieldName: 'lastUpdateUsec',
     sqlType: 'BIGINT',

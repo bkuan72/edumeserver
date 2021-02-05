@@ -9,7 +9,8 @@ export const friends_schema: schemaIfc[] = [
     primaryKey: true,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'record unique identifier'
   },
   {    fieldName: 'site_code',
   sqlType: 'VARCHAR(20)',
@@ -17,7 +18,8 @@ export const friends_schema: schemaIfc[] = [
   allowNull: false,
   default: '',
   excludeFromUpdate: true,
-  trim: true
+  trim: true,
+  description: 'website identifier'
   },
   {    fieldName: 'status',
     sqlType: 'ENUM',
@@ -25,31 +27,62 @@ export const friends_schema: schemaIfc[] = [
     enum: ['OK',
         'DELETED'
         ],
-    default: 'OK'
+    default: 'OK',
+    description: 'record status'
   },
   {    fieldName: 'user_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'link to users - owner'
   },
   {    fieldName: 'friend_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'link to users - friend'
     },
   {    fieldName: 'friend_date',
     sqlType: 'VARCHAR(25)',
     size: 25,
     allowNull: false,
     excludeFromUpdate: false,
-    trim: false
+    trim: false,
+    description: 'date friended'
+  },
+  {    fieldName: 'friend_req_date',
+    sqlType: 'VARCHAR(25)',
+    size: 25,
+    allowNull: false,
+    excludeFromUpdate: false,
+    trim: false,
+    description: 'date friend requested'
+  },
+  {    fieldName: 'friend_block_date',
+    sqlType: 'VARCHAR(25)',
+    size: 25,
+    allowNull: false,
+    excludeFromUpdate: false,
+    trim: false,
+    description: 'date friend blocked'
+  },
+  {    fieldName: 'friend_status',
+    sqlType: 'ENUM',
+    size: 10,
+    enum: [
+        'BLOCKED',
+        'REQUEST',
+        'OK'
+        ],
+    default: 'REQUEST'
   },
   {    fieldName: 'lastUpdateUsec',
   sqlType: 'BIGINT',
   default: '0',
-  excludeFromUpdate: true
+  excludeFromUpdate: true,
+  description: 'last update timestamp'
   },
   {    fieldName: 'INDEX',
     sqlType: undefined,
@@ -57,6 +90,11 @@ export const friends_schema: schemaIfc[] = [
       {
         name: 'user_id_idx',
         columns: ['site_code', 'user_id', 'friend_date'],
+        unique: true
+      },
+      {
+        name: 'friend_status_idx',
+        columns: ['site_code', 'user_id', 'friend_status', 'lastUpdateUsec'],
         unique: true
       }
     ]

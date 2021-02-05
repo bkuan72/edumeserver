@@ -10,7 +10,8 @@ export const token_schema: schemaIfc[] = [
     primaryKey: true,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'unique record identifier'
   },
   {    fieldName: 'site_code',
     sqlType: 'VARCHAR(20)',
@@ -18,37 +19,43 @@ export const token_schema: schemaIfc[] = [
     allowNull: false,
     default: '',
     excludeFromUpdate: true,
-    trim: true
+    trim: true,
+    description: 'website identifier'
   },
   {    fieldName: 'uuid',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description:'UNUSED'
   },
   {    fieldName: 'user_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'link to users table'
   },
   {    fieldName: 'createTimeStamp',
     sqlType: 'VARCHAR(29)',
     size: 29,
     default: '',
-    allowNull: true
+    allowNull: true,
+    description: 'date time token was created'
   },
   {    fieldName: 'expiryInSec',
     sqlType: 'INTEGER',
     allowNull: false,
-    default: '0'
+    default: '0',
+    description: 'Expiry in Seconds'
   },
   {    fieldName: 'token',
     sqlType: 'VARCHAR(1024)',
     size: 1024,
     allowNull: false,
-    default: ''
+    default: '',
+    description: 'encrypted token'
   },
   {    fieldName: 'INDEX',
     sqlType: undefined,

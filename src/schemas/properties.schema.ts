@@ -9,15 +9,17 @@ export const properties_schema: schemaIfc[] = [
     primaryKey: true,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'unique record identifier'
   },
   {    fieldName: 'site_code',
-  sqlType: 'VARCHAR(20)',
-  size: 20,
-  allowNull: false,
-  default: '',
-  excludeFromUpdate: true,
-  trim: true
+    sqlType: 'VARCHAR(20)',
+    size: 20,
+    allowNull: false,
+    default: '',
+    excludeFromUpdate: true,
+    trim: true,
+    description: 'website identifier'
   },
   {    fieldName: 'name',
   sqlType: 'VARCHAR(255)',
@@ -25,15 +27,17 @@ export const properties_schema: schemaIfc[] = [
   allowNull: false,
   default: '',
   excludeFromUpdate: true,
-  trim: true
+  trim: true,
+  description: 'property name'
   },
   {    fieldName: 'value',
-  sqlType: 'VARCHAR(255)',
+  sqlType: 'TEXT',
   size: 255,
   allowNull: false,
   default: '',
   excludeFromUpdate: false,
-  trim: true
+  trim: true,
+  description: 'property data'
   },
   {    fieldName: 'status',
     sqlType: 'ENUM',
@@ -41,12 +45,14 @@ export const properties_schema: schemaIfc[] = [
     enum: ['OK',
         'DELETED'
         ],
-    default: 'OK'
+    default: 'OK',
+    description: 'record status'
   },
   {    fieldName: 'lastUpdateUsec',
   sqlType: 'BIGINT',
   default: '0',
-  excludeFromUpdate: true
+  excludeFromUpdate: true,
+  description: 'last update timestamp'
   },
   {    fieldName: 'INDEX',
     sqlType: undefined,

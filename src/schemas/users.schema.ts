@@ -10,7 +10,8 @@ export const users_schema: schemaIfc[] = [
     primaryKey: true,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'unique record identifier'
   },
   {
     fieldName: 'site_code',
@@ -19,7 +20,8 @@ export const users_schema: schemaIfc[] = [
     allowNull: false,
     default: '',
     excludeFromUpdate: true,
-    trim: true
+    trim: true,
+    description: 'website reference code'
   },
   {
     fieldName: 'title',
@@ -27,7 +29,8 @@ export const users_schema: schemaIfc[] = [
     size: 10,
     enum: ['Mr', 'Ms', 'Mrs', 'Dr', 'Madam', 'Sir', 'N/A'],
     excludeFromUpdate: false,
-    default: 'N/A'
+    default: 'N/A',
+    description: 'User preferred title'
   },
   {
     fieldName: 'user_name',
@@ -35,7 +38,8 @@ export const users_schema: schemaIfc[] = [
     size: 60,
     allowNull: false,
     excludeFromUpdate: false,
-    default: ''
+    default: '',
+    description: 'user name shown on avatar'
   },
   {
     fieldName: 'first_name',
@@ -43,7 +47,8 @@ export const users_schema: schemaIfc[] = [
     size: 60,
     allowNull: false,
     excludeFromUpdate: false,
-    default: ''
+    default: '',
+    description: 'first name'
   },
   {
     fieldName: 'last_name',
@@ -51,7 +56,8 @@ export const users_schema: schemaIfc[] = [
     size: 60,
     allowNull: false,
     excludeFromUpdate: false,
-    default: ''
+    default: '',
+    description: 'last name'
   },
   {
     fieldName: 'password',
@@ -62,7 +68,8 @@ export const users_schema: schemaIfc[] = [
     trim: true,
     encrypt: true,
     bcryptIt: true,
-    excludeFromSelect: true
+    excludeFromSelect: true,
+    description: 'password'
   },
   {
     fieldName: 'email',
@@ -71,7 +78,8 @@ export const users_schema: schemaIfc[] = [
     allowNull: false,
     excludeFromUpdate: false,
     default: '',
-    trim: true
+    trim: true,
+    description: 'user email address'
   },
   {
     fieldName: 'phone_no',
@@ -80,7 +88,8 @@ export const users_schema: schemaIfc[] = [
     allowNull: false,
     excludeFromUpdate: false,
     default: '',
-    trim: true
+    trim: true,
+    description: 'land line phone number'
   },
   {
     fieldName: 'mobile_no',
@@ -89,7 +98,8 @@ export const users_schema: schemaIfc[] = [
     allowNull: false,
     excludeFromUpdate: false,
     default: '',
-    trim: true
+    trim: true,
+    description: 'mobile number'
   },
   {
     fieldName: 'website',
@@ -98,12 +108,14 @@ export const users_schema: schemaIfc[] = [
     allowNull: false,
     excludeFromUpdate: false,
     default: '',
-    trim: true
-  },
-  { fieldName: 'avatar', 
-    sqlType: 'TEXT', 
     trim: true,
-    default: ''
+    description: 'user`s own website'
+  },
+  { fieldName: 'avatar',
+    sqlType: 'TEXT',
+    trim: true,
+    default: '',
+    description: 'user`s avatar blob - type png'
    },
   {
     fieldName: 'language',
@@ -112,7 +124,8 @@ export const users_schema: schemaIfc[] = [
     allowNull: false,
     excludeFromUpdate: false,
     default: 'EN',
-    trim: true
+    trim: true,
+    description: 'language code'
   },
   {
     fieldName: 'address',
@@ -121,7 +134,8 @@ export const users_schema: schemaIfc[] = [
     allowNull: false,
     excludeFromUpdate: false,
     default: '',
-    trim: true
+    trim: true,
+    description: 'user`s address'
   },
   {
     fieldName: 'suburb',
@@ -214,13 +228,22 @@ export const users_schema: schemaIfc[] = [
     excludeFromUpdate: false,
     default: 'ENABLED'
   },
-  { fieldName: 'reg_confirm_key', sqlType: 'VARCHAR(60)', size: 60 },
-  { fieldName: 'pwd_reset_key', sqlType: 'VARCHAR(60)', size: 60 },
+  { fieldName: 'reg_confirm_key', 
+    sqlType: 'VARCHAR(60)', 
+    size: 60,
+    description: 'code used in confirming new user registration' 
+  },
+  { fieldName: 'pwd_reset_key', 
+    sqlType: 'VARCHAR(60)', 
+    size: 60, 
+    description: 'keys set for password reset' 
+  },
   {
     fieldName: 'lastUpdateUsec',
     sqlType: 'BIGINT',
     default: '0',
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'last update timestamp'
   },
   {
     fieldName: 'INDEX',

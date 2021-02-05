@@ -4,8 +4,8 @@ import { SqlFormatter } from './../../modules/sql.strings';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import {
-  groups_schema,
-  groups_schema_table
+  socialGroups_schema,
+  socialGroups_schema_table
 } from '../../schemas/groups.schema';
 import { GroupDTO } from '../../dtos/groups.DTO';
 import { EntityModel } from './entity.model';
@@ -21,11 +21,11 @@ export class GroupModel extends EntityModel {
     if (altTable) {
       super(altTable);
     } else {
-      this.tableName = groups_schema_table;
+      this.tableName = socialGroups_schema_table;
     }
     this.requestDTO = GroupDTO;
     this.responseDTO = GroupDTO;
-    this.schema = groups_schema;
+    this.schema = socialGroups_schema;
   }
 
   findByAccountId = (

@@ -1,16 +1,17 @@
 import { schemaIfc } from '../modules/DbModule';
 import DTOGenerator from '../modules/ModelGenerator';
 
-export const medias_schema_table = 'medias';
+export const userMedias_schema_table = 'userMedias';
 
-export const medias_schema: schemaIfc[] = [
+export const userMedias_schema: schemaIfc[] = [
   {
     fieldName: 'id',
     sqlType: 'BINARY(16) PRIMARY KEY',
     primaryKey: true,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'unique record identifier'
   },
   {
     fieldName: 'site_code',
@@ -19,21 +20,24 @@ export const medias_schema: schemaIfc[] = [
     allowNull: false,
     default: '',
     excludeFromUpdate: true,
-    trim: true
+    trim: true,
+    description: 'website identifier'
   },
   {
     fieldName: 'status',
     sqlType: 'ENUM',
     size: 10,
     enum: ['OK', 'DELETED'],
-    default: 'OK'
+    default: 'OK',
+    description: 'record status'
   },
   {
     fieldName: 'user_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'link to users - owner'
   },
   {
     fieldName: 'upload_date',
@@ -41,15 +45,8 @@ export const medias_schema: schemaIfc[] = [
     size: 25,
     allowNull: false,
     excludeFromUpdate: false,
-    trim: false
-  },
-  {
-    fieldName: 'media_date',
-    sqlType: 'VARCHAR(25)',
-    size: 25,
-    allowNull: false,
-    excludeFromUpdate: false,
-    trim: false
+    trim: false,
+    description: 'date time media uploaded'
   },
   {
     fieldName: 'media_type',
@@ -58,7 +55,8 @@ export const medias_schema: schemaIfc[] = [
     allowNull: false,
     default: '',
     excludeFromUpdate: false,
-    trim: true
+    trim: true,
+    description: 'type of media : image or video'
   },
   {
     fieldName: 'title',
@@ -68,27 +66,22 @@ export const medias_schema: schemaIfc[] = [
     trim: true,
     default: ''
   },
-  {
-    fieldName: 'preview',
-    sqlType: 'VARCHAR(125)',
-    size: 125,
-    allowNull: true,
-    excludeFromUpdate: false,
-    trim: true
-  },
-  {
-    fieldName: 'embed',
-    sqlType: 'VARCHAR(125)',
-    size: 125,
-    allowNull: true,
-    excludeFromUpdate: false,
-    trim: true
+  {    fieldName: 'preview',
+    sqlType: 'MEDIUMBLOB',
+    default: '',
+    description: 'image data'
+    },
+  {    fieldName: 'embed',
+    sqlType: 'TEXT',
+    default: '',
+    description: 'video url'
   },
   {
     fieldName: 'lastUpdateUsec',
     sqlType: 'BIGINT',
     default: '0',
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'last update timestamp'
   },
   {
     fieldName: 'INDEX',
@@ -96,12 +89,12 @@ export const medias_schema: schemaIfc[] = [
     index: [
       {
         name: 'user_id_idx',
-        columns: ['site_code', 'user_id', 'media_date'],
-        unique: true
+        columns: ['site_code', 'user_id', 'upload_date'],
+        unique: false
       }
     ]
   }
 ];
 
-const MediaSchemaModel = DTOGenerator.genSchemaModel(medias_schema);
-export type MediaData = typeof MediaSchemaModel;
+const UserMediaSchemaModel = DTOGenerator.genSchemaModel(userMedias_schema);
+export type UserMediaData = typeof UserMediaSchemaModel;

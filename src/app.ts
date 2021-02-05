@@ -38,8 +38,8 @@ class App {
     // This allows an "average" server to run at 90-100% CPU and keeps request latency
     // at around 200ms. For comparison, a maxLag value of 10ms results in 60-70% CPU usage,
     // while latency for "average" requests stays at about 40ms
-    toobusy_js.maxLag(1000);
-    toobusy_js.interval(500);
+    toobusy_js.maxLag(SysEnv.TOOBUSY_MAX_LAG);
+    toobusy_js.interval(SysEnv.TOOBUSY_CHECK_INTERVAL);
     toobusy_js.onLag(function(currentLag: number) {
       SysLog.info("Event loop lag detected! Latency: " + currentLag + "ms");
     });

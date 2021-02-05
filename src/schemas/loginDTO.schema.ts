@@ -7,14 +7,16 @@ export const loginDTO_schema: schemaIfc[] = [
         size: 20,
         allowNull: false,
         default: '',
-        trim: true
+        trim: true,
+        description: 'link to users table'
     },
     {        fieldName: 'email',
         sqlType: 'VARCHAR(60)',
         size: 60,
         allowNull: false,
         default: '',
-        trim: true
+        trim: true,
+        description: 'email'
     },
     {        fieldName: 'password',
         sqlType: 'VARCHAR(256)',
@@ -24,7 +26,8 @@ export const loginDTO_schema: schemaIfc[] = [
         trim: true,
         encrypt: true,
         bcryptIt: true,
-        excludeFromSelect: true
+        excludeFromSelect: true,
+        description: 'password'
     },
 
 ];

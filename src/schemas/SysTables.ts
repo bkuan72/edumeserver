@@ -1,8 +1,8 @@
 import { userGroups_schema, userGroups_schema_table } from './userGroups.schema';
-import { groups_schema, groups_schema_table } from './groups.schema';
+import { socialGroups_schema, socialGroups_schema_table } from './groups.schema';
 import { postArticles_schema, postArticles_schema_table } from './postArticles.schema';
 import { activities_schema, activities_schema_table } from './activities.schema';
-import { medias_schema, medias_schema_table } from './medias.schema';
+import { userMedias_schema, userMedias_schema_table } from './userMedias.schema';
 import { userTimelineComments_schema, userTimelineComments_schema_table } from './userTimelineComments.schema';
 import { friends_schema, friends_schema_table } from './friends.schema';
 import { postMedias_schema, postMedias_schema_table } from './postMedias.schema';
@@ -71,8 +71,8 @@ export const sysTables: tableIfc[] = [
     schema: friends_schema
   },
   {
-    name: medias_schema_table,
-    schema: medias_schema
+    name: userMedias_schema_table,
+    schema: userMedias_schema
   },
   {
     name: activities_schema_table,
@@ -83,8 +83,8 @@ export const sysTables: tableIfc[] = [
     schema: postArticles_schema
   },
   {
-    name: groups_schema_table,
-    schema: groups_schema
+    name: socialGroups_schema_table,
+    schema: socialGroups_schema
   },
   {
     name: userGroups_schema_table,

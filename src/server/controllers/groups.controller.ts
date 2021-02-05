@@ -6,7 +6,7 @@ import * as express from 'express';
 import Controller from "../../interfaces/controller.interface";
 import DataNotFoundException from "../../exceptions/DataNotFoundException";
 import NoDataException from "../../exceptions/NoDataExceptions";
-import { groups_schema } from "../../schemas/groups.schema";
+import { socialGroups_schema } from "../../schemas/groups.schema";
 import validationUpdateMiddleware from "../../middleware/validate.update.dto.middleware";
 import authMiddleware from "../../middleware/auth.middleware";
 import validationMiddleware from "../../middleware/validation.middleware";
@@ -32,11 +32,11 @@ export class GroupsController implements Controller{
   public intializeRoutes() {
     this.router.post(this.path,
                     authMiddleware,
-                    validationMiddleware(groups_schema),
+                    validationMiddleware(socialGroups_schema),
                     this.newGroup);
     this.router.get(this.path+'/byAccountId/:accountId', authMiddleware, this.getByAccountId);
     this.router.get(this.path+'/byId/:id', authMiddleware, this.findById);
-    this.router.patch(this.path+'/:id', authMiddleware, validationUpdateMiddleware(groups_schema), this.update);
+    this.router.patch(this.path+'/:id', authMiddleware, validationUpdateMiddleware(socialGroups_schema), this.update);
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
     this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
@@ -52,7 +52,7 @@ export class GroupsController implements Controller{
     response.send(dto.data);
   }
   apiSchema  = (request: express.Request, response: express.Response) => {
-    response.send(groups_schema);
+    response.send(socialGroups_schema);
   }
 
   newGroup  = (request: express.Request, response: express.Response, next: express.NextFunction) => {

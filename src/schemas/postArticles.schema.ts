@@ -9,7 +9,8 @@ export const postArticles_schema: schemaIfc[] = [
     primaryKey: true,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'record unique identifier'
   },
   {    fieldName: 'site_code',
   sqlType: 'VARCHAR(20)',
@@ -17,42 +18,44 @@ export const postArticles_schema: schemaIfc[] = [
   allowNull: false,
   default: '',
   excludeFromUpdate: true,
-  trim: true
+  trim: true,
+  description: 'website identifier'
   },
   {
     fieldName: 'title',
     sqlType: 'TEXT',
     allowNull: true,
     excludeFromUpdate: false,
-    trim: true
+    trim: true,
+    description: 'article title'
   },
   {
     fieldName: 'subtitle',
     sqlType: 'TEXT',
     allowNull: true,
     excludeFromUpdate: false,
-    trim: true
+    trim: true,
+    description: 'article sub title'
   },
   {
     fieldName: 'excerpt',
     sqlType: 'TEXT',
     allowNull: true,
     excludeFromUpdate: false,
-    trim: true
+    trim: true,
+    description: 'article excerpt'
   },
   {    fieldName: 'type',
     sqlType: 'VARCHAR(20)',
     size: 20,
     allowNull: false,
     excludeFromUpdate: false,
-    trim: true
+    trim: true,
+    description: 'article type media type'
   },
   {    fieldName: 'preview',
-    sqlType: 'VARCHAR(125)',
-    size: 125,
-    allowNull: false,
-    excludeFromUpdate: false,
-    trim: true
+    sqlType: 'MEDIUMBLOB',
+    description: 'article media blob'
     },
   {    fieldName: 'status',
     sqlType: 'ENUM',
@@ -60,26 +63,29 @@ export const postArticles_schema: schemaIfc[] = [
     enum: ['OK',
         'DELETED'
         ],
-    default: 'OK'
+    default: 'OK',
+    description: 'record status'
   },
   {    fieldName: 'post_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'link to posts table'
   },
   {    fieldName: 'lastUpdateUsec',
     sqlType: 'BIGINT',
     default: '0',
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'last update timestamp'
   },
   {    fieldName: 'INDEX',
     sqlType: undefined,
     index: [
       {
         name: 'post_id_idx',
-        columns: ['site_code', 'post_id'],
-        unique: true
+        columns: ['site_code', 'post_id', 'lastUpdateUsec'],
+        unique: false
       }
     ]
   }

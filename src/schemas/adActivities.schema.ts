@@ -1,9 +1,9 @@
 import { schemaIfc } from '../modules/DbModule';
 import DTOGenerator from '../modules/ModelGenerator';
 
-export const entities_schema_table = 'entities';
+export const adActivities_schema_table = 'adActivities';
 
-export const entities_schema: schemaIfc[] = [
+export const adActivities_schema: schemaIfc[] = [
   {    fieldName: 'id',
     sqlType: 'BINARY(16) PRIMARY KEY',
     primaryKey: true,
@@ -30,29 +30,37 @@ export const entities_schema: schemaIfc[] = [
     default: 'OK',
     description: 'Status of record'
   },
-  {    fieldName: 'account_id',
+  {    fieldName: 'activity_type',
+    sqlType: 'ENUM',
+    size: 10,
+    enum: ['CLICKED',
+        'SEARCHED',
+        'ABUSED'
+        ],
+    default: 'CLICKED',
+    description: 'Status of record'
+    },
+  {    fieldName: 'advertisement_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
     excludeFromUpdate: true,
-    description: 'link to accounts table'
+    description: 'link to advertisements table'
   },
-  {    fieldName: 'date_field',
+  {
+    fieldName: 'hit_count',
+    sqlType: 'INT',
+    default: '0',
+    excludeFromUpdate: true,
+    description: 'advert activity hit count'
+  },
+  {    fieldName: 'last_activity_date',
     sqlType: 'VARCHAR(25)',
     size: 25,
     allowNull: false,
     excludeFromUpdate: false,
     trim: false,
-    description: ' a date field '
-  },
-  {    fieldName: 'entities_code',
-  sqlType: 'VARCHAR(100)',
-  size: 100,
-  allowNull: false,
-  default: '',
-  excludeFromUpdate: false,
-  trim: true,
-  description: 'entity identifier code'
+    description: ' date of last activity'
   },
   {    fieldName: 'lastUpdateUsec',
   sqlType: 'BIGINT',
@@ -64,8 +72,8 @@ export const entities_schema: schemaIfc[] = [
     sqlType: undefined,
     index: [
       {
-        name: 'entities_code_idx',
-        columns: ['site_code', 'entities_code'],
+        name: 'adActivity_idx',
+        columns: ['site_code', 'activity_type', 'advertisement_id'],
         unique: true
       },
       {
@@ -77,5 +85,5 @@ export const entities_schema: schemaIfc[] = [
   }
 ];
 
-const EntitySchemaModel = DTOGenerator.genSchemaModel(entities_schema);
-export type EntityData = typeof EntitySchemaModel;
+const AdActivitySchemaModel = DTOGenerator.genSchemaModel(adActivities_schema);
+export type AdActivityData = typeof AdActivitySchemaModel;

@@ -1,26 +1,26 @@
-import { SqlFormatter } from './../../modules/sql.strings';
+import { SqlFormatter } from '../../modules/sql.strings';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { medias_schema, medias_schema_table } from '../../schemas/medias.schema';
-import { MediaDTO } from '../../dtos/medias.DTO';
+import { userMedias_schema, userMedias_schema_table } from '../../schemas/userMedias.schema';
+import { UserMediaDTO } from '../../dtos/userMedias.DTO';
 import { EntityModel } from './entity.model';
 import SqlStr = require('sqlstring');
 import SysLog from '../../modules/SysLog';
 import dbConnection from '../../modules/DbModule';
 
-export class MediaModel extends EntityModel {
+export class UserMediaModel extends EntityModel {
   constructor (altTable?: string) {
     super();
 
     if (altTable) {
       super(altTable);
     } else  {
-      this.tableName = medias_schema_table;
+      this.tableName = userMedias_schema_table;
     }
-    this.requestDTO = MediaDTO;
-    this.responseDTO = MediaDTO;
-    this.schema = medias_schema;
+    this.requestDTO = UserMediaDTO;
+    this.responseDTO = UserMediaDTO;
+    this.schema = userMedias_schema;
   }
 
   findByUserId = (
@@ -36,7 +36,7 @@ export class MediaModel extends EntityModel {
       dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
-          const resMediaDTOArray: MediaDTO[] = [];
+          const resUserMediaDTOArray: UserMediaDTO[] = [];
           if (result.rows.length) {
             result.rows.forEach((rowData) => {
               const data = SqlFormatter.transposeResultSet(
@@ -45,14 +45,14 @@ export class MediaModel extends EntityModel {
                 undefined,
                 rowData
               );
-              const respMediaDTO = new this.responseDTO(data) as MediaDTO;
-              resMediaDTOArray.push(respMediaDTO.data);
+              const respUserMediaDTO = new this.responseDTO(data) as UserMediaDTO;
+              resUserMediaDTOArray.push(respUserMediaDTO.data);
             });
-            resolve(resMediaDTOArray);
+            resolve(resUserMediaDTOArray);
             return;
           }
           // not found Customer with the id
-          resolve(resMediaDTOArray);
+          resolve(resUserMediaDTOArray);
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));

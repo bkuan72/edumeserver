@@ -9,7 +9,8 @@ export const advertisements_schema: schemaIfc[] = [
     primaryKey: true,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'unique record identifier'
   },
   {    fieldName: 'site_code',
   sqlType: 'VARCHAR(20)',
@@ -17,14 +18,26 @@ export const advertisements_schema: schemaIfc[] = [
   allowNull: false,
   default: '',
   excludeFromUpdate: true,
-  trim: true
+  trim: true,
+  description: 'website identifier'
   },
-  {    fieldName: 'account_id',
+  {    fieldName: 'advert_type',
+    sqlType: 'ENUM',
+    size: 10,
+    enum: ['USER',
+        'ACCOUNT',
+        'GROUP'
+        ],
+    default: 'USER',
+    description: 'identifier type for source_id'
+  },
+  {    fieldName: 'source_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'link to either users, accounts, groups'
   },
   {    fieldName: 'header',
   sqlType: 'VARCHAR(100)',
@@ -32,7 +45,8 @@ export const advertisements_schema: schemaIfc[] = [
   allowNull: false,
   default: '',
   excludeFromUpdate: false,
-  trim: true
+  trim: true,
+  description: 'advertisement header'
   },
   {    fieldName: 'sub_header',
   sqlType: 'VARCHAR(100)',
@@ -40,7 +54,8 @@ export const advertisements_schema: schemaIfc[] = [
   allowNull: false,
   default: '',
   excludeFromUpdate: false,
-  trim: true
+  trim: true,
+  description: 'advertisement sub header'
   },
   {    fieldName: 'url',
   sqlType: 'VARCHAR(100)',
@@ -48,43 +63,104 @@ export const advertisements_schema: schemaIfc[] = [
   allowNull: false,
   default: '',
   excludeFromUpdate: false,
-  trim: true
+  trim: true,
+  description: 'external website link'
   },
   {    fieldName: 'excerpt',
   sqlType: 'TEXT',
   default: '',
   allowNull: true,
   excludeFromUpdate: false,
-  trim: true
+  trim: true,
+  description: 'advertisement excerpt'
+  },
+  {
+    fieldName: 'category',
+    sqlType: 'VARCHAR(30)',
+    size: 30,
+    excludeFromUpdate: false,
+    trim: true
   },
   {    fieldName: 'keywords',
-  sqlType: 'VARCHAR(100)',
-  size: 100,
+  sqlType: 'TEXT',
   allowNull: false,
   default: '',
   excludeFromUpdate: false,
-  trim: true
+  trim: true,
+  description: 'a comma delimited string of keywords use for filtering'
+  },
+  {    fieldName: 'image',
+    sqlType: 'MEDIUMBLOB',
+    default: '',
+    description: 'image to be display as part of advert'
   },
   {    fieldName: 'start_date',
     sqlType: 'VARCHAR(25)',
     size: 25,
     allowNull: false,
     excludeFromUpdate: false,
-    trim: false
+    trim: false,
+    description: 'start date of advertisement'
   },
   {    fieldName: 'end_date',
     sqlType: 'VARCHAR(25)',
     size: 25,
     allowNull: false,
     excludeFromUpdate: false,
-    trim: false
+    trim: false,
+    description: 'end date of advertisement'
   },
   {    fieldName: 'priority_code',
     sqlType: 'VARCHAR(25)',
     size: 25,
     allowNull: false,
     excludeFromUpdate: false,
-    trim: false
+    trim: false,
+    description: 'code for identifying advertisement priority'
+  },
+  {
+    fieldName: 'address',
+    sqlType: 'TEXT',
+    size: 255,
+    allowNull: true,
+    default: '',
+    description: 'Address for advertisement'
+  },
+  {
+    fieldName: 'suburb',
+    sqlType: 'VARCHAR(40)',
+    size: 40,
+    allowNull: true,
+    default: '',
+    trim: true,
+    description: 'Suburb'
+  },
+  {
+    fieldName: 'city',
+    sqlType: 'VARCHAR(40)',
+    size: 40,
+    allowNull: true,
+    default: '',
+    trim: true,
+    description: 'City'
+  },
+  {
+    fieldName: 'state',
+    sqlType: 'VARCHAR(40)',
+    size: 40,
+    allowNull: true,
+    default: '',
+    trim: true,
+    description: 'State'
+  },
+  {
+    fieldName: 'country',
+    sqlType: 'VARCHAR(40)',
+    size: 40,
+    allowNull: true,
+    default: '',
+    trim: true,
+    description: 'Country'
   },
   {    fieldName: 'status',
     sqlType: 'ENUM',
@@ -92,7 +168,8 @@ export const advertisements_schema: schemaIfc[] = [
     enum: ['OK',
         'DELETED'
         ],
-    default: 'OK'
+    default: 'OK',
+    description: 'Status of record'
   },
   {    fieldName: 'lastUpdateUsec',
   sqlType: 'BIGINT',

@@ -9,7 +9,8 @@ export const userAccounts_schema: schemaIfc[] = [
     primaryKey: true,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'unique record identifier'
   },
   {    fieldName: 'site_code',
     sqlType: 'VARCHAR(20)',
@@ -17,21 +18,24 @@ export const userAccounts_schema: schemaIfc[] = [
     allowNull: false,
     default: '',
     excludeFromUpdate: true,
-    trim: true
+    trim: true,
+    description: 'website identifier'
   },
   {    fieldName: 'user_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'link to users table'
   },
   {    fieldName: 'account_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'link to accounts table'
   },
   {    fieldName: 'acc_type',
     sqlType: 'ENUM',
@@ -39,19 +43,33 @@ export const userAccounts_schema: schemaIfc[] = [
     enum: ['HOLDER',
         'SUB_USER'
         ],
-    default: 'HOLDER'
+    default: 'HOLDER',
+    description: 'account type - holder or sub user'
   },
   {    fieldName: 'allow_notification',
     sqlType: 'TINYINT(1)',
-    default: '0'
+    default: '0',
+    description: 'allow application notification'
   },
   {    fieldName: 'allow_promo',
     sqlType: 'TINYINT(1)',
-    default: '0'
+    default: '0',
+    description: 'allow promotional emails'
   },
-  {    fieldName: 'test',
+  {    fieldName: 'allow_msg',
     sqlType: 'TINYINT(1)',
-    default: '0'
+    default: '0',
+    description: 'allow messaging'
+  },
+  {    fieldName: 'allow_friends',
+    sqlType: 'TINYINT(1)',
+    default: '0',
+    description: 'allow friending'
+  },
+  {    fieldName: 'public',
+    sqlType: 'TINYINT(1)',
+    default: '1',
+    description: 'allow user profile to be discoverable'
   },
   {    fieldName: 'status',
     sqlType: 'ENUM',
@@ -59,12 +77,14 @@ export const userAccounts_schema: schemaIfc[] = [
     enum: ['OK',
         'DELETED'
         ],
-    default: 'OK'
+    default: 'OK',
+    description: 'record status'
   },
   {    fieldName: 'lastUpdateUsec',
   sqlType: 'BIGINT',
   default: '0',
-  excludeFromUpdate: true
+  excludeFromUpdate: true,
+  description: 'last update timestamp'
   },
   {    fieldName: 'INDEX',
     sqlType: undefined,
@@ -73,11 +93,6 @@ export const userAccounts_schema: schemaIfc[] = [
         name: 'user_account_id_idx',
         columns: ['site_code', 'user_id', 'account_id'],
         unique: true
-      },
-      {
-        name: 'last_upd_usec_idx',
-        columns: [ 'site_code', 'lastUpdateUsec'],
-        unique: false
       }
     ],
     enum:[]

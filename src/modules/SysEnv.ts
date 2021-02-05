@@ -18,6 +18,9 @@ export class SystemEnvironment {
     MAILER_PRODUCT_REGISTRATION_LINK: string;
     MAILER_PRODUCT_RESET_PWD_LINK: string;
 
+    TOOBUSY_MAX_LAG: number;
+    TOOBUSY_CHECK_INTERVAL: number;
+
     private COOKIE_AUTH: string;
 
     constructor () {
@@ -40,6 +43,8 @@ export class SystemEnvironment {
         this.MAILER_PRODUCT_NAME = '';          // MailGen product.name
         this.MAILER_PRODUCT_REGISTRATION_LINK = '';          // MailGen product.link - URL to API for confirming registration
         this.MAILER_PRODUCT_RESET_PWD_LINK = '';          // MailGen product.link - URL to API for reset password confirmation
+        this.TOOBUSY_MAX_LAG = 1000;            // maximum lag tolerable in ms
+        this.TOOBUSY_CHECK_INTERVAL = 500;      // check interval in ms
 
     }
     init(): void {
@@ -99,6 +104,12 @@ export class SystemEnvironment {
         }
         if (process.env.MAILER_PRODUCT_RESET_PWD_LINK !== undefined) {
             this.MAILER_PRODUCT_RESET_PWD_LINK = process.env.MAILER_PRODUCT_RESET_PWD_LINK;
+        }
+        if (process.env.TOOBUSY_MAX_LAG !== undefined) {
+            this.TOOBUSY_MAX_LAG = parseInt(process.env.TOOBUSY_MAX_LAG);
+        }
+        if (process.env.TOOBUSY_CHECK_INTERVAL !== undefined) {
+            this.TOOBUSY_CHECK_INTERVAL = parseInt(process.env.TOOBUSY_CHECK_INTERVAL);
         }
     }
     CookieAuth(): boolean {

@@ -10,7 +10,8 @@ export const activities_schema: schemaIfc[] = [
     primaryKey: true,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'record unique identifier'
   },
   {
     fieldName: 'activity_date',
@@ -18,7 +19,8 @@ export const activities_schema: schemaIfc[] = [
     size: 25,
     allowNull: false,
     excludeFromUpdate: true,
-    trim: false
+    trim: false,
+    description: 'date of activity'
   },
   {
     fieldName: 'message',
@@ -26,35 +28,40 @@ export const activities_schema: schemaIfc[] = [
     allowNull: false,
     excludeFromUpdate: false,
     trim: false,
-    default: ''
+    default: '',
+    description: 'message'
   },
   {
     fieldName: 'user_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'link to users table - activity initiator'
   },
   {
     fieldName: 'timeline_user_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'link to users table - timeline to appear on'
   },
   {
     fieldName: 'timeline_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'link to usetTimelines table'
   },
   {
     fieldName: 'activity_type',
     sqlType: 'ENUM',
     size: 15,
     enum: ['LIKES', 'SHARE', 'MESSAGED', 'FOLLOW_REQUEST', 'FRIEND_REQUEST', 'JOIN_REQUEST'],
-    default: 'LIKES'
+    default: 'LIKES',
+    description: 'types of activities'
   },
   {
     fieldName: 'site_code',
@@ -63,20 +70,23 @@ export const activities_schema: schemaIfc[] = [
     allowNull: false,
     default: '',
     excludeFromUpdate: true,
-    trim: true
+    trim: true,
+    description: 'website identifier'
   },
   {
     fieldName: 'status',
     sqlType: 'ENUM',
     size: 10,
     enum: ['OK', 'DELETED'],
-    default: 'OK'
+    default: 'OK',
+    description: 'record status'
   },
   {
     fieldName: 'lastUpdateUsec',
     sqlType: 'BIGINT',
     default: '0',
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'last update time stamp'
   },
   {
     fieldName: 'INDEX',

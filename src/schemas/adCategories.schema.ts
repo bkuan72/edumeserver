@@ -1,16 +1,16 @@
 import { schemaIfc } from '../modules/DbModule';
 import DTOGenerator from '../modules/ModelGenerator';
 
-export const entities_schema_table = 'entities';
+export const adCategories_schema_table = 'adCategories';
 
-export const entities_schema: schemaIfc[] = [
+export const adCategories_schema: schemaIfc[] = [
   {    fieldName: 'id',
     sqlType: 'BINARY(16) PRIMARY KEY',
     primaryKey: true,
     default: '',
     uuidProperty: true,
     excludeFromUpdate: true,
-    description: 'unique record identifier'
+    description: 'record unique identifier'
   },
   {    fieldName: 'site_code',
   sqlType: 'VARCHAR(20)',
@@ -28,31 +28,16 @@ export const entities_schema: schemaIfc[] = [
         'DELETED'
         ],
     default: 'OK',
-    description: 'Status of record'
+    description: 'record status'
   },
-  {    fieldName: 'account_id',
-    sqlType: 'BINARY(16)',
-    primaryKey: false,
-    uuidProperty: true,
-    excludeFromUpdate: true,
-    description: 'link to accounts table'
-  },
-  {    fieldName: 'date_field',
-    sqlType: 'VARCHAR(25)',
-    size: 25,
-    allowNull: false,
-    excludeFromUpdate: false,
-    trim: false,
-    description: ' a date field '
-  },
-  {    fieldName: 'entities_code',
-  sqlType: 'VARCHAR(100)',
-  size: 100,
+  {    fieldName: 'adCategory_code',
+  sqlType: 'VARCHAR(30)',
+  size: 30,
   allowNull: false,
   default: '',
   excludeFromUpdate: false,
   trim: true,
-  description: 'entity identifier code'
+  description: 'advert category'
   },
   {    fieldName: 'lastUpdateUsec',
   sqlType: 'BIGINT',
@@ -64,8 +49,8 @@ export const entities_schema: schemaIfc[] = [
     sqlType: undefined,
     index: [
       {
-        name: 'entities_code_idx',
-        columns: ['site_code', 'entities_code'],
+        name: 'adCategories_code_idx',
+        columns: ['site_code', 'adCategory_code'],
         unique: true
       },
       {
@@ -77,5 +62,5 @@ export const entities_schema: schemaIfc[] = [
   }
 ];
 
-const EntitySchemaModel = DTOGenerator.genSchemaModel(entities_schema);
-export type EntityData = typeof EntitySchemaModel;
+const AdCategorySchemaModel = DTOGenerator.genSchemaModel(adCategories_schema);
+export type AdCategoryData = typeof AdCategorySchemaModel;

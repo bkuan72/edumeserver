@@ -1,16 +1,17 @@
 import { schemaIfc } from '../modules/DbModule';
 import DTOGenerator from '../modules/ModelGenerator';
 
-export const groups_schema_table = 'accgroups';
+export const socialGroups_schema_table = 'socialGroups';
 
-export const groups_schema: schemaIfc[] = [
+export const socialGroups_schema: schemaIfc[] = [
   {
     fieldName: 'id',
     sqlType: 'BINARY(16) PRIMARY KEY',
     primaryKey: true,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'record unique identifier'
   },
   {
     fieldName: 'site_code',
@@ -19,21 +20,32 @@ export const groups_schema: schemaIfc[] = [
     allowNull: false,
     default: '',
     excludeFromUpdate: true,
-    trim: true
+    trim: true,
+    description: 'website identifier'
   },
   {
     fieldName: 'status',
     sqlType: 'ENUM',
     size: 10,
     enum: ['OK', 'DELETED'],
-    default: 'OK'
+    default: 'OK',
+    description: 'record status'
   },
   {
-    fieldName: 'account_id',
+    fieldName: 'group_type',
+    sqlType: 'ENUM',
+    size: 10,
+    enum: ['USER', 'ACCOUNT'],
+    default: 'USER',
+    description: 'group type - by USER or ACCOUNT'
+  },
+  {
+    fieldName: 'owner_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'group type USER - link to users, ACCOUNT - link to accounts'
   },
   {
     fieldName: 'date_create',
@@ -41,7 +53,8 @@ export const groups_schema: schemaIfc[] = [
     size: 25,
     allowNull: false,
     excludeFromUpdate: false,
-    trim: false
+    trim: false,
+    description: 'date time group was created'
   },
   {
     fieldName: 'group_name',
@@ -50,7 +63,8 @@ export const groups_schema: schemaIfc[] = [
     allowNull: false,
     default: '',
     excludeFromUpdate: false,
-    trim: true
+    trim: true,
+    description: 'name of group'
   },
   {
     fieldName: 'avatar',
@@ -58,41 +72,53 @@ export const groups_schema: schemaIfc[] = [
     allowNull: true,
     excludeFromUpdate: false,
     trim: true,
-    default: ''
+    default: '',
+    description: 'group avatar image'
   },
   {
-    fieldName: 'preview',
-    sqlType: 'VARCHAR(125)',
-    size: 125,
+    fieldName: 'group_img',
+    sqlType: 'MEDIUMBLOB',
     allowNull: true,
     excludeFromUpdate: false,
-    trim: true
+    trim: true,
+    default: '',
+    description: 'group image blob'
   },
   { fieldName: 'title',
     sqlType: 'TEXT',
     excludeFromUpdate: false,
     trim: true,
-    default: ''
+    default: '',
+    description: 'group title'
   },
   {
     fieldName: 'excerpt',
     sqlType: 'TEXT',
     excludeFromUpdate: false,
     trim: true,
-    default: ''
+    default: '',
+    description: 'group description'
   },
   {
     fieldName: 'category',
-    sqlType: 'VARCHAR(20)',
-    size: 20,
+    sqlType: 'VARCHAR(30)',
+    size: 30,
     excludeFromUpdate: false,
-    trim: true
+    trim: true,
+    description: 'group category - lookup adCategories'
   },
-  {
-    fieldName: 'access_type', // Open or Private
-    sqlType: 'VARCHAR(10)',
-    excludeFromUpdate: false,
-    trim: true
+  {    fieldName: 'keywords',
+  sqlType: 'TEXT',
+  allowNull: false,
+  default: '',
+  excludeFromUpdate: false,
+  trim: true,
+  description: 'a comma delimited string of keywords use for filtering - lookup adKeywords'
+  },
+  {    fieldName: 'public',
+    sqlType: 'TINYINT(1)',
+    default: '1',
+    description: 'allow group profile to be discoverable'
   },
   {
     fieldName: 'lastUpdateUsec',
@@ -106,17 +132,17 @@ export const groups_schema: schemaIfc[] = [
     index: [
       {
         name: 'account_group_idx',
-        columns: ['site_code', 'account_id', 'group_name'],
+        columns: ['site_code', 'group_type', 'owner_id', 'group_name'],
         unique: true
       },
       {
         name: 'last_upd_usec_idx',
-        columns: ['site_code', 'account_id', 'lastUpdateUsec'],
+        columns: ['site_code','group_type', 'owner_id', 'lastUpdateUsec'],
         unique: false
       }
     ]
   }
 ];
 
-const GroupSchemaModel = DTOGenerator.genSchemaModel(groups_schema);
+const GroupSchemaModel = DTOGenerator.genSchemaModel(socialGroups_schema);
 export type GroupData = typeof GroupSchemaModel;

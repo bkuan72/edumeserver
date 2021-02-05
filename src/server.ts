@@ -3,7 +3,7 @@ import SysLog from './modules/SysLog';
 import toobusy_js from 'toobusy-js';
 import SysEnv from './modules/SysEnv';
 import { ActivitiesController } from './server/controllers/activities.controller';
-import { MediasController } from './server/controllers/medias.controller';
+import { MediasController } from './server/controllers/userMedias.controller';
 import { GroupsController } from './server/controllers/groups.controller';
 import { FriendsController } from './server/controllers/friends.controller';
 import { PostMediasController } from './server/controllers/postMedias.controller';

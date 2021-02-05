@@ -10,7 +10,8 @@ export const userTimelineComments_schema: schemaIfc[] = [
     primaryKey: true,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'unique record identifier'
   },
   {
     fieldName: 'site_code',
@@ -19,14 +20,16 @@ export const userTimelineComments_schema: schemaIfc[] = [
     allowNull: false,
     default: '',
     excludeFromUpdate: true,
-    trim: true
+    trim: true,
+    description: 'website identifier'
   },
   {
     fieldName: 'status',
     sqlType: 'ENUM',
     size: 10,
     enum: ['OK', 'DELETED'],
-    default: 'OK'
+    default: 'OK',
+    description: ' status of record'
   },
   {
     fieldName: 'timeline_id',
@@ -34,7 +37,8 @@ export const userTimelineComments_schema: schemaIfc[] = [
     primaryKey: false,
     uuidProperty: true,
     excludeFromUpdate: true,
-    default: ''
+    default: '',
+    description: 'link to userTimelines table'
   },
   {
     fieldName: 'post_id',
@@ -42,7 +46,8 @@ export const userTimelineComments_schema: schemaIfc[] = [
     primaryKey: false,
     uuidProperty: true,
     excludeFromUpdate: true,
-    default: ''
+    default: '',
+    description: 'link to posts table'
   },
   {
     fieldName: 'user_id',
@@ -50,7 +55,8 @@ export const userTimelineComments_schema: schemaIfc[] = [
     primaryKey: false,
     uuidProperty: true,
     excludeFromUpdate: true,
-    default: ''
+    default: '',
+    description: 'link to users table - comment user'
   },
   {
     fieldName: 'date_comment',
@@ -59,20 +65,23 @@ export const userTimelineComments_schema: schemaIfc[] = [
     allowNull: false,
     excludeFromUpdate: false,
     trim: false,
-    default: ''
+    default: '',
+    description: 'date of comment'
   },
   {
     fieldName: 'message',
     sqlType: 'TEXT',
     excludeFromUpdate: false,
     trim: true,
-    default: ''
+    default: '',
+    description: 'comment message'
   },
   {
     fieldName: 'lastUpdateUsec',
     sqlType: 'BIGINT',
     default: '0',
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'last update timestamp'
   },
   {
     fieldName: 'INDEX',

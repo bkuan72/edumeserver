@@ -1,4 +1,4 @@
-import { groups_schema_table } from './../../schemas/groups.schema';
+import { socialGroups_schema_table } from './../../schemas/groups.schema';
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -244,14 +244,14 @@ export class UserGroupModel {
     sql += 'BIN_TO_UUID('+SqlFormatter.fmtTableFieldStr(this.tableName, 'group_id') + '), ';
     sql += 'BIN_TO_UUID('+SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') + '), ';
     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'join_date') + ', ';
-    sql += SqlFormatter.fmtTableFieldStr(groups_schema_table, 'group_name') + ', ';
-    sql += SqlFormatter.fmtTableFieldStr(groups_schema_table, 'category') + ', ';
-    sql += SqlFormatter.fmtTableFieldStr(groups_schema_table, 'lastUpdateUsec');
-    sql += ' FROM ' + this.tableName + ', ' + groups_schema_table;
+    sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'group_name') + ', ';
+    sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'category') + ', ';
+    sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'lastUpdateUsec');
+    sql += ' FROM ' + this.tableName + ', ' + socialGroups_schema_table;
     sql += ' WHERE ';
     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') + SqlStr.format(' = ?', [this.siteCode]) + ' AND ';
     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') + SqlStr.format(' = UUID_TO_BIN(?)', [userId]) + ' AND ';
-    sql += SqlFormatter.fmtTableFieldStr(groups_schema_table, 'id') + ' = ' + SqlFormatter.fmtTableFieldStr(this.tableName, 'group_id');
+    sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'id') + ' = ' + SqlFormatter.fmtTableFieldStr(this.tableName, 'group_id');
 
     SysLog.info('findById SQL: ' + sql);
     SysLog.info('find SQL: ' + sql);

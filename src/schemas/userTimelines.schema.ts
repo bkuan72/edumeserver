@@ -9,7 +9,8 @@ export const userTimelines_schema: schemaIfc[] = [
     primaryKey: true,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'unique record identifier'
   },
   {    fieldName: 'site_code',
   sqlType: 'VARCHAR(20)',
@@ -17,7 +18,8 @@ export const userTimelines_schema: schemaIfc[] = [
   allowNull: false,
   default: '',
   excludeFromUpdate: true,
-  trim: true
+  trim: true,
+  description: 'web site code'
   },
   {    fieldName: 'status',
     sqlType: 'ENUM',
@@ -25,21 +27,24 @@ export const userTimelines_schema: schemaIfc[] = [
     enum: ['OK',
         'DELETED'
         ],
-    default: 'OK'
+    default: 'OK',
+    description: 'status of record'
   },
   {    fieldName: 'timeline_user_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
     excludeFromUpdate: true,
-    default: ''
+    default: '',
+    description: 'link to users table - timeline user'
   },
   {    fieldName: 'post_user_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
     excludeFromUpdate: true,
-    default: ''
+    default: '',
+    description: 'link to users table - user who posted on timeline'
   },
   {    fieldName: 'post_date',
   sqlType: 'VARCHAR(25)',
@@ -47,31 +52,36 @@ export const userTimelines_schema: schemaIfc[] = [
   allowNull: false,
   excludeFromUpdate: false,
   trim: false,
-  default: ''
+  default: '',
+  description: 'date of posting on timeline'
   },
   {    fieldName: 'post_id',
   sqlType: 'BINARY(16)',
   primaryKey: false,
   uuidProperty: true,
   excludeFromUpdate: true,
-  default: ''
+  default: '',
+  description: 'link to posts table'
   },
   {
     fieldName: 'likes',
     sqlType: 'INT',
     default: '0',
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'number of likes'
   },
   {
     fieldName: 'shared',
     sqlType: 'INT',
     default: '0',
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description: 'number of shares'
   },
   {    fieldName: 'lastUpdateUsec',
   sqlType: 'BIGINT',
   default: '0',
-  excludeFromUpdate: true
+  excludeFromUpdate: true,
+  description: 'last updated timestamp'
   },
   {    fieldName: 'INDEX',
     sqlType: undefined,

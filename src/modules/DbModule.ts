@@ -31,6 +31,8 @@ export interface schemaIfc  {
     excludeFromSelect?: boolean;    // exclude column from SELECT SQL statement
     excludeFromUpdate?: boolean;    // exclude column from UPDATE SQL statement
     uuidProperty?: boolean;         // a UUID field
+
+    description?: string;           // description of the field
 }
 
 export interface tableIfc {

@@ -9,7 +9,8 @@ export const postMedias_schema: schemaIfc[] = [
     primaryKey: true,
     default: '',
     uuidProperty: true,
-    excludeFromUpdate: true
+    excludeFromUpdate: true,
+    description:  'unique record identifier'
   },
   {    fieldName: 'site_code',
   sqlType: 'VARCHAR(20)',
@@ -17,7 +18,8 @@ export const postMedias_schema: schemaIfc[] = [
   allowNull: false,
   default: '',
   excludeFromUpdate: true,
-  trim: true
+  trim: true,
+  description: 'website identifier'
   },
   {    fieldName: 'type',
     sqlType: 'VARCHAR(6)',
@@ -25,15 +27,18 @@ export const postMedias_schema: schemaIfc[] = [
     default: 'image',
     allowNull: false,
     excludeFromUpdate: false,
-    trim: true
+    trim: true,
+    description: 'type of media : image or video'
   },
   {    fieldName: 'preview',
     sqlType: 'MEDIUMBLOB',
     default: '',
+    description: 'image data'
     },
   {    fieldName: 'embed',
     sqlType: 'TEXT',
     default: '',
+    description: 'video url'
   },
   {    fieldName: 'status',
     sqlType: 'ENUM',
@@ -41,7 +46,8 @@ export const postMedias_schema: schemaIfc[] = [
     enum: ['OK',
         'DELETED'
         ],
-    default: 'OK'
+    default: 'OK',
+    description: 'record status'
   },
   {    fieldName: 'post_id',
     sqlType: 'BINARY(16)',
@@ -49,6 +55,7 @@ export const postMedias_schema: schemaIfc[] = [
     uuidProperty: true,
     excludeFromUpdate: true,
     default: '',
+    description: 'link to posts'
   },
   {    fieldName: 'user_id',
     sqlType: 'BINARY(16)',
@@ -56,6 +63,7 @@ export const postMedias_schema: schemaIfc[] = [
     uuidProperty: true,
     excludeFromUpdate: true,
     default: '',
+    description: 'link to users - image owner'
   },
   {    fieldName: 'lastUpdateUsec',
     sqlType: 'BIGINT',
