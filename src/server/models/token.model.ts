@@ -153,7 +153,8 @@ export class TokenModel {
       conditions,
       this.tableName,
       token_schema
-    );
+    ) + ' AND ';
+    sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, token_schema);
     SysLog.info('find SQL: ' + sql);
     return new Promise((resolve) => {
       dbConnection.DB.sql(sql)
@@ -187,9 +188,9 @@ export class TokenModel {
 
   getAll = (): Promise<TokenDTO[] | undefined> => {
     return new Promise((resolve) => {
-      dbConnection.DB.sql(
-        SqlFormatter.formatSelect(this.tableName, token_schema)
-      )
+      let sql = SqlFormatter.formatSelect(this.tableName, token_schema);
+      sql += SqlFormatter.formatWhereAND('', {site_code: this.siteCode}, this.tableName, token_schema);
+      dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
           const respTokenDTOArray: TokenDTO[] = [];
@@ -275,9 +276,9 @@ export class TokenModel {
   purgeExpired = () => {
     if (dbConnection.DB) {
       // SysLog.info('purging expired tokens..');
-      dbConnection.DB.sql(
-        SqlFormatter.formatSelect(this.tableName, token_schema)
-      )
+      let sql = SqlFormatter.formatSelect(this.tableName, token_schema);
+      sql += SqlFormatter.formatWhereAND('', {site_code: this.siteCode}, this.tableName, token_schema);
+      dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
           if (result.rows.length > 0) {

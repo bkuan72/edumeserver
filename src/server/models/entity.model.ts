@@ -129,7 +129,8 @@ export class EntityModel {
       ignoreExclSelect,
       excludeSelectProp
     );
-    sql += SqlFormatter.formatWhereAND('', conditions,  this.tableName, this.schema);
+    sql += SqlFormatter.formatWhereAND('', conditions,  this.tableName, this.schema) + ' AND ';
+    sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, this.schema);
     SysLog.info('find SQL: ' + sql);
     return new Promise((resolve) => {
       dbConnection.DB.sql(sql).execute()
@@ -162,7 +163,9 @@ export class EntityModel {
 
   getAll = (): Promise<any[] | undefined> => {
     return new Promise ((resolve) => {
-      dbConnection.DB.sql(SqlFormatter.formatSelect(this.tableName, this.schema)).execute()
+      let sql = SqlFormatter.formatSelect(this.tableName, this.schema);
+      sql += SqlFormatter.formatWhereAND('', {site_code: this.siteCode}, this.tableName, this.schema);
+      dbConnection.DB.sql(sql).execute()
       .then((result) => {
         const respEntityDTOArray:any[] = [];
         if (result.rows.length) {

@@ -98,7 +98,8 @@ export class UserAccountModel {
           ignoreExclSelect?: boolean,
           excludeSelectProp?: string[]): Promise<UserAccountsDTO[] | undefined> => {
     let sql = SqlFormatter.formatSelect(this.tableName, userAccounts_schema, ignoreExclSelect, excludeSelectProp);
-    sql += SqlFormatter.formatWhereAND('', conditions, this.tableName, userAccounts_schema);
+    sql += SqlFormatter.formatWhereAND('', conditions, this.tableName, userAccounts_schema) + ' AND ';
+    sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, userAccounts_schema);
     SysLog.info('find SQL: ' + sql);
     return new Promise((resolve) => {
       dbConnection.DB.sql(sql).execute()
@@ -129,7 +130,9 @@ export class UserAccountModel {
 
   getAll = (): Promise<UserAccountsDTO[] | undefined> => {
     return new Promise ((resolve) => {
-      dbConnection.DB.sql(SqlFormatter.formatSelect(this.tableName, userAccounts_schema)).execute()
+      let sql = SqlFormatter.formatSelect(this.tableName, userAccounts_schema);
+      sql += SqlFormatter.formatWhereAND('', {site_code: this.siteCode}, this.tableName, userAccounts_schema);
+      dbConnection.DB.sql(sql).execute()
       .then((result) => {
         if (result.rows.length) {
           const respUserAccountsDTOArray:UserAccountsDTO[] = [];

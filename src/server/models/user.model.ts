@@ -1,4 +1,3 @@
-import { schemaIfc } from './../../modules/DbModule';
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -117,7 +116,8 @@ export class UserModel {
       conditions,
       this.tableName,
       users_schema
-    );
+    ) + ' AND ';
+    sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, users_schema);
     SysLog.info('find SQL: ' + sql);
     return new Promise((resolve) => {
       dbConnection.DB.sql(sql)
@@ -151,9 +151,9 @@ export class UserModel {
 
   getAll = (): Promise<ResponseUserDTO[] | undefined> => {
     return new Promise((resolve) => {
-      dbConnection.DB.sql(
-        SqlFormatter.formatSelect(this.tableName, users_schema)
-      )
+      let sql = SqlFormatter.formatSelect(this.tableName, users_schema);
+      sql += SqlFormatter.formatWhereAND('', {site_code: this.siteCode}, this.tableName, users_schema);
+      dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
           const respUserDTOArray: ResponseUserDTO[] = [];
@@ -237,7 +237,8 @@ export class UserModel {
     return new Promise((resolve) => {
       let sql =
         SqlFormatter.formatSelect(this.tableName, users_schema) + ' WHERE ';
-      sql += SqlStr.format('email = ?', [email]);
+      sql += SqlStr.format('email = ?', [email]) + ' AND ';
+      sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, users_schema);
       SysLog.info('findById SQL: ' + sql);
       dbConnection.DB.sql(sql)
         .execute()
@@ -277,7 +278,8 @@ export class UserModel {
         { email: emailStr },
         this.tableName,
         users_schema
-      );
+      ) + ' AND ';
+      sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, users_schema);
       dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
@@ -307,7 +309,8 @@ export class UserModel {
         { email: emailStr },
         this.tableName,
         users_schema
-      );
+      ) + ' AND ';
+      sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, users_schema);
       dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
@@ -339,7 +342,8 @@ export class UserModel {
           { email: emailStr },
           this.tableName,
           users_schema
-        );
+        ) + ' AND ';
+        sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, users_schema);
         dbConnection.DB.sql(sql)
           .execute()
           .then((result) => {

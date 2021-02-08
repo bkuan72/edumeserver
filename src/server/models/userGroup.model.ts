@@ -113,7 +113,8 @@ export class UserGroupModel {
       ignoreExclSelect,
       excludeSelectProp
     );
-    sql += SqlFormatter.formatWhereAND('', conditions, this.tableName, userGroups_schema);
+    sql += SqlFormatter.formatWhereAND('', conditions, this.tableName, userGroups_schema) + ' AND ';
+    sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, userGroups_schema);
     SysLog.info('find SQL: ' + sql);
     return new Promise((resolve) => {
       dbConnection.DB.sql(sql)
@@ -147,9 +148,9 @@ export class UserGroupModel {
 
   getAll = (): Promise<UserGroupsDTO[] | undefined> => {
     return new Promise((resolve) => {
-      dbConnection.DB.sql(
-        SqlFormatter.formatSelect(this.tableName, userGroups_schema)
-      )
+      let sql = SqlFormatter.formatSelect(this.tableName, userGroups_schema);
+      sql += SqlFormatter.formatWhereAND('', {site_code: this.siteCode}, this.tableName, userGroups_schema);
+      dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
           if (result.rows.length) {

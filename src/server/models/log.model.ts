@@ -29,8 +29,9 @@ export class LogModel extends EntityModel {
     return new Promise ((resolve) => {
       let sql =
       SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
-      sql += SqlStr.format('EntryDate = ?', [logDate]);
-      SysLog.info('findByLogDate SQL: ' + sql);
+      sql += SqlStr.format('EntryDate = ?', [logDate])
+      SysLog.info('findByLogDate SQL: ' + sql) + ' AND ';
+      sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, this.schema);
       dbConnection.DB.sql(sql).execute()
       .then((result) => {
         const respEntityDTOArray: any[] = [];
