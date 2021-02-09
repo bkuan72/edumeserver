@@ -30,9 +30,9 @@ export const adKeywords_schema: schemaIfc[] = [
     default: 'OK',
     description: 'record status'
   },
-  {    fieldName: 'keyword',
-  sqlType: 'VARCHAR(20)',
-  size: 20,
+  {    fieldName: 'adKeyword_code',
+  sqlType: 'VARCHAR(30)',
+  size: 30,
   allowNull: false,
   default: '',
   excludeFromUpdate: false,

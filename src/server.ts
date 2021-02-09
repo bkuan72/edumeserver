@@ -1,3 +1,4 @@
+import { AdKeywordsController } from './server/controllers/adKeywords.controller';
 import { AdCategoriesController } from './server/controllers/adCategories.controller';
 import { UserTimelinessController } from './server/controllers/userTimelines.controller';
 import SysLog from './modules/SysLog';
@@ -60,7 +61,8 @@ const app = new App (
     new MediasController(),
     new ActivitiesController(),
     new UserTimelinessController(),
-    new AdCategoriesController()
+    new AdCategoriesController(),
+    new AdKeywordsController(),
   ],
   port
 );
