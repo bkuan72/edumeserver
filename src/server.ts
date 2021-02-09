@@ -30,6 +30,7 @@ import { PostsController } from './server/controllers/posts.controller';
 import { UserGroupsController } from './server/controllers/userGroups.controller';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import SysMailer from './modules/SysEmailerModule';
+import { AdActivitiesController } from './server/controllers/adActivities.controller';
 
 // validate that all required environment variable is present
 SysEnv.init();
@@ -63,6 +64,7 @@ const app = new App (
     new UserTimelinessController(),
     new AdCategoriesController(),
     new AdKeywordsController(),
+    new AdActivitiesController()
   ],
   port
 );
