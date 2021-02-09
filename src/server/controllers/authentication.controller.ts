@@ -1,6 +1,6 @@
 import { UserData } from './../../schemas/users.schema';
 import { CommonFn } from './../../modules/CommonFnModule';
-import { ResponseUserDTO, CreateUserDTO } from '../../dtos/userDTO';
+import { ResponseUserDTO, CreateUserDTO } from '../../dtos/user.DTO';
 import { AccountModel } from './../models/account.model';
 import { UserAccountModel } from './../models/userAccount.model';
 /* eslint-disable @typescript-eslint/no-explicit-any */

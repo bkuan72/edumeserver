@@ -1,5 +1,5 @@
 import { UserData } from './../schemas/users.schema';
-import { ResponseUserDTO } from '../dtos/userDTO';
+import { ResponseUserDTO } from '../dtos/user.DTO';
 import HttpException from "./HttpException";
 
 class RegistrationConfirmationException extends HttpException {

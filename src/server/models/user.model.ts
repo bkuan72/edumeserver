@@ -6,7 +6,7 @@ import { SqlFormatter } from '../../modules/sql.strings';
 import SqlStr = require('sqlstring');
 import e = require('express');
 import dbConnection from '../../modules/DbModule';
-import { ResponseUserDTO, CreateUserDTO } from '../../dtos/userDTO';
+import { ResponseUserDTO, CreateUserDTO } from '../../dtos/user.DTO';
 import { UserData, users_schema, users_schema_table } from '../../schemas/users.schema';
 import { uuidIfc } from './uuidIfc';
 import SysLog from '../../modules/SysLog';

@@ -1,6 +1,6 @@
 import { UserAccountsData } from './schemas/userAccounts.schema';
 import { UserAccountsDTO } from './dtos/userAccounts.DTO';
-import { ResponseUserDTO } from './dtos/userDTO';
+import { ResponseUserDTO } from './dtos/user.DTO';
 import { AccountDTO } from './dtos/accounts.DTO';
 
 import { AccountModel } from './server/models/account.model';

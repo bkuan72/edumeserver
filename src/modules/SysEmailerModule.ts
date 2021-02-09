@@ -1,5 +1,5 @@
 import { UserData } from './../schemas/users.schema';
-import { ResponseUserDTO } from '../dtos/userDTO';
+import { ResponseUserDTO } from '../dtos/user.DTO';
 import nodemailer from 'nodemailer';
 import SysEnv from './SysEnv';
 import Mailgen from 'mailgen';
