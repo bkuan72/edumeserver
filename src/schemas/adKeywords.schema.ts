@@ -50,7 +50,7 @@ export const adKeywords_schema: schemaIfc[] = [
     index: [
       {
         name: 'adKeywords_code_idx',
-        columns: ['site_code', 'keyword'],
+        columns: ['site_code', 'adKeyword_code'],
         unique: true
       },
       {
