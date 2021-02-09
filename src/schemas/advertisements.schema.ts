@@ -21,7 +21,7 @@ export const advertisements_schema: schemaIfc[] = [
   trim: true,
   description: 'website identifier'
   },
-  {    fieldName: 'advert_type',
+  {    fieldName: 'advert_by',
     sqlType: 'ENUM',
     size: 10,
     enum: ['USER',
@@ -31,7 +31,7 @@ export const advertisements_schema: schemaIfc[] = [
     default: 'USER',
     description: 'identifier type for source_id'
   },
-  {    fieldName: 'source_id',
+  {    fieldName: 'ad_by_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     default: '',
@@ -58,8 +58,7 @@ export const advertisements_schema: schemaIfc[] = [
   description: 'advertisement sub header'
   },
   {    fieldName: 'url',
-  sqlType: 'VARCHAR(100)',
-  size: 100,
+  sqlType: 'TEXT',
   allowNull: false,
   default: '',
   excludeFromUpdate: false,
@@ -76,10 +75,10 @@ export const advertisements_schema: schemaIfc[] = [
   },
   {
     fieldName: 'category',
-    sqlType: 'VARCHAR(30)',
-    size: 30,
+    sqlType: 'TEXT',
     excludeFromUpdate: false,
-    trim: true
+    trim: true,
+    description: 'a comma delimited string of categories use for filtering'
   },
   {    fieldName: 'keywords',
   sqlType: 'TEXT',
@@ -179,6 +178,11 @@ export const advertisements_schema: schemaIfc[] = [
   {    fieldName: 'INDEX',
     sqlType: undefined,
     index: [
+      {
+        name: 'advert_source_idx',
+        columns: ['site_code', 'advert_by', 'ad_by_id', 'start_date', 'priority_code'],
+        unique: true
+      },
       {
         name: 'advert_date_pri_idx',
         columns: ['site_code', 'start_date', 'priority_code'],
