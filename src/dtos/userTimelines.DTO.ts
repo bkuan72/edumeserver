@@ -35,7 +35,7 @@ export class UpdUserTimelineDTO {
 }
 
 export class TimelinePostDTO {
-  data: any;
+  data: UserTimelinePostData;
   constructor(userTimelineData?: any) {
     DTOGenerator.genDTOFromSchema(this, userTimelines_schema);
     if (!CommonFn.isUndefined(userTimelineData)) {
