@@ -53,7 +53,7 @@ export class ActivityModel extends EntityModel {
                 rowData
               );
               const respActivityDTO = new this.responseDTO(data) as ActivityDTO;
-              resActivityDTOArray.push(respActivityDTO.data);
+              resActivityDTOArray.push(respActivityDTO);
             });
             resolve(resActivityDTOArray);
             return;
@@ -96,7 +96,7 @@ export class ActivityModel extends EntityModel {
                 rowData
               );
               const respActivityDTO = new this.responseDTO(data) as ActivityDTO;
-              resActivityDTOArray.push(respActivityDTO.data);
+              resActivityDTOArray.push(respActivityDTO);
             });
             resolve(resActivityDTOArray);
             return;

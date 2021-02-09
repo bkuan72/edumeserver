@@ -29,7 +29,7 @@ async function authMiddleware(request: Request, _response: Response, next: NextF
             const id = verificationResponse.user_id;
             const user = await users.findById(id);
             if (user) {
-              if (user.data.status === 'ENABLED') {
+              if (user.status === 'ENABLED') {
                 if (blacklistTokens.tokenExpired(verificationResponse.expiryInSec,
                                                  verificationResponse.createTimeStamp)) {
                   SysLog.error('Expired Token Used By User Id :', id);

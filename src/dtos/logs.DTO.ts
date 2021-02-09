@@ -8,11 +8,11 @@ import { LogData, logs_schema } from '../schemas/logs.schema';
 export class LogDTO {
   data: LogData;
   constructor(logData?: any) {
-    this.data = DTOGenerator.genSchemaModel(logs_schema);
+    DTOGenerator.genDTOFromSchema(this, logs_schema);
     if (!CommonFn.isUndefined(logData)) {
-      for (const prop in logData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = logData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(logData, prop)) {
+          this[prop] = logData[prop];
         }
       }
     }

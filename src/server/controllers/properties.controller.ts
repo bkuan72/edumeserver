@@ -44,11 +44,11 @@ export class PropertiesController implements Controller{
   }
   apiDTO  = (request: express.Request, response: express.Response) => {
     const dto = new PropertyDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UpdPropertyDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiSchema  = (request: express.Request, response: express.Response) => {
     response.send(properties_schema);
@@ -57,7 +57,7 @@ export class PropertiesController implements Controller{
   newProperty  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
       this.properties.create(request.body).then((respPropertyDTO) => {
         if (respPropertyDTO) {
-            response.send(respPropertyDTO.data);
+            response.send(respPropertyDTO);
           } else {
             next(new PostDataFailedException())
           }
@@ -67,7 +67,7 @@ export class PropertiesController implements Controller{
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.properties.findById(request.params.id).then((respPropertyDTO) => {
       if (respPropertyDTO) {
-        response.send(respPropertyDTO.data);
+        response.send(respPropertyDTO);
       } else {
         next(new DataNotFoundException(request.params.id))
       }

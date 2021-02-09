@@ -59,7 +59,7 @@ export class PostModel extends EntityModel {
                 rowData
               );
               const respPostDTO = new this.responseDTO(data) as PostDTO;
-              resPostDTOArray.push(respPostDTO.data);
+              resPostDTOArray.push(respPostDTO);
             });
             resolve(resPostDTOArray);
             return;
@@ -112,13 +112,13 @@ export class PostModel extends EntityModel {
                   undefined,
                   rowData
                 );
-                const respPostDTO = new this.responseDTO(data) as PostDTO;
-                respPostDTO.data = DTOGenerator.defineProperty(
-                  respPostDTO.data,
+                let respPostDTO = new this.responseDTO(data) as PostDTO;
+                respPostDTO = DTOGenerator.defineProperty(
+                  respPostDTO,
                   'comments',
                   []
                 );
-                resPostDTOArray.push(respPostDTO.data);
+                resPostDTOArray.push(respPostDTO);
               });
               resolve(resPostDTOArray);
               return;

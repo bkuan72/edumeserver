@@ -33,6 +33,37 @@ class ModelGenerator {
         }
         return excl;
     }
+
+
+    /**
+     * Append Schema properties to obj for INSERT DTO
+     *
+     * @param {*} obj
+     * @param {schemaIfc[]} schema
+     * @param {string[]} [excludeProps]
+     * @return {*} 
+     * @memberof ModelGenerator
+     */
+    public getInsertDTOFromSchema( obj: any, schema: schemaIfc[], excludeProps?: string[]) {
+        schema.forEach((prop) => {
+            if (prop.fieldName !== 'id' &&
+                prop.fieldName !== 'site_code' &&
+                prop.fieldName !== 'lastUpdateUsec' &&
+                prop.fieldName !== "INDEX" && 
+                !this.excludeFromDTO(prop, excludeProps)) {
+                  if (!CommonFn.hasProperty(obj, prop.fieldName)) {
+                    obj = this.defineProperty(obj, prop.fieldName, prop.default);
+                  }
+            }
+        });
+        return obj;
+    }
+
+    /**
+     * Create new INSERT DTO from schema 
+     * @param schema 
+     * @param excludeProps 
+     */
     public genCreateSchemaModel(schema: schemaIfc[], excludeProps?: string[]) {
         let obj = Object.create(null);
         schema.forEach((prop) => {
@@ -47,6 +78,28 @@ class ModelGenerator {
         return obj;
     }
 
+/**
+ * Append schema properties to obj - data DTO
+ * @param obj 
+ * @param schema 
+ * @param excludeProps 
+ */
+    public genDTOFromSchema(obj: any, schema: schemaIfc[], excludeProps?: string[]) {
+        schema.forEach((prop) => {
+            if (prop.fieldName !== "INDEX" && !this.excludeFromDTO(prop, excludeProps)) {
+                if (!CommonFn.hasProperty(obj, prop.fieldName)) {
+                    obj = this.defineProperty(obj, prop.fieldName, prop.default);
+                }
+            }
+        });
+        return obj;
+    }
+
+/**
+ * creates a new data DTO from schema
+ * @param schema 
+ * @param excludeProps 
+ */
     public genSchemaModel(schema: schemaIfc[], excludeProps?: string[]) {
         let obj = Object.create(null);
         schema.forEach((prop) => {
@@ -56,7 +109,31 @@ class ModelGenerator {
         });
         return obj;
     }
+/**
+ * Append schema properties to obj - UPDATE DTO
+ * @param obj 
+ * @param schema 
+ * @param excludeProps 
+ */
+    public genUpdDTOFromSchema( obj: any, schema: schemaIfc[], excludeProps?: string[]) {
+        schema.forEach((prop) => {
+            if (prop.fieldName !== "INDEX" && !this.excludeFromDTO(prop, excludeProps)) {
+                if (prop.excludeFromUpdate === undefined ||
+                    (prop.excludeFromUpdate !== undefined && prop.excludeFromUpdate === false)) {
+                        if (!CommonFn.hasProperty(obj, prop.fieldName)) {
+                            obj = this.defineProperty(obj, prop.fieldName, prop.default);
+                        }
+                }
+            }
+        });
+        return obj;
+    }
 
+/**
+ * Create new UPDATE DTO from schema
+ * @param schema 
+ * @param excludeProps 
+ */
     public genUpdateSchemaModel(schema: schemaIfc[], excludeProps?: string[]) {
         let obj = Object.create(null);
         schema.forEach((prop) => {

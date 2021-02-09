@@ -7,10 +7,9 @@ import SqlStr = require('sqlstring');
 import e = require('express');
 import dbConnection from '../../modules/DbModule';
 import { ResponseUserDTO, CreateUserDTO } from '../../dtos/userDTO';
-import { users_schema, users_schema_table } from '../../schemas/users.schema';
+import { UserData, users_schema, users_schema_table } from '../../schemas/users.schema';
 import { uuidIfc } from './uuidIfc';
 import SysLog from '../../modules/SysLog';
-import { Column, Metadata, Row } from 'mysqlx/lib/types';
 import SysEnv from '../../modules/SysEnv';
 import { bcryptHash, cryptoStr } from '../../modules/cryto';
 
@@ -21,13 +20,13 @@ export class UserModel {
   constructor() {
     this.siteCode = SysEnv.SITE_CODE;
   }
-  create = (userData: any): Promise<ResponseUserDTO | undefined> => {
-    const newUser = new CreateUserDTO(userData);
-    newUser.data.site_code = this.siteCode;
+  create = (userData: any): Promise<ResponseUserDTO | UserData | undefined> => {
+    const newUser = new CreateUserDTO(userData) as UserData;
+    newUser.site_code = this.siteCode;
 
     return new Promise(async (resolve) => {
       SqlFormatter.formatInsert(
-        newUser.data,
+        newUser,
         this.tableName,
         users_schema
       ).then((sql) => {
@@ -42,9 +41,9 @@ export class UserModel {
                   .then((result3) => {
                     SysLog.info('created Entity: ', result3);
                     const newUuid: uuidIfc = { '@uuidId': result3.rows[0][0] }; // TODO
-                    const respUserDTO = new ResponseUserDTO(newUser.data);
-                    respUserDTO.data.password = '';
-                    respUserDTO.data.id = newUuid['@uuidId'];
+                    const respUserDTO = new ResponseUserDTO(newUser) as UserData;
+                    respUserDTO.password = '';
+                    respUserDTO.id = newUuid['@uuidId'];
                     resolve(respUserDTO);
                   })
                   .catch((err) => {
@@ -68,7 +67,7 @@ export class UserModel {
     });
   };
 
-  findById = (userId: string): Promise<ResponseUserDTO | undefined> => {
+  findById = (userId: string): Promise<ResponseUserDTO | UserData | undefined> => {
     return new Promise((resolve) => {
       let sql =
         SqlFormatter.formatSelect(this.tableName, users_schema) + ' WHERE ';
@@ -104,7 +103,7 @@ export class UserModel {
     showPassword?: boolean,
     ignoreExclSelect?: boolean,
     excludeSelectProp?: string[]
-  ): Promise<ResponseUserDTO[] | undefined> => {
+  ): Promise<ResponseUserDTO[] | UserData[] | undefined> => {
     let sql = SqlFormatter.formatSelect(
       this.tableName,
       users_schema,
@@ -149,7 +148,7 @@ export class UserModel {
     });
   };
 
-  getAll = (): Promise<ResponseUserDTO[] | undefined> => {
+  getAll = (): Promise<ResponseUserDTO[] | UserData[] | undefined> => {
     return new Promise((resolve) => {
       let sql = SqlFormatter.formatSelect(this.tableName, users_schema);
       sql += SqlFormatter.formatWhereAND('', {site_code: this.siteCode}, this.tableName, users_schema);
@@ -185,7 +184,7 @@ export class UserModel {
   updateById = async (
     userId: string,
     userDTO: any
-  ): Promise<ResponseUserDTO | undefined> => {
+  ): Promise<ResponseUserDTO | UserData | undefined> => {
     return new Promise((resolve) => {
       SqlFormatter.formatUpdate(this.tableName, users_schema, userDTO).then(
         (sql) => {
@@ -233,7 +232,7 @@ export class UserModel {
     });
   };
 
-  findByEmail = (email: string): Promise<ResponseUserDTO | undefined> => {
+  findByEmail = (email: string): Promise<ResponseUserDTO | UserData | undefined> => {
     return new Promise((resolve) => {
       let sql =
         SqlFormatter.formatSelect(this.tableName, users_schema) + ' WHERE ';
@@ -268,7 +267,7 @@ export class UserModel {
   updateRegConfirmKeyByEmail = async (
     emailStr: string,
     regConfirmKey: string
-  ): Promise<ResponseUserDTO | undefined> => {
+  ): Promise<ResponseUserDTO | UserData | undefined> => {
     return new Promise((resolve) => {
       let sql = '';
       sql += 'UPDATE ' + users_schema_table;
@@ -299,7 +298,7 @@ export class UserModel {
   updateResetPasswordKeyByEmail = async (
     emailStr: string,
     pwdResetKey: string
-  ): Promise<ResponseUserDTO | undefined> => {
+  ): Promise<ResponseUserDTO | UserData | undefined> => {
     return new Promise((resolve) => {
       let sql = '';
       sql += 'UPDATE ' + users_schema_table;
@@ -330,7 +329,7 @@ export class UserModel {
   updatePasswordNResetKeyByEmail = async (
     emailStr: string,
     newPassword: string
-  ): Promise<ResponseUserDTO | undefined> => {
+  ): Promise<ResponseUserDTO | UserData | undefined> => {
     return new Promise((resolve) => {
       const doUpdatePassword = (encryptedPwd: string) => {
         let sql = '';

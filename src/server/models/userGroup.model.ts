@@ -1,3 +1,4 @@
+import { UserGroupData } from './../../schemas/userGroups.schema';
 import { socialGroups_schema_table } from './../../schemas/groups.schema';
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -24,11 +25,11 @@ export class UserGroupModel {
 
   tableName = userGroups_schema_table;
   create = (userGroup: any): Promise<UserGroupsDTO | undefined> => {
-    const newUserGroup = new UserGroupsDTO(userGroup);
-    newUserGroup.data.site_code = this.siteCode;
+    const newUserGroup = new UserGroupsDTO(userGroup) as UserGroupData;
+    newUserGroup.site_code = this.siteCode;
     return new Promise(async (resolve) => {
       SqlFormatter.formatInsert(
-        newUserGroup.data,
+        newUserGroup,
         this.tableName,
         userGroups_schema
       ).then((sql) => {
@@ -44,9 +45,9 @@ export class UserGroupModel {
                     SysLog.info('created Entity: ', result3);
                     const newUuid: uuidIfc = { '@uuidId': result3.rows[0][0] }; // TODO
 
-                    const respUserGroupsDTO = new UserGroupsDTO(newUserGroup);
-                    respUserGroupsDTO.data.password = '';
-                    respUserGroupsDTO.data.id = newUuid['@uuidId'];
+                    const respUserGroupsDTO = new UserGroupsDTO(newUserGroup) as UserGroupData;
+                    respUserGroupsDTO.password = '';
+                    respUserGroupsDTO.id = newUuid['@uuidId'];
                     resolve(respUserGroupsDTO);
                   })
                   .catch((err) => {

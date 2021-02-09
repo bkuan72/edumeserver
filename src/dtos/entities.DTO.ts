@@ -8,11 +8,11 @@ import { EntityData, entities_schema } from '../schemas/entities.schema';
 export class EntityDTO {
   data: EntityData;
   constructor(propertyData?: any) {
-    this.data = DTOGenerator.genSchemaModel(entities_schema);
+    DTOGenerator.genDTOFromSchema(this, entities_schema);
     if (!CommonFn.isUndefined(propertyData)) {
-      for (const prop in propertyData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = propertyData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(propertyData, prop)) {
+          this[prop] = propertyData[prop];
         }
       }
     }
@@ -22,11 +22,11 @@ export class EntityDTO {
 export class UpdEntityDTO {
   data: EntityData;
   constructor(propertyData?: any) {
-    this.data = DTOGenerator.genUpdateSchemaModel(entities_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, entities_schema);
     if (!CommonFn.isUndefined(propertyData)) {
-      for (const prop in propertyData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = propertyData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(propertyData, prop)) {
+          this[prop] = propertyData[prop];
         }
       }
     }

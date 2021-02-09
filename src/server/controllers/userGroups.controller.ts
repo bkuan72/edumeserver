@@ -1,3 +1,4 @@
+import { UserGroupData } from './../../schemas/userGroups.schema';
 import { CommonFn } from '../../modules/CommonFnModule';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import * as express from 'express';
@@ -50,11 +51,11 @@ export class UserGroupsController implements Controller{
 
   apiDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UserGroupsDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UpdUserGroupsDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiSchema  = (request: express.Request, response: express.Response) => {
     response.send(userGroups_schema);
@@ -62,24 +63,24 @@ export class UserGroupsController implements Controller{
 
 
   private create = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
-    const userGroup = new UserGroupsDTO(request.body);
-    userGroup.data.site_code = this.siteCode;
+    const userGroup = new UserGroupsDTO(request.body) as UserGroupData;
+    userGroup.site_code = this.siteCode;
     const groups = await this.userGroups.find({
       site_code: this.siteCode,
-      user_id: userGroup.data.user_id,
-      group_id: userGroup.data.group_id
+      user_id: userGroup.user_id,
+      group_id: userGroup.group_id
      })
     if (
       CommonFn.isUndefined(groups) || groups?.length === 0
     ) {
-      next(new UserGroupAlreadyExistsException(userGroup.data.user_id, userGroup.data.group_id));
+      next(new UserGroupAlreadyExistsException(userGroup.user_id, userGroup.group_id));
     } else {
-      userGroup.data.site_code = this.siteCode;
+      userGroup.site_code = this.siteCode;
       const newUserGroup = await this.userGroups.create(userGroup);
       if (newUserGroup) {
-        response.send(newUserGroup.data);
+        response.send(newUserGroup);
       } else {
-        next(new DbCreatingNewUserGroupException(userGroup.data.user_id, userGroup.data.group_id));
+        next(new DbCreatingNewUserGroupException(userGroup.user_id, userGroup.group_id));
       }
     }
   }

@@ -43,11 +43,11 @@ export class PostsController implements Controller{
   }
   apiDTO  = (request: express.Request, response: express.Response) => {
     const dto = new PostDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UpdPostDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiSchema  = (request: express.Request, response: express.Response) => {
     response.send(posts_schema);
@@ -56,7 +56,7 @@ export class PostsController implements Controller{
   newPost  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
       this.posts.create(request.body).then((respPostDTO) => {
         if (respPostDTO) {
-            response.send(respPostDTO.data);
+            response.send(respPostDTO);
           } else {
             next(new PostDataFailedException())
           }
@@ -66,7 +66,7 @@ export class PostsController implements Controller{
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.posts.findById(request.params.postId).then((respPostDTO) => {
       if (respPostDTO) {
-        response.send(respPostDTO.data);
+        response.send(respPostDTO);
       } else {
         next(new DataNotFoundException(request.params.postId))
       }

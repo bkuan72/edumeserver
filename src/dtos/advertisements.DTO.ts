@@ -8,11 +8,11 @@ import { AdvertisementData, advertisements_schema } from '../schemas/advertiseme
 export class AdvertisementDTO {
   data: AdvertisementData;
   constructor(advertisementData?: any) {
-    this.data = DTOGenerator.genSchemaModel(advertisements_schema);
+    DTOGenerator.genDTOFromSchema(this, advertisements_schema);
     if (!CommonFn.isUndefined(advertisementData)) {
-      for (const prop in advertisementData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = advertisementData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(advertisementData, prop)) {
+          this[prop] = advertisementData[prop];
         }
       }
     }
@@ -23,11 +23,11 @@ export class AdvertisementDTO {
 export class UpdAdvertisementDTO {
   data: AdvertisementData;
   constructor(advertisementData?: any) {
-    this.data = DTOGenerator.genUpdateSchemaModel(advertisements_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, advertisements_schema);
     if (!CommonFn.isUndefined(advertisementData)) {
-      for (const prop in advertisementData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = advertisementData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(advertisementData, prop)) {
+          this[prop] = advertisementData[prop];
         }
       }
     }

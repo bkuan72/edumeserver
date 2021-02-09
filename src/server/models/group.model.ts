@@ -1,3 +1,4 @@
+import { GroupData } from './../../schemas/groups.schema';
 import { CommonFn } from './../../modules/CommonFnModule';
 import { SqlFormatter } from './../../modules/sql.strings';
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -49,13 +50,13 @@ export class GroupModel extends EntityModel {
                 undefined,
                 rowData
               );
-              const respGroupDTO = new this.responseDTO(data) as GroupDTO;
-              respGroupDTO.data = DTOGenerator.defineProperty(respGroupDTO.data, 'medias', [{
-                                                                    type: respGroupDTO.data.type,
-                                                                    preview: respGroupDTO.data.preview
+              let respGroupDTO = new this.responseDTO(data) as GroupDTO | GroupData;
+              respGroupDTO = DTOGenerator.defineProperty(respGroupDTO, 'medias', [{
+                                                                    type: respGroupDTO.type,
+                                                                    preview: respGroupDTO.preview
 
                                                                 }]);
-              resGroupDTOArray.push(respGroupDTO.data);
+              resGroupDTOArray.push(respGroupDTO);
             });
             resolve(resGroupDTOArray);
             return;

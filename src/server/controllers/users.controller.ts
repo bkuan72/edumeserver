@@ -42,15 +42,15 @@ export class UsersController implements Controller{
 
   apiDTO  = (request: express.Request, response: express.Response) => {
     const user = new ResponseUserDTO();
-    response.send(user.data);
+    response.send(user);
   }
   apiInsDTO  = (request: express.Request, response: express.Response) => {
     const dto = new InsertUserDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UpdUserDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiSchema  = (request: express.Request, response: express.Response) => {
     response.send(users_schema);
@@ -99,36 +99,36 @@ export class UsersController implements Controller{
     this.users.findById(request.params.userId).then((respUserDTO) => {
       if (respUserDTO) {
         const aboutDTO = new AboutDTO();
-        aboutDTO.general.gender = respUserDTO?.data.gender;
-        aboutDTO.general.birthday = respUserDTO?.data.birthday;
-        aboutDTO.general.about = respUserDTO?.data.about_me;
-        if (!CommonFn.isEmpty(respUserDTO?.data.city)) {
-          aboutDTO.general.locations.push(respUserDTO?.data.city);
+        aboutDTO.general.gender = respUserDTO?.gender;
+        aboutDTO.general.birthday = respUserDTO?.birthday;
+        aboutDTO.general.about = respUserDTO?.about_me;
+        if (!CommonFn.isEmpty(respUserDTO?.city)) {
+          aboutDTO.general.locations.push(respUserDTO?.city);
         }
-        if (!CommonFn.isEmpty(respUserDTO?.data.country)) {
-         aboutDTO.general.locations.push(respUserDTO?.data.country);
+        if (!CommonFn.isEmpty(respUserDTO?.country)) {
+         aboutDTO.general.locations.push(respUserDTO?.country);
         }
-        aboutDTO.contact.address = respUserDTO?.data.address;
-        if (!CommonFn.isEmpty(respUserDTO?.data.phone_no)) {
-          aboutDTO.contact.tel.push(respUserDTO?.data.phone_no);
+        aboutDTO.contact.address = respUserDTO?.address;
+        if (!CommonFn.isEmpty(respUserDTO?.phone_no)) {
+          aboutDTO.contact.tel.push(respUserDTO?.phone_no);
         }
-        if (!CommonFn.isEmpty(respUserDTO?.data.mobile_no)) {
-          aboutDTO.contact.tel.push(respUserDTO?.data.mobile_no);
+        if (!CommonFn.isEmpty(respUserDTO?.mobile_no)) {
+          aboutDTO.contact.tel.push(respUserDTO?.mobile_no);
         }
-        if (!CommonFn.isEmpty(respUserDTO?.data.website)) {
-          aboutDTO.contact.websites.push(respUserDTO?.data.website);
+        if (!CommonFn.isEmpty(respUserDTO?.website)) {
+          aboutDTO.contact.websites.push(respUserDTO?.website);
         }
-        if (!CommonFn.isEmpty(respUserDTO?.data.email)) {
-          aboutDTO.contact.emails.push(respUserDTO?.data.email);
+        if (!CommonFn.isEmpty(respUserDTO?.email)) {
+          aboutDTO.contact.emails.push(respUserDTO?.email);
         }
-        if (!CommonFn.isEmpty(respUserDTO?.data.occupation)) {
-          aboutDTO.work.occupation =  respUserDTO?.data.occupation;
+        if (!CommonFn.isEmpty(respUserDTO?.occupation)) {
+          aboutDTO.work.occupation =  respUserDTO?.occupation;
         }
-        if (!CommonFn.isEmpty(respUserDTO?.data.skills)) {
-          aboutDTO.work.skills =  respUserDTO?.data.skills;
+        if (!CommonFn.isEmpty(respUserDTO?.skills)) {
+          aboutDTO.work.skills =  respUserDTO?.skills;
         }
-        if (!CommonFn.isEmpty(respUserDTO?.data.jobs)) {
-          aboutDTO.work.jobs =  respUserDTO?.data.jobs;
+        if (!CommonFn.isEmpty(respUserDTO?.jobs)) {
+          aboutDTO.work.jobs =  respUserDTO?.jobs;
         }
         //aboutDTO.friends // TODO need to implement friends api
         //aboutDTO.groups // TODO need to implement groups api
@@ -144,9 +144,9 @@ export class UsersController implements Controller{
     .then((respUserDTO) => {
       if (respUserDTO) {
         response.send({
-          id: respUserDTO.data.id,
-          user_name: respUserDTO.data.user_name,
-          avatar: respUserDTO.data.avatar
+          id: respUserDTO.id,
+          user_name: respUserDTO.user_name,
+          avatar: respUserDTO.avatar
         });
       } else {
         next(new DataNotFoundException(request.params.userId))

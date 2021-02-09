@@ -43,11 +43,11 @@ export class AccountsController implements Controller{
 
   apiDTO  = (request: express.Request, response: express.Response) => {
     const dto = new AccountDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UpdAccountDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiSchema  = (request: express.Request, response: express.Response) => {
     response.send(accounts_schema);
@@ -56,7 +56,7 @@ export class AccountsController implements Controller{
   newAccount  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
       this.accounts.create(request.body).then((respAccountDTO) => {
         if (respAccountDTO) {
-            response.send(respAccountDTO.data);
+            response.send(respAccountDTO);
           } else {
             next(new PostDataFailedException())
           }
@@ -66,7 +66,7 @@ export class AccountsController implements Controller{
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.accounts.findById(request.params.accountId).then((respAccountDTO) => {
       if (respAccountDTO) {
-        response.send(respAccountDTO.data);
+        response.send(respAccountDTO);
       } else {
         next(new DataNotFoundException(request.params.accountId))
       }

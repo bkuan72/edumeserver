@@ -1,3 +1,4 @@
+import { UserData } from './../schemas/users.schema';
 import { ResponseUserDTO } from '../dtos/userDTO';
 import nodemailer from 'nodemailer';
 import SysEnv from './SysEnv';
@@ -6,7 +7,7 @@ import SysLog from './SysLog';
 
 class Emailer {
 
-  mailRegisterConfirmation = (newUser: ResponseUserDTO) => {
+  mailRegisterConfirmation = (newUser: ResponseUserDTO | UserData) => {
     return new Promise((resolve, reject) => {
 
       const nodemailerOption = {
@@ -29,7 +30,7 @@ class Emailer {
 
       const email = {
         body: {
-          name: newUser.data.user_name,
+          name: newUser.user_name,
           intro: "Welcome to Edu Me! We're very excited to have you on board.",
           action: {
             instructions: 'To get started with Edu Me, please click here:',
@@ -39,9 +40,9 @@ class Emailer {
               link:
                 SysEnv.MAILER_PRODUCT_REGISTRATION_LINK +
                 ';email=' +
-                newUser.data.email +
+                newUser.email +
                 ';reg_confirm_key=' +
-                newUser.data.reg_confirm_key
+                newUser.reg_confirm_key
             }
           },
           outro:
@@ -53,7 +54,7 @@ class Emailer {
 
       const message = {
         from: SysEnv.EMAIL,
-        to: newUser.data.email,
+        to: newUser.email,
         subject: 'Welcome To EduMe',
         html: mailBody
       };
@@ -73,7 +74,7 @@ class Emailer {
     });
   };
 
-  mailResetPasswordConfirmation = (newUser: ResponseUserDTO) => {
+  mailResetPasswordConfirmation = (newUser: ResponseUserDTO | UserData) => {
     return new Promise((resolve, reject) => {
 
       const nodemailerOption = {
@@ -96,7 +97,7 @@ class Emailer {
 
       const email = {
         body: {
-          name: newUser.data.user_name,
+          name: newUser.user_name,
           intro: "You have requested to reset your password.",
           action: {
             instructions: 'To reset password, please click here:',
@@ -106,9 +107,9 @@ class Emailer {
               link:
                 SysEnv.MAILER_PRODUCT_RESET_PWD_LINK +
                 ';email=' +
-                newUser.data.email +
+                newUser.email +
                 ';pwd_reset_key=' +
-                newUser.data.pwd_reset_key
+                newUser.pwd_reset_key
             }
           },
           outro:
@@ -120,7 +121,7 @@ class Emailer {
 
       const message = {
         from: SysEnv.EMAIL,
-        to: newUser.data.email,
+        to: newUser.email,
         subject: 'Reset Edume Password',
         html: mailBody
       };

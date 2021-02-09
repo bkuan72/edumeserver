@@ -1,3 +1,4 @@
+import { adCategories_schema, adCategories_schema_table } from './adCategories.schema';
 import { userGroups_schema, userGroups_schema_table } from './userGroups.schema';
 import { socialGroups_schema, socialGroups_schema_table } from './groups.schema';
 import { postArticles_schema, postArticles_schema_table } from './postArticles.schema';
@@ -89,5 +90,9 @@ export const sysTables: tableIfc[] = [
   {
     name: userGroups_schema_table,
     schema: userGroups_schema
+  },
+  {
+    name: adCategories_schema_table,
+    schema: adCategories_schema
   }
 ];

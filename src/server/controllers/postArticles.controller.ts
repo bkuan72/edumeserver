@@ -46,11 +46,11 @@ export class PostArticlesController implements Controller{
 
   apiDTO  = (request: express.Request, response: express.Response) => {
     const dto = new PostArticleDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UpdPostArticleDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiSchema  = (request: express.Request, response: express.Response) => {
     response.send(postArticles_schema);
@@ -59,7 +59,7 @@ export class PostArticlesController implements Controller{
   newPostArticle  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
       this.postArticles.create(request.body).then((respPostArticleDTO) => {
         if (respPostArticleDTO) {
-            response.send(respPostArticleDTO.data);
+            response.send(respPostArticleDTO);
           } else {
             next(new PostDataFailedException())
           }
@@ -69,7 +69,7 @@ export class PostArticlesController implements Controller{
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.postArticles.findById(request.params.id).then((respPostArticleDTO) => {
       if (respPostArticleDTO) {
-        response.send(respPostArticleDTO.data);
+        response.send(respPostArticleDTO);
       } else {
         next(new DataNotFoundException(request.params.id))
       }

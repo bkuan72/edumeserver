@@ -47,11 +47,11 @@ export class MediasController implements Controller{
 
   apiDTO  = (request: express.Request, response: express.Response) => {
     const dto = new PostMediaDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UpdUserMediaDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiSchema  = (request: express.Request, response: express.Response) => {
     response.send(userMedias_schema);
@@ -60,7 +60,7 @@ export class MediasController implements Controller{
   newMedia  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
       this.userMedias.create(request.body).then((respMediaDTO) => {
         if (respMediaDTO) {
-            response.send(respMediaDTO.data);
+            response.send(respMediaDTO);
           } else {
             next(new PostDataFailedException())
           }
@@ -70,7 +70,7 @@ export class MediasController implements Controller{
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.userMedias.findById(request.params.id).then((respMediaDTO) => {
       if (respMediaDTO) {
-        response.send(respMediaDTO.data);
+        response.send(respMediaDTO);
       } else {
         next(new DataNotFoundException(request.params.id))
       }

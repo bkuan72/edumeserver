@@ -35,21 +35,23 @@ export class AdCategoriesController implements Controller{
                     validationMiddleware(adCategories_schema),
                     this.newAdCategory);
     this.router.get(this.path, authMiddleware, this.getAll);
+    this.router.get(this.path+'/byCategoryCode/:category', authMiddleware, this.findByCategory);
     this.router.get(this.path+'/byId/:id', authMiddleware, this.findById);
     this.router.patch(this.path+'/:id', authMiddleware, validationUpdateMiddleware(adCategories_schema), this.update);
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
     this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
+    this.router.put(this.path+'/delete/:id', authMiddleware, this.delete);
     return;
   }
 
   apiDTO  = (request: express.Request, response: express.Response) => {
     const dto = new AdCategoryDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UpdAdCategoryDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiSchema  = (request: express.Request, response: express.Response) => {
     response.send(adCategories_schema);
@@ -58,17 +60,28 @@ export class AdCategoriesController implements Controller{
   newAdCategory  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
       this.adCategories.create(request.body).then((respAdCategoryDTO) => {
         if (respAdCategoryDTO) {
-            response.send(respAdCategoryDTO.data);
+            response.send(respAdCategoryDTO);
           } else {
             next(new PostDataFailedException())
           }
       })
   };
 
+  findByCategory  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.adCategories.find({side_code: this.siteCode,
+                            adCategory_code: request.params.category}).then((respAdCategoryDTOArray) => {
+      if (respAdCategoryDTOArray) {
+        response.send(respAdCategoryDTOArray);
+      } else {
+        next(new DataNotFoundException(request.params.category))
+      }
+    })
+  }
+
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.adCategories.findById(request.params.id).then((respAdCategoryDTO) => {
       if (respAdCategoryDTO) {
-        response.send(respAdCategoryDTO.data);
+        response.send(respAdCategoryDTO);
       } else {
         next(new DataNotFoundException(request.params.id))
       }
@@ -87,6 +100,16 @@ export class AdCategoriesController implements Controller{
 
   update  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.adCategories.updateById(request.params.id, request.body).then((respAdCategoryDTO) => {
+      if (respAdCategoryDTO) {
+        response.send(respAdCategoryDTO);
+      } else {
+        next(new DataNotFoundException(request.params.id))
+      }
+    })
+  }
+
+  delete  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.adCategories.remove(request.params.id).then((respAdCategoryDTO) => {
       if (respAdCategoryDTO) {
         response.send(respAdCategoryDTO);
       } else {

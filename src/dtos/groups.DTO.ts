@@ -8,11 +8,11 @@ import { GroupData, socialGroups_schema } from '../schemas/groups.schema';
 export class GroupDTO {
   data: GroupData;
   constructor(groupData?: any) {
-    this.data = DTOGenerator.genSchemaModel(socialGroups_schema);
+    DTOGenerator.genDTOFromSchema(this, socialGroups_schema);
     if (!CommonFn.isUndefined(groupData)) {
-      for (const prop in groupData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = groupData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(groupData, prop)) {
+          this[prop] = groupData[prop];
         }
       }
     }
@@ -22,11 +22,11 @@ export class GroupDTO {
 export class UpdGroupDTO {
   data: GroupData;
   constructor(groupData?: any) {
-    this.data = DTOGenerator.genUpdateSchemaModel(socialGroups_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, socialGroups_schema);
     if (!CommonFn.isUndefined(groupData)) {
-      for (const prop in groupData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = groupData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(groupData, prop)) {
+          this[prop] = groupData[prop];
         }
       }
     }

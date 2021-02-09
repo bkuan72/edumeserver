@@ -8,11 +8,11 @@ import { UserAccountsData, userAccounts_schema } from '../schemas/userAccounts.s
 export class UserAccountsDTO {
   data: UserAccountsData;
   constructor(userAccountData?: any) {
-    this.data = DTOGenerator.genSchemaModel(userAccounts_schema);
+    DTOGenerator.genDTOFromSchema(this, userAccounts_schema);
     if (!CommonFn.isUndefined(userAccountData)) {
-      for (const prop in userAccountData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = userAccountData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(userAccountData, prop)) {
+          this[prop] = userAccountData[prop];
         }
       }
     }
@@ -22,11 +22,11 @@ export class UserAccountsDTO {
 export class UpdUserAccountsDTO {
   data: UserAccountsData;
   constructor(userAccountData?: any) {
-    this.data = DTOGenerator.genUpdateSchemaModel(userAccounts_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, userAccounts_schema);
     if (!CommonFn.isUndefined(userAccountData)) {
-      for (const prop in userAccountData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = userAccountData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(userAccountData, prop)) {
+          this[prop] = userAccountData[prop];
         }
       }
     }

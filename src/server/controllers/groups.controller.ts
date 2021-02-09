@@ -45,11 +45,11 @@ export class GroupsController implements Controller{
 
   apiDTO  = (request: express.Request, response: express.Response) => {
     const dto = new GroupDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UpdGroupDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiSchema  = (request: express.Request, response: express.Response) => {
     response.send(socialGroups_schema);
@@ -58,7 +58,7 @@ export class GroupsController implements Controller{
   newGroup  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
       this.groups.create(request.body).then((respGroupDTO) => {
         if (respGroupDTO) {
-            response.send(respGroupDTO.data);
+            response.send(respGroupDTO);
           } else {
             next(new PostDataFailedException())
           }
@@ -68,7 +68,7 @@ export class GroupsController implements Controller{
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.groups.findById(request.params.id).then((respGroupDTO) => {
       if (respGroupDTO) {
-        response.send(respGroupDTO.data);
+        response.send(respGroupDTO);
       } else {
         next(new DataNotFoundException(request.params.id))
       }

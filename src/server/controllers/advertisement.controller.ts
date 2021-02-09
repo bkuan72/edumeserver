@@ -44,11 +44,11 @@ export class AdvertisementsController implements Controller{
 
   apiDTO  = (request: express.Request, response: express.Response) => {
     const dto = new AdvertisementDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UpdAdvertisementDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiSchema  = (request: express.Request, response: express.Response) => {
     response.send(advertisements_schema);
@@ -57,7 +57,7 @@ export class AdvertisementsController implements Controller{
   newAdvertisement  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
       this.advertisements.create(request.body).then((respAdvertisementDTO) => {
         if (respAdvertisementDTO) {
-            response.send(respAdvertisementDTO.data);
+            response.send(respAdvertisementDTO);
           } else {
             next(new PostDataFailedException())
           }
@@ -67,7 +67,7 @@ export class AdvertisementsController implements Controller{
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.advertisements.findById(request.params.advertisementId).then((respAdvertisementDTO) => {
       if (respAdvertisementDTO) {
-        response.send(respAdvertisementDTO.data);
+        response.send(respAdvertisementDTO);
       } else {
         next(new DataNotFoundException(request.params.advertisementId))
       }

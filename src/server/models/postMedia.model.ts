@@ -49,7 +49,7 @@ export class PostMediaModel extends EntityModel {
                 rowData
               );
               const respPostDTO = new this.responseDTO(data) as PostMediaDTO;
-              resPostDTOArray.push(respPostDTO.data);
+              resPostDTOArray.push(respPostDTO);
             });
             resolve(resPostDTOArray);
             return;

@@ -45,11 +45,11 @@ export class EntitiesController implements Controller{
 
   apiDTO  = (request: express.Request, response: express.Response) => {
     const dto = new EntityDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UpdEntityDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiSchema  = (request: express.Request, response: express.Response) => {
     response.send(entities_schema);
@@ -58,7 +58,7 @@ export class EntitiesController implements Controller{
   newEntity  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
       this.entities.create(request.body).then((respEntityDTO) => {
         if (respEntityDTO) {
-            response.send(respEntityDTO.data);
+            response.send(respEntityDTO);
           } else {
             next(new PostDataFailedException())
           }
@@ -68,7 +68,7 @@ export class EntitiesController implements Controller{
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.entities.findById(request.params.id).then((respEntityDTO) => {
       if (respEntityDTO) {
-        response.send(respEntityDTO.data);
+        response.send(respEntityDTO);
       } else {
         next(new DataNotFoundException(request.params.id))
       }

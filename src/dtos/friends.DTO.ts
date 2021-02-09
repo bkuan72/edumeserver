@@ -8,11 +8,11 @@ import { FriendData, friends_schema } from '../schemas/friends.schema';
 export class FriendDTO {
   data: FriendData;
   constructor(propertyData?: any) {
-    this.data = DTOGenerator.genSchemaModel(friends_schema);
+    DTOGenerator.genDTOFromSchema(this, friends_schema);
     if (!CommonFn.isUndefined(propertyData)) {
-      for (const prop in propertyData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = propertyData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(propertyData, prop)) {
+          this[prop] = propertyData[prop];
         }
       }
     }
@@ -22,11 +22,11 @@ export class FriendDTO {
 export class UpdFriendDTO {
   data: FriendData;
   constructor(propertyData?: any) {
-    this.data = DTOGenerator.genUpdateSchemaModel(friends_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, friends_schema);
     if (!CommonFn.isUndefined(propertyData)) {
-      for (const prop in propertyData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = propertyData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(propertyData, prop)) {
+          this[prop] = propertyData[prop];
         }
       }
     }

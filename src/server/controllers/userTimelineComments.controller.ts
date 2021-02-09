@@ -45,11 +45,11 @@ export class UserTimelineCommentsController implements Controller{
 
   apiDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UserTimelineCommentDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UpdUserTimelineCommentDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiSchema  = (request: express.Request, response: express.Response) => {
     response.send(userTimelineComments_schema);
@@ -58,7 +58,7 @@ export class UserTimelineCommentsController implements Controller{
   newUserTimelineComment  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
       this.userTimelineComments.create(request.body).then((respUserTimelineCommentDTO) => {
         if (respUserTimelineCommentDTO) {
-            response.send(respUserTimelineCommentDTO.data);
+            response.send(respUserTimelineCommentDTO);
           } else {
             next(new PostDataFailedException())
           }
@@ -68,7 +68,7 @@ export class UserTimelineCommentsController implements Controller{
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.userTimelineComments.findById(request.params.id).then((respUserTimelineCommentDTO) => {
       if (respUserTimelineCommentDTO) {
-        response.send(respUserTimelineCommentDTO.data);
+        response.send(respUserTimelineCommentDTO);
       } else {
         next(new DataNotFoundException(request.params.id))
       }

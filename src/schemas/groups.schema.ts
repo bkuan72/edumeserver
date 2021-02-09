@@ -101,8 +101,7 @@ export const socialGroups_schema: schemaIfc[] = [
   },
   {
     fieldName: 'category',
-    sqlType: 'VARCHAR(30)',
-    size: 30,
+    sqlType: 'TEXT',
     excludeFromUpdate: false,
     trim: true,
     description: 'group category - lookup adCategories'

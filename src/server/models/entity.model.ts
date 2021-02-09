@@ -29,9 +29,9 @@ export class EntityModel {
   create = (dataInEntity: any): Promise<any> => {
     return new Promise((resolve) => {
       const newEntity = new this.requestDTO(dataInEntity);
-      newEntity.data.site_code = this.siteCode;
+      newEntity.site_code = this.siteCode;
       SqlFormatter.formatInsert(
-        newEntity.data,
+        newEntity,
         this.tableName,
         this.schema
       ).then((sql) => {
@@ -43,7 +43,7 @@ export class EntityModel {
             .then((result3) => {
               SysLog.info('created Entity: ', result3);
               const newUuid: uuidIfc = { '@uuidId': result3.rows[0][0] }; // TODO
-              newEntity.data.id = newUuid['@uuidId'];
+              newEntity.id = newUuid['@uuidId'];
               resolve(newEntity);
             })
             .catch((err) => {

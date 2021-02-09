@@ -8,11 +8,11 @@ import { UserMediaData, userMedias_schema } from '../schemas/userMedias.schema';
 export class UserMediaDTO {
   data: UserMediaData;
   constructor(propertyData?: any) {
-    this.data = DTOGenerator.genSchemaModel(userMedias_schema);
+    DTOGenerator.genDTOFromSchema(this, userMedias_schema);
     if (!CommonFn.isUndefined(propertyData)) {
-      for (const prop in propertyData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = propertyData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(propertyData, prop)) {
+          this[prop] = propertyData[prop];
         }
       }
     }
@@ -22,11 +22,11 @@ export class UserMediaDTO {
 export class UpdUserMediaDTO {
   data: UserMediaData;
   constructor(propertyData?: any) {
-    this.data = DTOGenerator.genUpdateSchemaModel(userMedias_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, userMedias_schema);
     if (!CommonFn.isUndefined(propertyData)) {
-      for (const prop in propertyData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = propertyData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(propertyData, prop)) {
+          this[prop] = propertyData[prop];
         }
       }
     }

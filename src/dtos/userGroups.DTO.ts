@@ -8,11 +8,11 @@ import { UserGroupData, userGroups_schema } from '../schemas/userGroups.schema';
 export class UserGroupsDTO {
   data: UserGroupData;
   constructor(userGroupData?: any) {
-    this.data = DTOGenerator.genSchemaModel(userGroups_schema);
+    DTOGenerator.genDTOFromSchema(this, userGroups_schema);
     if (!CommonFn.isUndefined(userGroupData)) {
-      for (const prop in userGroupData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = userGroupData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(userGroupData, prop)) {
+          this[prop] = userGroupData[prop];
         }
       }
     }
@@ -43,11 +43,11 @@ export class UserGroupInfoDTO {
 export class UpdUserGroupsDTO {
   data: UserGroupData;
   constructor(userGroupData?: any) {
-    this.data = DTOGenerator.genUpdateSchemaModel(userGroups_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, userGroups_schema);
     if (!CommonFn.isUndefined(userGroupData)) {
-      for (const prop in userGroupData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = userGroupData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(userGroupData, prop)) {
+          this[prop] = userGroupData[prop];
         }
       }
     }
@@ -57,11 +57,11 @@ export class UpdUserGroupsDTO {
 export class InsertUserGroupsDTO {
   data: UserGroupData;
   constructor(userGroupData?: any) {
-    this.data = DTOGenerator.genCreateSchemaModel(userGroups_schema);
+    DTOGenerator.getInsertDTOFromSchema (this, userGroups_schema);
     if (!CommonFn.isUndefined(userGroupData)) {
-      for (const prop in userGroupData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = userGroupData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(userGroupData, prop)) {
+          this[prop] = userGroupData[prop];
         }
       }
     }

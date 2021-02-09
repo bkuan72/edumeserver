@@ -46,11 +46,11 @@ export class ActivitiesController implements Controller{
 
   apiDTO  = (request: express.Request, response: express.Response) => {
     const dto = new ActivityDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UpdActivityDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiSchema  = (request: express.Request, response: express.Response) => {
     response.send(activities_schema);
@@ -59,7 +59,7 @@ export class ActivitiesController implements Controller{
   newActivity  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
       this.activities.create(request.body).then((respActivityDTO) => {
         if (respActivityDTO) {
-            response.send(respActivityDTO.data);
+            response.send(respActivityDTO);
           } else {
             next(new PostDataFailedException())
           }
@@ -69,7 +69,7 @@ export class ActivitiesController implements Controller{
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.activities.findById(request.params.activityId).then((respActivityDTO) => {
       if (respActivityDTO) {
-        response.send(respActivityDTO.data);
+        response.send(respActivityDTO);
       } else {
         next(new DataNotFoundException(request.params.activityId))
       }

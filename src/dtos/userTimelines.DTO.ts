@@ -9,11 +9,11 @@ import { UserTimelineData, userTimelines_schema } from '../schemas/userTimelines
 export class UserTimelineDTO {
   data: UserTimelineData;
   constructor(propertyData?: any) {
-    this.data = DTOGenerator.genSchemaModel(userTimelines_schema);
+    DTOGenerator.genDTOFromSchema(this, userTimelines_schema);
     if (!CommonFn.isUndefined(propertyData)) {
-      for (const prop in propertyData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = propertyData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(propertyData, prop)) {
+          this[prop] = propertyData[prop];
         }
       }
     }
@@ -23,11 +23,11 @@ export class UserTimelineDTO {
 export class UpdUserTimelineDTO {
   data: UserTimelineData;
   constructor(propertyData?: any) {
-    this.data = DTOGenerator.genUpdateSchemaModel(userTimelines_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, userTimelines_schema);
     if (!CommonFn.isUndefined(propertyData)) {
-      for (const prop in propertyData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = propertyData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(propertyData, prop)) {
+          this[prop] = propertyData[prop];
         }
       }
     }
@@ -37,32 +37,26 @@ export class UpdUserTimelineDTO {
 export class TimelinePostDTO {
   data: any;
   constructor(userTimelineData?: any) {
-    this.data = DTOGenerator.genSchemaModel(userTimelines_schema);
+    DTOGenerator.genDTOFromSchema(this, userTimelines_schema);
     if (!CommonFn.isUndefined(userTimelineData)) {
-      for (const prop in userTimelineData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = userTimelineData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(userTimelineData, prop)) {
+          this[prop] = userTimelineData[prop];
         }
       }
     }
-    this.data = DTOGenerator.defineProperty(
-      this.data,
+    DTOGenerator.defineProperty(
+      this,
       'post',
-      {}
+      DTOGenerator.genSchemaModel(posts_schema)
     );
-    this.data.post = DTOGenerator.genSchemaModel(posts_schema);
-    this.data = DTOGenerator.defineProperty(
-      this.data,
-      'time',
-      ''
-    );
-    this.data = DTOGenerator.defineProperty(
-      this.data,
+    DTOGenerator.defineProperty(
+      this,
       'comments',
       []
     );
-    this.data = DTOGenerator.defineProperty(
-      this.data,
+    DTOGenerator.defineProperty(
+      this,
       'user',
       {
         id: '',
@@ -70,13 +64,13 @@ export class TimelinePostDTO {
         avatar: ''
       }
     );
-    this.data = DTOGenerator.defineProperty(
-      this.data,
+    DTOGenerator.defineProperty(
+      this,
       'medias',
       []
     );
-    this.data = DTOGenerator.defineProperty(
-      this.data,
+    DTOGenerator.defineProperty(
+      this,
       'article',
       {
         media: { type: '', preview: ''},
@@ -86,4 +80,44 @@ export class TimelinePostDTO {
       }
     );
   }
+
+
 }
+
+const UserTimelinePostModel = DTOGenerator.genSchemaModel(userTimelines_schema);
+DTOGenerator.defineProperty(
+  UserTimelinePostModel,
+  'post',
+  DTOGenerator.genSchemaModel(posts_schema)
+);
+DTOGenerator.defineProperty(
+  UserTimelinePostModel,
+  'comments',
+  []
+);
+DTOGenerator.defineProperty(
+  UserTimelinePostModel,
+  'user',
+  {
+    id: '',
+    user_name: '',
+    avatar: ''
+  }
+);
+DTOGenerator.defineProperty(
+  UserTimelinePostModel,
+  'medias',
+  []
+);
+DTOGenerator.defineProperty(
+  UserTimelinePostModel,
+  'article',
+  {
+    media: { type: '', preview: ''},
+    title: '',
+    subtitle: '',
+    excerpt: ''
+  }
+);
+export type UserTimelinePostData = typeof UserTimelinePostModel;
+

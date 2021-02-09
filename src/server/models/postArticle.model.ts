@@ -1,3 +1,4 @@
+import { PostArticleData } from './../../schemas/postArticles.schema';
 import { SqlFormatter } from './../../modules/sql.strings';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -49,13 +50,13 @@ export class PostArticleModel extends EntityModel {
                 undefined,
                 rowData
               );
-              const respPostArticleDTO = new this.responseDTO(data) as PostArticleDTO;
-              respPostArticleDTO.data = DTOGenerator.defineProperty(respPostArticleDTO.data, 'medias', [{
-                                                                    type: respPostArticleDTO.data.type,
-                                                                    preview: respPostArticleDTO.data.preview
+              let respPostArticleDTO = new this.responseDTO(data) as PostArticleDTO | PostArticleData;
+              respPostArticleDTO = DTOGenerator.defineProperty(respPostArticleDTO, 'medias', [{
+                                                                    type: respPostArticleDTO.type,
+                                                                    preview: respPostArticleDTO.preview
 
                                                                 }]);
-              resPostArticleDTOArray.push(respPostArticleDTO.data);
+              resPostArticleDTOArray.push(respPostArticleDTO);
             });
             resolve(resPostArticleDTOArray);
             return;

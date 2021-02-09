@@ -8,11 +8,11 @@ import { TokenData, token_schema } from '../schemas/tokens.schema';
 export class TokenDTO {
   data: TokenData;
   constructor(tokenData?: any) {
-    this.data = DTOGenerator.genSchemaModel(token_schema);
+    DTOGenerator.genDTOFromSchema(this, token_schema);
     if (!CommonFn.isUndefined(tokenData)) {
-      for (const prop in tokenData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = tokenData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(tokenData, prop)) {
+          this[prop] = tokenData[prop];
         }
       }
     }

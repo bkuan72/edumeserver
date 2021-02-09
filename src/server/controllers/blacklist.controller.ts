@@ -33,7 +33,7 @@ export class BlacklistController implements Controller{
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.tokens.findById(request.params.id).then((respTokenDTO) => {
       if (respTokenDTO) {
-        response.send(respTokenDTO.data);
+        response.send(respTokenDTO);
       } else {
         next(new DataNotFoundException(request.params.id))
       }

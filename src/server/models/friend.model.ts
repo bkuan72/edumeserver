@@ -43,7 +43,7 @@ export class FriendModel extends EntityModel {
                 undefined,
                 rowData);
                 const respFriendDTO = new this.responseDTO(data) as FriendDTO;
-                resFriendDTOArray.push(respFriendDTO.data);
+                resFriendDTOArray.push(respFriendDTO);
             });
           resolve(resFriendDTOArray);
           return;

@@ -8,19 +8,17 @@ export class ResponseUserDTO {
   data: UserData;
   constructor(user?: any,
               showPassword?: boolean) {
-    this.data = DTOGenerator.genSchemaModel(users_schema);
+    DTOGenerator.genDTOFromSchema(this, users_schema);
     if (!CommonFn.isUndefined(user)) {
-      for (const prop in user) {
-        if (CommonFn.hasProperty(this.data, prop)) {
+      for (const prop in this) {
+        if (CommonFn.hasProperty(user, prop)) {
           if (prop === 'password') {
-            if (CommonFn.isUndefined(showPassword) || showPassword === false) {
-              this.data[prop] = undefined;
-            } else {
-              this.data[prop] = user[prop];
+            if (!CommonFn.isUndefined(showPassword) && showPassword) {
+              this[prop] = user[prop];
             }
           }
           else {
-            this.data[prop] = user[prop];
+            this[prop] = user[prop];
           }
         }
       }
@@ -31,11 +29,11 @@ export class ResponseUserDTO {
 export class CreateUserDTO {
   data: UserData;
   constructor(user?: any) {
-    this.data = DTOGenerator.genSchemaModel(users_schema);
+    DTOGenerator.genDTOFromSchema(this, users_schema);
     if (!CommonFn.isUndefined(user)) {
-      for (const prop in user) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = user[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(user, prop)) {
+          this[prop] = user[prop];
         }
       }
     }
@@ -45,11 +43,11 @@ export class CreateUserDTO {
 export class UpdUserDTO {
   data: UserData;
   constructor(user?: any) {
-    this.data = DTOGenerator.genUpdateSchemaModel(users_schema, ['password']);
+    DTOGenerator.genUpdDTOFromSchema(this, users_schema, ['password']);
     if (!CommonFn.isUndefined(user)) {
-      for (const prop in user) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = user[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(user, prop)) {
+          this[prop] = user[prop];
         }
       }
     }
@@ -59,11 +57,11 @@ export class UpdUserDTO {
 export class InsertUserDTO {
   data: UserData;
   constructor(user?: any) {
-    this.data = DTOGenerator.genCreateSchemaModel(users_schema);
+    DTOGenerator.getInsertDTOFromSchema (this, users_schema);
     if (!CommonFn.isUndefined(user)) {
-      for (const prop in user) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = user[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(user, prop)) {
+          this[prop] = user[prop];
         }
       }
     }

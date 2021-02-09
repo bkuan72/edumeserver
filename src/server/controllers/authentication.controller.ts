@@ -1,3 +1,4 @@
+import { UserData } from './../../schemas/users.schema';
 import { CommonFn } from './../../modules/CommonFnModule';
 import { ResponseUserDTO, CreateUserDTO } from '../../dtos/userDTO';
 import { AccountModel } from './../models/account.model';
@@ -89,13 +90,13 @@ class AuthenticationController implements Controller {
     );
   }
 
-  private createToken = async (user: ResponseUserDTO): Promise<TokenData> => {
+  private createToken = async (user: ResponseUserDTO | UserData): Promise<TokenData> => {
     return new Promise((resolve) => {
       const generateToken = (adminUser: boolean, devUser: boolean, bizUser: boolean) => {
         const expiresIn = this.tokenExpireInMin * 60; // convert to seconds
         const timestamp = new Date();
         const dataStoredInToken: DataStoredInToken = {
-          user_id: user.data.id,
+          user_id: user.id,
           uuid: uuidv4(),
           adminUser: adminUser,
           devUser: devUser,
@@ -117,7 +118,7 @@ class AuthenticationController implements Controller {
 
       this.userAccounts
         .getUserAccountTypes(this.siteCode,
-          user.data.id,
+          user.id,
           'OK')
         .then((userAccountTypes) => {
           if (userAccountTypes && userAccountTypes.length > 0) {
@@ -155,23 +156,23 @@ class AuthenticationController implements Controller {
     response: express.Response,
     next: express.NextFunction
   ) => {
-    const user = new CreateUserDTO(request.body);
+    const user = new CreateUserDTO(request.body) as  UserData;
     const existingUser = await this.users.find({
       site_code: this.siteCode,
-      email: user.data.email
+      email: user.email
     });
     if (existingUser !== undefined && existingUser.length > 0) {
       SysLog.error(
-        `User With That Email Already Exists Exception: ${user.data.email}`
+        `User With That Email Already Exists Exception: ${user.email}`
       );
-      next(new UserWithThatEmailAlreadyExistsException(user.data.email));
+      next(new UserWithThatEmailAlreadyExistsException(user.email));
     } else {
-      user.data.site_code = this.siteCode;
-      const newUser = await this.users.create(user.data);
+      user.site_code = this.siteCode;
+      const newUser = await this.users.create(user);
       if (newUser) {
         const regConfirmKey = uuidv4();
         this.users
-          .updateRegConfirmKeyByEmail(newUser.data.email, regConfirmKey)
+          .updateRegConfirmKeyByEmail(newUser.email, regConfirmKey)
           .then(async (respUserDTO: ResponseUserDTO | undefined) => {
             if (respUserDTO) {
               SysMailer.mailRegisterConfirmation(respUserDTO);
@@ -191,12 +192,12 @@ class AuthenticationController implements Controller {
             }
           })
           .catch(() => {
-            SysLog.error(`DB Creating New User Exception: ${user.data.email}`);
-            next(new DbCreatingNewUserException(user.data.email));
+            SysLog.error(`DB Creating New User Exception: ${user.email}`);
+            next(new DbCreatingNewUserException(user.email));
           });
       } else {
-        SysLog.error(`DB Creating New User Exception: ${user.data.email}`);
-        next(new DbCreatingNewUserException(user.data.email));
+        SysLog.error(`DB Creating New User Exception: ${user.email}`);
+        next(new DbCreatingNewUserException(user.email));
       }
     }
   };
@@ -206,22 +207,22 @@ class AuthenticationController implements Controller {
     response: express.Response,
     next: express.NextFunction
   ) => {
-    const logInData = new LoginDTO(request.body);
-    logInData.data.siteCode = this.siteCode;
+    const logInData = new LoginDTO(request.body) as UserData;
+    logInData.siteCode = this.siteCode;
     const user = await this.users.find(
-      { email: logInData.data.email },
+      { email: logInData.email },
       true,
       true
     );
     if (user && user.length > 0) {
       const isPasswordMatching = await bcryptCompare(
-        logInData.data.password,
-        user[0].data.password
+        logInData.password,
+        user[0].password
       );
       if (isPasswordMatching) {
-        if (CommonFn.isEmpty(user[0].data.reg_confirm_key)) {
-          if (user[0].data.status === 'ENABLED') {
-            user[0].data.password = undefined;
+        if (CommonFn.isEmpty(user[0].reg_confirm_key)) {
+          if (user[0].status === 'ENABLED') {
+            user[0].password = undefined;
             const tokenData = await this.createToken(user[0]);
             if (SysEnv.CookieAuth()) {
               response.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
@@ -236,7 +237,7 @@ class AuthenticationController implements Controller {
             }
           } else {
             SysLog.error(
-              `Invalid User Status,  Id : ${user[0].data.id}, email: ${user[0].data.email} Status: ${user[0].data.status}`
+              `Invalid User Status,  Id : ${user[0].id}, email: ${user[0].email} Status: ${user[0].status}`
             );
             next(new InvalidUserStatusException(user[0]));
           }
@@ -244,12 +245,12 @@ class AuthenticationController implements Controller {
           next(new RegistrationConfirmationException(user[0]));
         }
       } else {
-        SysLog.error(`Wrong Password Exception: ${logInData.data.email}`);
-        next(new WrongCredentialsException(logInData.data.email));
+        SysLog.error(`Wrong Password Exception: ${logInData.email}`);
+        next(new WrongCredentialsException(logInData.email));
       }
     } else {
-      SysLog.error(`Cannot Find Email Exception: ${logInData.data.email}`);
-      next(new WrongCredentialsException(logInData.data.email));
+      SysLog.error(`Cannot Find Email Exception: ${logInData.email}`);
+      next(new WrongCredentialsException(logInData.email));
     }
   };
 
@@ -298,7 +299,7 @@ class AuthenticationController implements Controller {
             const id = verificationResponse.user_id;
             const user = await this.users.findById(id);
             if (user) {
-              if (user.data.status === 'ENABLED') {
+              if (user.status === 'ENABLED') {
                 if (
                   this.tokens.tokenExpired(
                     verificationResponse.expiryInSec,
@@ -358,12 +359,12 @@ class AuthenticationController implements Controller {
     const { email, regConfirmKey } = request.params;
     const existingUser = await this.users.findByEmail(email);
     if (existingUser) {
-      if (existingUser.data.reg_confirm_key !== regConfirmKey) {
+      if (existingUser.reg_confirm_key !== regConfirmKey) {
         next(new RegistrationKeyException(email, regConfirmKey));
       } else {
         this.users.updateRegConfirmKeyByEmail(email, '');
-        existingUser.data.reg_confirm_key = '';
-        response.send(existingUser.data);
+        existingUser.reg_confirm_key = '';
+        response.send(existingUser);
       }
     } else {
       next(new RegistrationKeyException(email, regConfirmKey));
@@ -386,8 +387,8 @@ class AuthenticationController implements Controller {
           if (responseUserDto) {
             SysMailer.mailResetPasswordConfirmation(responseUserDto)
               .then(() => {
-                responseUserDto.data.pwd_reset_key = '';
-                response.send(responseUserDto.data);
+                responseUserDto.pwd_reset_key = '';
+                response.send(responseUserDto);
               })
               .catch(() => {
                 next(new ResetPasswordKeyException(email, ''));
@@ -408,7 +409,7 @@ class AuthenticationController implements Controller {
     const { email, resetPasswordKey } = request.params;
     const existingUser = await this.users.findByEmail(email);
     if (existingUser) {
-      if (existingUser.data.pwd_reset_key !== resetPasswordKey) {
+      if (existingUser.pwd_reset_key !== resetPasswordKey) {
         response.send({ valid: false });
       } else {
         response.send({ valid: true });
@@ -426,16 +427,16 @@ class AuthenticationController implements Controller {
     const { email, resetPasswordKey, newPassword } = request.params;
     const existingUser = await this.users.findByEmail(email);
     if (existingUser) {
-      if (existingUser.data.pwd_reset_key !== resetPasswordKey) {
+      if (existingUser.pwd_reset_key !== resetPasswordKey) {
         next(new ResetPasswordKeyException(email, resetPasswordKey));
       } else {
         this.users
           .updatePasswordNResetKeyByEmail(email, newPassword)
           .then((responseUserDto) => {
             if (responseUserDto) {
-              responseUserDto.data.password = '';
-              responseUserDto.data.pwd_reset_key = '';
-              response.send(responseUserDto.data);
+              responseUserDto.password = '';
+              responseUserDto.pwd_reset_key = '';
+              response.send(responseUserDto);
             } else {
               next(new ResetPasswordKeyException(email, resetPasswordKey));
             }

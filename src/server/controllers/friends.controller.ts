@@ -45,11 +45,11 @@ export class FriendsController implements Controller{
 
   apiDTO  = (request: express.Request, response: express.Response) => {
     const dto = new FriendDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UpdFriendDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiSchema  = (request: express.Request, response: express.Response) => {
     response.send(friends_schema);
@@ -58,7 +58,7 @@ export class FriendsController implements Controller{
   newFriend  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
       this.friends.create(request.body).then((respFriendDTO) => {
         if (respFriendDTO) {
-            response.send(respFriendDTO.data);
+            response.send(respFriendDTO);
           } else {
             next(new PostDataFailedException())
           }
@@ -68,7 +68,7 @@ export class FriendsController implements Controller{
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.friends.findById(request.params.friendId).then((respFriendDTO) => {
       if (respFriendDTO) {
-        response.send(respFriendDTO.data);
+        response.send(respFriendDTO);
       } else {
         next(new DataNotFoundException(request.params.friendId))
       }

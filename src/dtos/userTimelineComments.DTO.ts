@@ -9,11 +9,11 @@ import {UserTimelineCommentData, userTimelineComments_schema } from '../schemas/
 export class UserTimelineCommentDTO {
   data: UserTimelineCommentData;
   constructor(propertyData?: any) {
-    this.data = DTOGenerator.genSchemaModel(userTimelineComments_schema);
+    DTOGenerator.genDTOFromSchema(this, userTimelineComments_schema);
     if (!CommonFn.isUndefined(propertyData)) {
-      for (const prop in propertyData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = propertyData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(propertyData, prop)) {
+          this[prop] = propertyData[prop];
         }
       }
     }
@@ -23,11 +23,11 @@ export class UserTimelineCommentDTO {
 export class UpdUserTimelineCommentDTO {
   data: UserTimelineCommentData;
   constructor(propertyData?: any) {
-    this.data = DTOGenerator.genUpdateSchemaModel(userTimelineComments_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, userTimelineComments_schema);
     if (!CommonFn.isUndefined(propertyData)) {
-      for (const prop in propertyData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = propertyData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(propertyData, prop)) {
+          this[prop] = propertyData[prop];
         }
       }
     }
@@ -37,21 +37,21 @@ export class UpdUserTimelineCommentDTO {
 export class UserTimelineUserCommentDTO {
   data: UserTimelineCommentData;
   constructor(propertyData?: any) {
-    this.data = DTOGenerator.genSchemaModel(userTimelineComments_schema);
+    DTOGenerator.genDTOFromSchema(this, userTimelineComments_schema);
     if (!CommonFn.isUndefined(propertyData)) {
-      for (const prop in propertyData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = propertyData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(propertyData, prop)) {
+          this[prop] = propertyData[prop];
         }
       }
     }
-    this.data = DTOGenerator.defineProperty(
-      this.data,
+    DTOGenerator.defineProperty(
+      this,
       'time',
       ''
     );
-    this.data = DTOGenerator.defineProperty(
-      this.data,
+    DTOGenerator.defineProperty(
+      this,
       'user',
       {
         id: '',

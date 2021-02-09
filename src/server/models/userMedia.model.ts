@@ -46,7 +46,7 @@ export class UserMediaModel extends EntityModel {
                 rowData
               );
               const respUserMediaDTO = new this.responseDTO(data) as UserMediaDTO;
-              resUserMediaDTOArray.push(respUserMediaDTO.data);
+              resUserMediaDTOArray.push(respUserMediaDTO);
             });
             resolve(resUserMediaDTOArray);
             return;

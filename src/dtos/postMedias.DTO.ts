@@ -8,11 +8,11 @@ import { PostMediaData, postMedias_schema } from '../schemas/postMedias.schema';
 export class PostMediaDTO {
   data: PostMediaData;
   constructor(postMediaData?: any) {
-    this.data = DTOGenerator.genSchemaModel(postMedias_schema);
+    DTOGenerator.genDTOFromSchema(this, postMedias_schema);
     if (!CommonFn.isUndefined(postMediaData)) {
-      for (const prop in postMediaData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = postMediaData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(postMediaData, prop)) {
+          this[prop] = postMediaData[prop];
         }
       }
     }
@@ -22,11 +22,11 @@ export class PostMediaDTO {
 export class UpdPostMediaDTO {
   data: PostMediaData;
   constructor(postMediaData?: any) {
-    this.data = DTOGenerator.genUpdateSchemaModel(postMedias_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, postMedias_schema);
     if (!CommonFn.isUndefined(postMediaData)) {
-      for (const prop in postMediaData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = postMediaData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(postMediaData, prop)) {
+          this[prop] = postMediaData[prop];
         }
       }
     }

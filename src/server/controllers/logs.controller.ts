@@ -38,7 +38,7 @@ export class LogsController implements Controller{
   newLog  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
       this.logs.create(request.body).then((respLogDTO) => {
         if (respLogDTO) {
-            response.send(respLogDTO.data);
+            response.send(respLogDTO);
           } else {
             next(new PostDataFailedException())
           }
@@ -48,7 +48,7 @@ export class LogsController implements Controller{
   findByLogDate  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.logs.findById(request.params.logDate).then((respLogDTO) => {
       if (respLogDTO) {
-        response.send(respLogDTO.data);
+        response.send(respLogDTO);
       } else {
         next(new DataNotFoundException(request.params.logId))
       }
@@ -58,7 +58,7 @@ export class LogsController implements Controller{
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.logs.findById(request.params.logId).then((respLogDTO) => {
       if (respLogDTO) {
-        response.send(respLogDTO.data);
+        response.send(respLogDTO);
       } else {
         next(new DataNotFoundException(request.params.logId))
       }

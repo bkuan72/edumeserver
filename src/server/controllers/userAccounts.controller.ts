@@ -1,3 +1,4 @@
+import { UserAccountsData } from './../../schemas/userAccounts.schema';
 import { UpdUserAccountsDTO } from './../../dtos/userAccounts.DTO';
 import { CommonFn } from './../../modules/CommonFnModule';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
@@ -52,11 +53,11 @@ export class UserAccountsController implements Controller{
 
   apiDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UserAccountsDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UpdUserAccountsDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiSchema  = (request: express.Request, response: express.Response) => {
     response.send(userAccounts_schema);
@@ -64,24 +65,24 @@ export class UserAccountsController implements Controller{
 
 
   private create = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
-    const userAccount = new UserAccountsDTO(request.body);
-    userAccount.data.site_code = this.siteCode;
+    const userAccount = new UserAccountsDTO(request.body) as UserAccountsData;
+    userAccount.site_code = this.siteCode;
     const accounts = await this.userAccounts.find({
       site_code: this.siteCode,
-      user_id: userAccount.data.user_id,
-      account_id: userAccount.data.account_id
+      user_id: userAccount.user_id,
+      account_id: userAccount.account_id
      })
     if (
       CommonFn.isUndefined(accounts) || accounts?.length === 0
     ) {
-      next(new UserAccountAlreadyExistsException(userAccount.data.user_id, userAccount.data.account_id));
+      next(new UserAccountAlreadyExistsException(userAccount.user_id, userAccount.account_id));
     } else {
-      userAccount.data.site_code = this.siteCode;
+      userAccount.site_code = this.siteCode;
       const newUserAccount = await this.userAccounts.create(userAccount);
       if (newUserAccount) {
-        response.send(newUserAccount.data);
+        response.send(newUserAccount);
       } else {
-        next(new DbCreatingNewUserAccountException(userAccount.data.user_id, userAccount.data.account_id));
+        next(new DbCreatingNewUserAccountException(userAccount.user_id, userAccount.account_id));
       }
     }
   }

@@ -49,7 +49,7 @@ export class UserTimelineCommentModel extends EntityModel {
                 rowData
               );
               const respTimelineDTO = new UserTimelineUserCommentDTO(data);
-              resTimelineDTOArray.push(respTimelineDTO.data);
+              resTimelineDTOArray.push(respTimelineDTO);
             });
             resolve(resTimelineDTOArray);
             return;

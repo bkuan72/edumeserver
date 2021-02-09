@@ -31,7 +31,7 @@ async function devAuthMiddleware(request: Request, _response: Response, next: Ne
             const id = verificationResponse.user_id;
             const user = await users.findById(id);
             if (user) {
-              if (user.data.status === 'ENABLED') {
+              if (user.status === 'ENABLED') {
                 if (blacklistTokens.tokenExpired(verificationResponse.expiryInSec,
                                                  verificationResponse.createTimeStamp)) {
                   SysLog.error('Expired Token Used By User Id :', id);

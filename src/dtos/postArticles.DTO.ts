@@ -8,11 +8,11 @@ import { PostArticleData, postArticles_schema } from '../schemas/postArticles.sc
 export class PostArticleDTO {
   data: PostArticleData;
   constructor(postArticleData?: any) {
-    this.data = DTOGenerator.genSchemaModel(postArticles_schema);
+    DTOGenerator.genDTOFromSchema(this, postArticles_schema);
     if (!CommonFn.isUndefined(postArticleData)) {
-      for (const prop in postArticleData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = postArticleData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(postArticleData, prop)) {
+          this[prop] = postArticleData[prop];
         }
       }
     }
@@ -22,11 +22,11 @@ export class PostArticleDTO {
 export class UpdPostArticleDTO {
   data: PostArticleData;
   constructor(postArticleData?: any) {
-    this.data = DTOGenerator.genUpdateSchemaModel(postArticles_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, postArticles_schema);
     if (!CommonFn.isUndefined(postArticleData)) {
-      for (const prop in postArticleData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = postArticleData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(postArticleData, prop)) {
+          this[prop] = postArticleData[prop];
         }
       }
     }

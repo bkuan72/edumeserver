@@ -6,7 +6,7 @@ import { SqlFormatter } from '../../modules/sql.strings';
 import SqlStr = require('sqlstring');
 import e = require('express');
 import dbConnection from '../../modules/DbModule';
-import { userAccounts_schema, userAccounts_schema_table } from '../../schemas/userAccounts.schema';
+import { UserAccountsData, userAccounts_schema, userAccounts_schema_table } from '../../schemas/userAccounts.schema';
 import { uuidIfc } from './uuidIfc';
 import { UserAccountsDTO } from '../../dtos/userAccounts.DTO';
 import SysLog from '../../modules/SysLog';
@@ -22,11 +22,11 @@ export class UserAccountModel {
 
   tableName = userAccounts_schema_table;
   create = (userAccount: any): Promise<UserAccountsDTO | undefined> => {
-    const newUserAccount =  new UserAccountsDTO(userAccount);
-    newUserAccount.data.site_code = this.siteCode;
+    const newUserAccount =  new UserAccountsDTO(userAccount) as UserAccountsData;
+    newUserAccount.site_code = this.siteCode;
     return new Promise (async (resolve) => {
      SqlFormatter.formatInsert(
-        newUserAccount.data,
+        newUserAccount,
         this.tableName,
         userAccounts_schema
       ).then((sql) => {
@@ -39,9 +39,9 @@ export class UserAccountModel {
               SysLog.info('created Entity: ', result3);
               const newUuid: uuidIfc = { '@uuidId': result3.rows[0][0] }; // TODO
 
-              const respUserAccountsDTO = new UserAccountsDTO(newUserAccount);
-              respUserAccountsDTO.data.password = '';
-              respUserAccountsDTO.data.id = newUuid['@uuidId'];
+              const respUserAccountsDTO = new UserAccountsDTO(newUserAccount) as UserAccountsData;
+              respUserAccountsDTO.password = '';
+              respUserAccountsDTO.id = newUuid['@uuidId'];
               resolve(respUserAccountsDTO)
             })
             .catch((err) => {
@@ -96,7 +96,7 @@ export class UserAccountModel {
 
   find = (conditions: any,
           ignoreExclSelect?: boolean,
-          excludeSelectProp?: string[]): Promise<UserAccountsDTO[] | undefined> => {
+          excludeSelectProp?: string[]): Promise<UserAccountsDTO[] | UserAccountsData[] | undefined> => {
     let sql = SqlFormatter.formatSelect(this.tableName, userAccounts_schema, ignoreExclSelect, excludeSelectProp);
     sql += SqlFormatter.formatWhereAND('', conditions, this.tableName, userAccounts_schema) + ' AND ';
     sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, userAccounts_schema);

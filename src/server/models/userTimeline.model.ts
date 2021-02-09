@@ -1,3 +1,4 @@
+import { UserTimelineData } from './../../schemas/userTimelines.schema';
 import { posts_schema, posts_schema_table } from './../../schemas/posts.schema';
 import { SqlFormatter } from './../../modules/sql.strings';
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -7,7 +8,7 @@ import {
   userTimelines_schema,
   userTimelines_schema_table
 } from '../../schemas/userTimelines.schema';
-import { UserTimelineDTO, TimelinePostDTO } from '../../dtos/userTimelines.DTO';
+import { UserTimelineDTO, TimelinePostDTO, UserTimelinePostData } from '../../dtos/userTimelines.DTO';
 import { EntityModel } from './entity.model';
 import SqlStr = require('sqlstring');
 import SysLog from '../../modules/SysLog';
@@ -51,13 +52,13 @@ export class UserTimelineModel extends EntityModel {
                 undefined,
                 rowData
               );
-              const respUserTimelineDTO = new this.responseDTO(data) as UserTimelineDTO;
-              respUserTimelineDTO.data = DTOGenerator.defineProperty(respUserTimelineDTO.data, 'medias', [{
-                                                                    type: respUserTimelineDTO.data.type,
-                                                                    preview: respUserTimelineDTO.data.preview
+              let respUserTimelineDTO = new this.responseDTO(data) as UserTimelineDTO | UserTimelineData;
+              respUserTimelineDTO = DTOGenerator.defineProperty(respUserTimelineDTO, 'medias', [{
+                                                                    type: respUserTimelineDTO.type,
+                                                                    preview: respUserTimelineDTO.preview
 
                                                                 }]);
-              resUserTimelineDTOArray.push(respUserTimelineDTO.data);
+              resUserTimelineDTOArray.push(respUserTimelineDTO);
             });
             resolve(resUserTimelineDTOArray);
             return;
@@ -105,18 +106,18 @@ export class UserTimelineModel extends EntityModel {
 
          if (result.rows.length > 0) {
             result.rows.forEach((rowData) => {
-              const respTimelinePostDTO = new TimelinePostDTO();
+              const respTimelinePostDTO = new TimelinePostDTO() as UserTimelinePostData;
               let colIdx = 0;
               colIdx = SqlFormatter.transposeTableSelectColumns(colIdx,
-                                                                respTimelinePostDTO.data,
+                                                                respTimelinePostDTO,
                                                                 this.schema,
                                                                 rowData);
               colIdx = SqlFormatter.transposeTableSelectColumns(colIdx,
-                                                                respTimelinePostDTO.data.post,
+                                                                respTimelinePostDTO.post,
                                                                 posts_schema,
                                                                 rowData);
 
-              resPostDTOArray.push(respTimelinePostDTO.data);
+              resPostDTOArray.push(respTimelinePostDTO);
             });
             resolve(resPostDTOArray);
             return;

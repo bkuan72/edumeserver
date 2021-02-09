@@ -44,11 +44,11 @@ export class PostMediasController implements Controller{
   }
   apiDTO  = (request: express.Request, response: express.Response) => {
     const dto = new PostMediaDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UpdPostMediaDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiSchema  = (request: express.Request, response: express.Response) => {
     response.send(postMedias_schema);
@@ -57,7 +57,7 @@ export class PostMediasController implements Controller{
   newPostMedia  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
       this.postMedias.create(request.body).then((respPostMediaDTO) => {
         if (respPostMediaDTO) {
-            response.send(respPostMediaDTO.data);
+            response.send(respPostMediaDTO);
           } else {
             next(new PostDataFailedException())
           }
@@ -67,7 +67,7 @@ export class PostMediasController implements Controller{
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.postMedias.findById(request.params.id).then((respPostMediaDTO) => {
       if (respPostMediaDTO) {
-        response.send(respPostMediaDTO.data);
+        response.send(respPostMediaDTO);
       } else {
         next(new DataNotFoundException(request.params.id))
       }

@@ -1,3 +1,4 @@
+import { TokenData } from './../../schemas/tokens.schema';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
@@ -27,14 +28,14 @@ export class TokenModel {
   create = (
     dataInToken: DataStoredInToken,
     jwtSignToken: string
-  ): Promise<TokenDTO | undefined> => {
+  ): Promise<TokenDTO | TokenData | undefined> => {
     return new Promise((resolve) => {
-      const newToken = new TokenDTO(dataInToken);
-      newToken.data.site_code = this.siteCode;
+      const newToken = new TokenDTO(dataInToken) as TokenData;
+      newToken.site_code = this.siteCode;
       const len = jwtSignToken.length;
-      newToken.data.token = jwtSignToken;
+      newToken.token = jwtSignToken;
       SqlFormatter.formatInsert(
-        newToken.data,
+        newToken,
         this.tableName,
         token_schema
       ).then((sql) => {
@@ -49,7 +50,7 @@ export class TokenModel {
                   .then((result3) => {
                     SysLog.info('created Token');
                     const newUuid: uuidIfc = { '@uuidId': result3.rows[0][0] }; // TODO
-                    newToken.data.id = newUuid['@uuidId'];
+                    newToken.id = newUuid['@uuidId'];
                     resolve(newToken);
                   })
                   .catch((err) => {
@@ -74,7 +75,7 @@ export class TokenModel {
     });
   };
 
-  findById = (tokenId: string): Promise<TokenDTO | undefined> => {
+  findById = (tokenId: string): Promise<TokenDTO | TokenData | undefined> => {
     return new Promise((resolve) => {
       let sql =
         SqlFormatter.formatSelect(this.tableName, token_schema) + ' WHERE ';
@@ -108,7 +109,7 @@ export class TokenModel {
   updateById = async (
     tokenId: string,
     tokenDTO: any
-  ): Promise<TokenDTO | undefined> => {
+  ): Promise<TokenDTO | TokenData | undefined> => {
     return new Promise((resolve) => {
       SqlFormatter.formatUpdate(this.tableName, token_schema, tokenDTO).then(
         (sql) => {
@@ -141,7 +142,7 @@ export class TokenModel {
     showPassword?: boolean,
     ignoreExclSelect?: boolean,
     excludeSelectProp?: string[]
-  ): Promise<TokenDTO[] | undefined> => {
+  ): Promise<TokenDTO[] | TokenData[] | undefined> => {
     let sql = SqlFormatter.formatSelect(
       this.tableName,
       token_schema,

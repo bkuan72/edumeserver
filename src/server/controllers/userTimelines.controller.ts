@@ -57,24 +57,24 @@ export class UserTimelinessController implements Controller{
 
   apiDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UserTimelineDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UpdUserTimelineDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
   apiSchema  = (request: express.Request, response: express.Response) => {
     response.send(userTimelines_schema);
   }
   apiTimelineDTO  = (request: express.Request, response: express.Response) => {
     const dto = new TimelinePostDTO();
-    response.send(dto.data);
+    response.send(dto);
   }
 
   newUserTimelines  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
       this.userTimelines.create(request.body).then((respUserTimelineDTO) => {
         if (respUserTimelineDTO) {
-            response.send(respUserTimelineDTO.data);
+            response.send(respUserTimelineDTO);
           } else {
             next(new PostDataFailedException())
           }
@@ -84,7 +84,7 @@ export class UserTimelinessController implements Controller{
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.userTimelines.findById(request.params.id).then((respUserTimelineDTO) => {
       if (respUserTimelineDTO) {
-        response.send(respUserTimelineDTO.data);
+        response.send(respUserTimelineDTO);
       } else {
         next(new DataNotFoundException(request.params.id))
       }

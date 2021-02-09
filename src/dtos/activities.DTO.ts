@@ -8,16 +8,16 @@ import { ActivityData, activities_schema } from '../schemas/activities.schema';
 export class ActivityDTO {
   data: ActivityData;
   constructor(activityData?: any) {
-    this.data = DTOGenerator.genSchemaModel(activities_schema);
+    DTOGenerator.genDTOFromSchema(this, activities_schema);
     if (!CommonFn.isUndefined(activityData)) {
-      for (const prop in activityData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = activityData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(activityData, prop)) {
+          this[prop] = activityData[prop];
         }
       }
     }
-    this.data = DTOGenerator.defineProperty(
-      this.data,
+    DTOGenerator.defineProperty(
+      this,
       'user',
       {
         id: '',
@@ -33,11 +33,11 @@ export class ActivityDTO {
 export class UpdActivityDTO {
   data: ActivityData;
   constructor(activityData?: any) {
-    this.data = DTOGenerator.genUpdateSchemaModel(activities_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, activities_schema);
     if (!CommonFn.isUndefined(activityData)) {
-      for (const prop in activityData) {
-        if (CommonFn.hasProperty(this.data, prop)) {
-          this.data[prop] = activityData[prop];
+      for (const prop in this) {
+        if (CommonFn.hasProperty(activityData, prop)) {
+          this[prop] = activityData[prop];
         }
       }
     }

@@ -1,3 +1,4 @@
+import { AdCategoriesController } from './server/controllers/adCategories.controller';
 import { UserTimelinessController } from './server/controllers/userTimelines.controller';
 import SysLog from './modules/SysLog';
 import toobusy_js from 'toobusy-js';
@@ -58,7 +59,8 @@ const app = new App (
     new UserGroupsController(),
     new MediasController(),
     new ActivitiesController(),
-    new UserTimelinessController()
+    new UserTimelinessController(),
+    new AdCategoriesController()
   ],
   port
 );
