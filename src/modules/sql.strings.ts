@@ -386,6 +386,7 @@ export class SqlFormatter {
   static formatTableSelect = (
     table: string,
     schema: schemaIfc[],
+    exclColumnArray?: string[],
     ignoreExclFromSelect?: boolean,
     fmtPropArr?: string[]
   ): string => {
@@ -393,28 +394,31 @@ export class SqlFormatter {
     let first = true;
     schema.forEach((prop) => {
       if (prop.fieldName !== 'INDEX') {
-        if (CommonFn.isUndefined(prop.excludeFromSelect) || 
-            ignoreExclFromSelect || 
-            !prop.excludeFromSelect) {
-          if (ignoreExclFromSelect || 
-            SqlFormatter.includeInSql(prop, fmtPropArr)) {
-            if (!CommonFn.isUndefined(prop.uuidProperty) && prop.uuidProperty) {
-              if (first) {
-                first = false;
+        if (exclColumnArray === undefined || !SqlFormatter.excludeFromSql(prop, exclColumnArray)) {
+          if (CommonFn.isUndefined(prop.excludeFromSelect) ||
+              ignoreExclFromSelect ||
+              !prop.excludeFromSelect) {
+            if (ignoreExclFromSelect ||
+              SqlFormatter.includeInSql(prop, fmtPropArr)) {
+              if (!CommonFn.isUndefined(prop.uuidProperty) && prop.uuidProperty) {
+                if (first) {
+                  first = false;
+                } else {
+                  sql += ', ';
+                }
+                sql += 'BIN_TO_UUID(' +  table + '.' + prop.fieldName + ') ';
               } else {
-                sql += ', ';
+                if (first) {
+                  first = false;
+                } else {
+                  sql += ', ';
+                }
+                sql += table + '.' + prop.fieldName;
               }
-              sql += 'BIN_TO_UUID(' +  table + '.' + prop.fieldName + ') ';
-            } else {
-              if (first) {
-                first = false;
-              } else {
-                sql += ', ';
-              }
-              sql += table + '.' + prop.fieldName;
             }
           }
         }
+
       }
     });
     return sql;
@@ -426,7 +430,7 @@ export class SqlFormatter {
    * @param dataObj  - data object to transpose data to
    * @param schema   - schema used to generate the SQL SELECT statement
    * @param sqlRowData - result set of a row of SQL data
-   * @param ignoreExclFromSelect - columns to ignor in the schema
+   * @param ignoreExclFromSelect - columns to ignore in the schema
    * @param fmtPropArr 
    */
   static transposeTableSelectColumns = (
@@ -434,18 +438,21 @@ export class SqlFormatter {
     dataObj: any,
     schema: schemaIfc[],
     sqlRowData: any[],
+    exclColumnArray?: string[],
     ignoreExclFromSelect?: boolean,
     fmtPropArr?: string[]
   ): number => {
 
     schema.forEach((prop) => {
       if (prop.fieldName !== 'INDEX') {
-        if (CommonFn.isUndefined(prop.excludeFromSelect) ||
-            ignoreExclFromSelect ||
-            !prop.excludeFromSelect) {
-          if (ignoreExclFromSelect ||
-            SqlFormatter.includeInSql(prop, fmtPropArr)) {
-              dataObj[prop.fieldName] = sqlRowData[startCol++];
+        if (exclColumnArray === undefined || !SqlFormatter.excludeFromSql(prop, exclColumnArray)) {
+          if (CommonFn.isUndefined(prop.excludeFromSelect) ||
+              ignoreExclFromSelect ||
+              !prop.excludeFromSelect) {
+            if (ignoreExclFromSelect ||
+              SqlFormatter.includeInSql(prop, fmtPropArr)) {
+                dataObj[prop.fieldName] = sqlRowData[startCol++];
+            }
           }
         }
       }
@@ -453,34 +460,23 @@ export class SqlFormatter {
     return startCol;
   };
 
-    /**
+  /**
    * This function returns an array of column names used for SQL SELECT
    *
    * @param columnArray - array of column names 
-   * @param schema - entity schema
+   * @param columnArray - entity schema
    * @param ignoreExclFromSelect - optional columns to exclude from SELECT
    * @param fmtPropArr - optional Property name array
    */
   static transposeTableSelectColumnArray = (
     startCol: number,
     dataObj: any,
-    schema: schemaIfc[],
-    sqlRowData: any[],
-    ignoreExclFromSelect?: boolean,
-    fmtPropArr?: string[]
+    columnArray: string[],
+    sqlRowData: any[]
   ): number => {
 
-    schema.forEach((prop) => {
-      if (prop.fieldName !== 'INDEX') {
-        if (CommonFn.isUndefined(prop.excludeFromSelect) ||
-            ignoreExclFromSelect ||
-            !prop.excludeFromSelect) {
-          if (ignoreExclFromSelect ||
-            SqlFormatter.includeInSql(prop, fmtPropArr)) {
-              dataObj[prop.fieldName] = sqlRowData[startCol++];
-          }
-        }
-      }
+    columnArray.forEach((fieldName) => {
+      dataObj[fieldName] = sqlRowData[startCol++];
     });
     return startCol;
   };
