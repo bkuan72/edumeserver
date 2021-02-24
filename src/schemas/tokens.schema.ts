@@ -51,8 +51,7 @@ export const token_schema: schemaIfc[] = [
     description: 'Expiry in Seconds'
   },
   {    fieldName: 'token',
-    sqlType: 'VARCHAR(1024)',
-    size: 1024,
+    sqlType: 'TEXT',
     allowNull: false,
     default: '',
     description: 'encrypted token'

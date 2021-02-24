@@ -1,3 +1,5 @@
+import { UserModuleRoleModel } from './../models/userModuleRole.model';
+import { UserModuleRoleDataDTO } from './../../dtos/userModuleRoles.DTO';
 import { UserData } from './../../schemas/users.schema';
 import { CommonFn } from './../../modules/CommonFnModule';
 import { ResponseUserDTO, CreateUserDTO } from '../../dtos/user.DTO';
@@ -44,6 +46,7 @@ class AuthenticationController implements Controller {
   public path = '/auth';
   public router = express.Router();
   private users = new UserModel();
+  private userModuleRoles = new UserModuleRoleModel();
   private userAccounts = new UserAccountModel();
   private accounts = new AccountModel();
   private tokens = new TokenModel(tokens_schema_table);
@@ -92,7 +95,10 @@ class AuthenticationController implements Controller {
 
   private createToken = async (user: ResponseUserDTO | UserData): Promise<TokenData> => {
     return new Promise((resolve) => {
-      const generateToken = (adminUser: boolean, devUser: boolean, bizUser: boolean) => {
+      const generateToken = (adminUser: boolean, 
+                             devUser: boolean, 
+                             bizUser: boolean,
+                             userRoles: UserModuleRoleDataDTO[]) => {
         const expiresIn = this.tokenExpireInMin * 60; // convert to seconds
         const timestamp = new Date();
         const dataStoredInToken: DataStoredInToken = {
@@ -103,7 +109,8 @@ class AuthenticationController implements Controller {
           bizUser: bizUser,
           site_code: this.siteCode,
           createTimeStamp: timestamp.toUTCString(),
-          expiryInSec: expiresIn
+          expiryInSec: expiresIn,
+          roles: userRoles
         };
         const authorization = jwt.sign(dataStoredInToken, SysEnv.JWT_SECRET, {
           expiresIn
@@ -115,8 +122,8 @@ class AuthenticationController implements Controller {
           });
         });
       };
-
-      this.userAccounts
+      this.userModuleRoles.getUserModuleRoles(this.siteCode, user.id).then((userRoles) => {
+        this.userAccounts
         .getUserAccountTypes(this.siteCode,
           user.id,
           'OK')
@@ -136,14 +143,15 @@ class AuthenticationController implements Controller {
                 bizUser = true;
               }
             })
-            generateToken(adminUser, devUser, bizUser);
+            generateToken(adminUser, devUser, bizUser, userRoles);
           } else {
-            generateToken(false, false, false);
+            generateToken(false, false, false, userRoles);
           }
         })
         .catch(() => {
-          generateToken(false, false, false);
+          generateToken(false, false, false, userRoles);
         });
+      });
     });
   };
 

@@ -1,3 +1,6 @@
+import { UserModuleRolesController } from './server/controllers/userModuleRoles.controller';
+import { ModulesController } from './server/controllers/modules.controller';
+import { RolesController } from './server/controllers/roles.controller';
 import { AdKeywordsController } from './server/controllers/adKeywords.controller';
 import { AdCategoriesController } from './server/controllers/adCategories.controller';
 import { UserTimelinessController } from './server/controllers/userTimelines.controller';
@@ -66,7 +69,10 @@ const app = new App (
     new AdCategoriesController(),
     new AdKeywordsController(),
     new AdActivitiesController(),
-    new AdAgeGroupsController()
+    new AdAgeGroupsController(),
+    new RolesController(),
+    new ModulesController(),
+    new UserModuleRolesController(),
   ],
   port
 );

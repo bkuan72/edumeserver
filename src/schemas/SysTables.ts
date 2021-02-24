@@ -20,6 +20,9 @@ import { accounts_schema, accounts_schema_table } from './accounts.schema';
 import { userAccounts_schema, userAccounts_schema_table } from './userAccounts.schema';
 import { advertisements_schema, advertisements_schema_table } from './advertisements.schema';
 import { userTimelines_schema, userTimelines_schema_table } from './userTimelines.schema';
+import { roles_schema, roles_schema_table } from './roles.schema';
+import { modules_schema, modules_schema_table } from './modules.schema';
+import { userModuleRoles_schema, userModuleRoles_schema_table } from './userModuleRoles.schema';
 
 export const sysTables: tableIfc[] = [
   {
@@ -109,5 +112,17 @@ export const sysTables: tableIfc[] = [
   {
     name: adAgeGroups_schema_table,
     schema: adAgeGroups_schema
+  },
+  {
+    name: roles_schema_table,
+    schema: roles_schema
+  },
+  {
+    name: modules_schema_table,
+    schema: modules_schema
+  },
+  {
+    name: userModuleRoles_schema_table,
+    schema: userModuleRoles_schema
   },
 ];

@@ -1,3 +1,10 @@
+import { UserModuleRoleData } from './schemas/userModuleRoles.schema';
+import { UserModuleRoleDTO } from './dtos/userModuleRoles.DTO';
+import { UserModuleRoleModel } from './server/models/userModuleRole.model';
+import { ModuleModel } from './server/models/module.model';
+import { RoleData } from './schemas/roles.schema';
+import { RoleDTO } from './dtos/roles.DTO';
+import { RoleModel } from './server/models/role.model';
 import { UserAccountsData } from './schemas/userAccounts.schema';
 import { UserAccountsDTO } from './dtos/userAccounts.DTO';
 import { ResponseUserDTO } from './dtos/user.DTO';
@@ -21,6 +28,8 @@ import SysEnv from './modules/SysEnv';
 import cors = require('cors');
 import { UserData } from './schemas/users.schema';
 import { AccountData } from './schemas/accounts.schema';
+import { ModuleDTO } from './dtos/modules.DTO';
+import { ModuleData } from './schemas/modules.schema';
 
 
 
@@ -96,6 +105,87 @@ class App {
   private connectToTheDatabase() {
     dbConnection.DBM_connectDB()
     .then(async () => {
+
+      const roles = new RoleModel();
+      const roleArray = await roles.find({
+        site_code: SysEnv.SITE_CODE
+      });
+      let devRole: RoleDTO | RoleData | undefined;
+      let adminRole: RoleDTO | RoleData | undefined;
+      let stdRole: RoleDTO | RoleData | undefined;
+      if (roleArray) {
+        roleArray.forEach((role) => {
+          if (role.roles_code === 'ADMIN') {
+            adminRole = role;
+          } else {
+            if (role.roles_code === 'DEV') {
+              devRole = role;
+            } else {
+              if (role.roles_code === 'STANDARD') {
+                stdRole = role;
+              }
+            }
+          }
+        });
+      }
+
+      if (devRole == undefined) {
+        devRole = await roles.create({
+          roles_code: 'DEV',
+          description: 'Developer Role',
+          add_ok: true,
+          edit_ok: true,
+          delete_ok: true,
+          configure_ok: true,
+          dev_ok: true,
+          status: 'OK'
+        });
+      }
+      if (adminRole == undefined) {
+        adminRole = await roles.create({
+          roles_code: 'ADMIN',
+          description: 'Website Admin Role',
+          add_ok: true,
+          edit_ok: true,
+          delete_ok: true,
+          configure_ok: true,
+          dev_ok: false,
+          status: 'OK'
+        });
+      }
+      if (stdRole == undefined) {
+        stdRole = await roles.create({
+          roles_code: 'STANDARD',
+          description: 'Standard User Role',
+          add_ok: true,
+          edit_ok: true,
+          delete_ok: true,
+          configure_ok: false,
+          dev_ok: false,
+          status: 'OK'
+        });
+      }
+
+      const module = new ModuleModel();
+      const moduleArray = await module.find({
+        site_code: SysEnv.SITE_CODE
+      });
+      let allModule: ModuleDTO | ModuleData | undefined;
+      if (moduleArray) {
+        moduleArray.forEach((module) => {
+          if (module.modules_code == 'ALL') {
+            allModule = module;
+          }
+        })
+      }
+      if (allModule == undefined) {
+        allModule = await module.create({
+          modules_code: 'ALL',
+          description: 'All Modules',
+          status: 'OK'
+        });
+      }
+
       const accounts = new AccountModel();
       const accountArray = await accounts.find({
         site_code: SysEnv.SITE_CODE
@@ -117,6 +207,7 @@ class App {
         devAccount = await accounts.create({
           account_type: 'DEV',
           account_code: 'DEV_ACCOUNT',
+          account_name: 'Developer Account',
           description: 'Dev Account',
           website: '',
           status: 'APPROVED'
@@ -126,6 +217,7 @@ class App {
         adminAccount = await accounts.create({
           account_type: 'ADMIN',
           account_code: 'ADMIN_ACCOUNT',
+          account_name: 'Website Admin Account',
           description: 'Admin Account',
           website: '',
           status: 'APPROVED'
@@ -180,6 +272,45 @@ class App {
           status: 'ENABLED'
           });
       }
+
+      const userModuleRole = new UserModuleRoleModel();
+      const devUserStdModuleRoleArray = await userModuleRole.find ({
+        site_code: SysEnv.SITE_CODE,
+        module_id: allModule.id,
+        user_id: devUser.id,
+        role_id: devRole.id
+      });
+      let devUserStdModuleRole: UserModuleRoleDTO | UserModuleRoleData | undefined;
+      if (devUserStdModuleRoleArray && devUserStdModuleRoleArray.length > 0) {
+        devUserStdModuleRole = devUserStdModuleRoleArray[0];
+      }
+      if (devUserStdModuleRole === undefined) {
+        await userModuleRole.create({
+          site_code: SysEnv.SITE_CODE,
+          module_id: allModule.id,
+          user_id: devUser.id,
+          role_id: devRole.id
+        });
+      }
+      const adminUserStdModuleRoleArray = await userModuleRole.find ({
+        site_code: SysEnv.SITE_CODE,
+        module_id: allModule.id,
+        user_id: adminUser.id,
+        role_id: adminRole.id
+      });
+      let adminUserStdModuleRole: UserModuleRoleDTO | UserModuleRoleData | undefined;
+      if (adminUserStdModuleRoleArray && devUserStdModuleRoleArray.length > 0) {
+        adminUserStdModuleRole = adminUserStdModuleRoleArray[0];
+      }
+      if (adminUserStdModuleRole === undefined) {
+        await userModuleRole.create({
+          site_code: SysEnv.SITE_CODE,
+          module_id: allModule.id,
+          user_id: adminUser.id,
+          role_id: adminRole.id
+        });
+      }
+
 
       const userAccounts = new UserAccountModel();
       let devUserAccount: UserAccountsDTO | UserAccountsData | undefined;

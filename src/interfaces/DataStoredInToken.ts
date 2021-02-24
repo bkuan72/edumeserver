@@ -1,3 +1,4 @@
+import { UserModuleRoleDataDTO } from './../dtos/userModuleRoles.DTO';
 interface DataStoredInToken {
   user_id: string;
   uuid: string;
@@ -7,6 +8,7 @@ interface DataStoredInToken {
   site_code: string;
   createTimeStamp: string;
   expiryInSec: number;
+  roles: UserModuleRoleDataDTO[];
 }
 
 export default DataStoredInToken;
