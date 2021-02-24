@@ -40,6 +40,13 @@ export const userGroups_schema: schemaIfc[] = [
     default: 'OK',
     description: 'group member status'
   },
+  {    fieldName: 'account_id',
+    sqlType: 'BINARY(16)',
+    primaryKey: false,
+    uuidProperty: true,
+    excludeFromUpdate: true,
+    description: 'link to groups table'
+  },
   {    fieldName: 'group_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
@@ -95,6 +102,11 @@ export const userGroups_schema: schemaIfc[] = [
       {
         name: 'group_id_idx',
         columns: ['site_code', 'group_id', 'lastUpdateUsec'],
+        unique: false
+      },
+      {
+        name: 'account_id_idx',
+        columns: ['site_code', 'account_id', 'lastUpdateUsec'],
         unique: false
       }
     ]

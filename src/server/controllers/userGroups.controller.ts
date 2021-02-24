@@ -43,6 +43,8 @@ export class UserGroupsController implements Controller{
                         validationUserGroupMiddleware(),
                          this.update);
     this.router.get(this.path+'/byUserId/:userId', authMiddleware, this.findByUserId);
+    this.router.get(this.path+'/byAccountId/:accountId', authMiddleware, this.findByAccountId);
+    this.router.get(this.path+'/byGroupId/:groupId', authMiddleware, this.findByGroupId);
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
     this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
@@ -117,6 +119,26 @@ export class UserGroupsController implements Controller{
 
   findByUserId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.userGroups.findByUserId(request.params.userId).then((respUserGroupsDTO) => {
+      if (respUserGroupsDTO) {
+        response.send(respUserGroupsDTO);
+      } else {
+        next(new DataNotFoundException(request.params.userId))
+      }
+    })
+  }
+
+  findByAccountId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.userGroups.findByAccountId(request.params.accountId).then((respUserGroupsDTO) => {
+      if (respUserGroupsDTO) {
+        response.send(respUserGroupsDTO);
+      } else {
+        next(new DataNotFoundException(request.params.userId))
+      }
+    })
+  }
+
+  findByGroupId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.userGroups.findByGroupId(request.params.groupId).then((respUserGroupsDTO) => {
       if (respUserGroupsDTO) {
         response.send(respUserGroupsDTO);
       } else {

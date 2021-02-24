@@ -243,6 +243,7 @@ export class UserGroupModel {
   ): Promise<UserGroupInfoDTO[] | undefined> => {
     let sql = 'SELECT BIN_TO_UUID(' + SqlFormatter.fmtTableFieldStr(this.tableName, 'id') + '), ';
     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'status') + ', ';
+    sql += 'BIN_TO_UUID('+SqlFormatter.fmtTableFieldStr(this.tableName, 'account_id') + '), ';
     sql += 'BIN_TO_UUID('+SqlFormatter.fmtTableFieldStr(this.tableName, 'group_id') + '), ';
     sql += 'BIN_TO_UUID('+SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') + '), ';
     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'join_date') + ', ';
@@ -267,6 +268,122 @@ export class UserGroupModel {
             const data = SqlFormatter.transposeColumnResultSet([
                 'id',
                 'status',
+                'account_id',
+                'group_id',
+                'user_id',
+                'join_date',
+                'name',
+                'category',
+                'lastUpdateUsec'
+            ],
+            rowData) as UserGroupInfoDTO;
+              respUserGroupsDTOArray.push(data);
+            });
+            resolve(respUserGroupsDTOArray);
+            return;
+          }
+          // not found with the id
+          resolve(respUserGroupsDTOArray);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(undefined);
+          return;
+        });
+    });
+  };
+
+
+  findByAccountId = (
+    accountId: string,
+    ignoreExclSelect?: boolean,
+    excludeSelectProp?: string[]
+  ): Promise<UserGroupInfoDTO[] | undefined> => {
+    let sql = 'SELECT BIN_TO_UUID(' + SqlFormatter.fmtTableFieldStr(this.tableName, 'id') + '), ';
+    sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'status') + ', ';
+    sql += 'BIN_TO_UUID('+SqlFormatter.fmtTableFieldStr(this.tableName, 'account_id') + '), ';
+    sql += 'BIN_TO_UUID('+SqlFormatter.fmtTableFieldStr(this.tableName, 'group_id') + '), ';
+    sql += 'BIN_TO_UUID('+SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') + '), ';
+    sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'join_date') + ', ';
+    sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'group_name') + ', ';
+    sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'category') + ', ';
+    sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'lastUpdateUsec');
+    sql += ' FROM ' + this.tableName + ', ' + socialGroups_schema_table;
+    sql += ' WHERE ';
+    sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') + SqlStr.format(' = ?', [this.siteCode]) + ' AND ';
+    sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'account_id') + SqlStr.format(' = UUID_TO_BIN(?)', [accountId]) + ' AND ';
+    sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'id') + ' = ' + SqlFormatter.fmtTableFieldStr(this.tableName, 'group_id');
+
+    SysLog.info('findById SQL: ' + sql);
+    SysLog.info('find SQL: ' + sql);
+    return new Promise((resolve) => {
+      dbConnection.DB.sql(sql)
+        .execute()
+        .then((result) => {
+          const respUserGroupsDTOArray: UserGroupInfoDTO[] = [];
+          if (result.rows.length) {
+            result.rows.forEach((rowData: any) => {
+            const data = SqlFormatter.transposeColumnResultSet([
+                'id',
+                'status',
+                'account_id',
+                'group_id',
+                'user_id',
+                'join_date',
+                'name',
+                'category',
+                'lastUpdateUsec'
+            ],
+            rowData) as UserGroupInfoDTO;
+              respUserGroupsDTOArray.push(data);
+            });
+            resolve(respUserGroupsDTOArray);
+            return;
+          }
+          // not found with the id
+          resolve(respUserGroupsDTOArray);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(undefined);
+          return;
+        });
+    });
+  };
+
+  findByGroupId = (
+    groupId: string,
+    ignoreExclSelect?: boolean,
+    excludeSelectProp?: string[]
+  ): Promise<UserGroupInfoDTO[] | undefined> => {
+    let sql = 'SELECT BIN_TO_UUID(' + SqlFormatter.fmtTableFieldStr(this.tableName, 'id') + '), ';
+    sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'status') + ', ';
+    sql += 'BIN_TO_UUID('+SqlFormatter.fmtTableFieldStr(this.tableName, 'account_id') + '), ';
+    sql += 'BIN_TO_UUID('+SqlFormatter.fmtTableFieldStr(this.tableName, 'group_id') + '), ';
+    sql += 'BIN_TO_UUID('+SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') + '), ';
+    sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'join_date') + ', ';
+    sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'group_name') + ', ';
+    sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'category') + ', ';
+    sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'lastUpdateUsec');
+    sql += ' FROM ' + this.tableName + ', ' + socialGroups_schema_table;
+    sql += ' WHERE ';
+    sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') + SqlStr.format(' = ?', [this.siteCode]) + ' AND ';
+    sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'group_id') + SqlStr.format(' = UUID_TO_BIN(?)', [groupId]) + ' AND ';
+    sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'id') + ' = ' + SqlFormatter.fmtTableFieldStr(this.tableName, 'group_id');
+
+    SysLog.info('findById SQL: ' + sql);
+    SysLog.info('find SQL: ' + sql);
+    return new Promise((resolve) => {
+      dbConnection.DB.sql(sql)
+        .execute()
+        .then((result) => {
+          const respUserGroupsDTOArray: UserGroupInfoDTO[] = [];
+          if (result.rows.length) {
+            result.rows.forEach((rowData: any) => {
+            const data = SqlFormatter.transposeColumnResultSet([
+                'id',
+                'status',
+                'account_id',
                 'group_id',
                 'user_id',
                 'join_date',
