@@ -33,6 +33,7 @@ export class AccountsController implements Controller{
                     validationMiddleware(accounts_schema),
                     this.newAccount);
     this.router.get(this.path, authMiddleware, this.getAll);
+    this.router.get(this.path+'/byUserId/:userId', authMiddleware, this.findByUserId);
     this.router.get(this.path+'/byAccountId/:accountId', authMiddleware, this.findById);
     this.router.patch(this.path+'/:accountId', authMiddleware, validationUpdateMiddleware(accounts_schema), this.update);
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
@@ -62,6 +63,18 @@ export class AccountsController implements Controller{
           }
       })
   };
+
+  findByUserId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.accounts.find({
+      user_id: request.params.userId
+    }).then((respAccountDTO) => {
+      if (respAccountDTO) {
+        response.send(respAccountDTO);
+      } else {
+        next(new DataNotFoundException(request.params.accountId))
+      }
+    })
+  }
 
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.accounts.findById(request.params.accountId).then((respAccountDTO) => {

@@ -1,3 +1,4 @@
+import { accounts_schema } from './../schemas/accounts.schema';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import DTOGenerator from '../modules/ModelGenerator';
@@ -31,4 +32,28 @@ export class UpdUserAccountsDTO {
       }
     }
   }
+}
+
+export class UserAccountDataDTO {
+  constructor(userAccountData?: any) {
+    DTOGenerator.genDTOFromSchema(this, accounts_schema);
+    if (!CommonFn.isUndefined(userAccountData)) {
+      for (const prop in this) {
+        if (CommonFn.hasProperty(userAccountData, prop)) {
+          this[prop] = userAccountData[prop];
+        }
+      }
+    }
+    DTOGenerator.defineProperty(
+      this,
+      'user_account_id',
+      ''
+      );
+    DTOGenerator.defineProperty(
+      this,
+      'user_id',
+      ''
+      );
+  }
+
 }

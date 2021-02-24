@@ -1,5 +1,5 @@
 import { UserAccountsData } from './../../schemas/userAccounts.schema';
-import { UpdUserAccountsDTO } from './../../dtos/userAccounts.DTO';
+import { UpdUserAccountsDTO, UserAccountDataDTO } from './../../dtos/userAccounts.DTO';
 import { CommonFn } from './../../modules/CommonFnModule';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import * as express from 'express';
@@ -39,6 +39,7 @@ export class UserAccountsController implements Controller{
                     validationUserAccountMiddleware(),
                     this.create);
     this.router.get(this.path, authMiddleware, this.getAll);
+    this.router.get(this.path+'/byUserId/:userId', authMiddleware, this.findByUserId);
     this.router.get(this.path+'/byUserAccountId/:userAccountId', authMiddleware, this.findById);
     this.router.patch(this.path+'/:userAccountId',
                         authMiddleware,
@@ -52,7 +53,7 @@ export class UserAccountsController implements Controller{
   }
 
   apiDTO  = (request: express.Request, response: express.Response) => {
-    const dto = new UserAccountsDTO();
+    const dto = new UserAccountDataDTO();
     response.send(dto);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
@@ -109,6 +110,16 @@ export class UserAccountsController implements Controller{
 
   update  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.userAccounts.updateById(request.params.userAccountId, request.body).then((respUserAccountsDTO) => {
+      if (respUserAccountsDTO) {
+        response.send(respUserAccountsDTO);
+      } else {
+        next(new DataNotFoundException(request.params.userAccountId))
+      }
+    })
+  }
+
+  findByUserId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.userAccounts.getUserAccounts(this.siteCode, request.params.userId, 'OK').then((respUserAccountsDTO) => {
       if (respUserAccountsDTO) {
         response.send(respUserAccountsDTO);
       } else {

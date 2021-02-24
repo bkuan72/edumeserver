@@ -37,6 +37,14 @@ export const accounts_schema: schemaIfc[] = [
     trim: true,
     description: 'account code'
   },
+  {    fieldName: 'account_name',
+    sqlType: 'VARCHAR(100)',
+    size: 100,
+    allowNull: true,
+    default: '',
+    trim: true,
+    description: 'Account Name'
+  },
   {    fieldName: 'description',
     sqlType: 'VARCHAR(50)',
     size: 50,
@@ -45,6 +53,41 @@ export const accounts_schema: schemaIfc[] = [
     trim: true,
     description: 'account description'
   },
+  {
+    fieldName: 'about_me',
+    sqlType: 'TEXT',
+    default: ''
+  },
+  {
+    fieldName: 'email',
+    sqlType: 'VARCHAR(60)',
+    size: 60,
+    allowNull: false,
+    excludeFromUpdate: false,
+    default: '',
+    trim: true,
+    description: 'user email address'
+  },
+  {
+    fieldName: 'phone_no',
+    sqlType: 'VARCHAR(30)',
+    size: 30,
+    allowNull: false,
+    excludeFromUpdate: false,
+    default: '',
+    trim: true,
+    description: 'land line phone number'
+  },
+  {
+    fieldName: 'mobile_no',
+    sqlType: 'VARCHAR(30)',
+    size: 30,
+    allowNull: false,
+    excludeFromUpdate: false,
+    default: '',
+    trim: true,
+    description: 'mobile number'
+  },
   {    fieldName: 'website',
     sqlType: 'VARCHAR(120)',
     size: 120,
@@ -52,6 +95,96 @@ export const accounts_schema: schemaIfc[] = [
     default: '',
     trim: true,
     description: 'account external website URL'
+  },
+  { fieldName: 'avatar',
+    sqlType: 'TEXT',
+    trim: true,
+    default: '',
+    description: 'user`s avatar blob - type png'
+   },
+  {
+    fieldName: 'language',
+    sqlType: 'VARCHAR(2)',
+    size: 2,
+    allowNull: false,
+    excludeFromUpdate: false,
+    default: 'EN',
+    trim: true,
+    description: 'language code'
+  },
+  {    fieldName: 'adAgeGroups',
+    sqlType: 'TEXT',
+    default: '',
+    description: 'a comma delimited string of ageGroups use for filtering'
+  },
+  {
+    fieldName: 'categories',
+    sqlType: 'TEXT',
+    default: '',
+    excludeFromUpdate: false,
+    trim: true,
+    description: 'a comma delimited string of categories use for filtering'
+  },
+  {    fieldName: 'keywords',
+    sqlType: 'TEXT',
+    allowNull: false,
+    default: '',
+    excludeFromUpdate: false,
+    trim: true,
+    description: 'a comma delimited string of keywords use for filtering'
+  },
+  {
+    fieldName: 'address',
+    sqlType: 'TEXT',
+    size: 255,
+    allowNull: true,
+    default: '',
+    description: 'Address for advertisement'
+  },
+  {
+    fieldName: 'suburb',
+    sqlType: 'VARCHAR(40)',
+    size: 40,
+    allowNull: true,
+    default: '',
+    trim: true,
+    description: 'Suburb'
+  },
+  {
+    fieldName: 'city',
+    sqlType: 'VARCHAR(40)',
+    size: 40,
+    allowNull: true,
+    default: '',
+    trim: true,
+    description: 'City'
+  },
+  {
+    fieldName: 'state',
+    sqlType: 'VARCHAR(40)',
+    size: 40,
+    allowNull: true,
+    default: '',
+    trim: true,
+    description: 'State'
+  },
+  {
+    fieldName: 'country',
+    sqlType: 'VARCHAR(40)',
+    size: 40,
+    allowNull: true,
+    default: '',
+    trim: true,
+    description: 'Country'
+  },
+  {
+    fieldName: 'post_code',
+    sqlType: 'VARCHAR(10)',
+    size: 10,
+    allowNull: true,
+    default: '',
+    trim: true,
+    description: 'Post Code'
   },
   {    fieldName: 'status',
     sqlType: 'ENUM',

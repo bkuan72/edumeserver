@@ -1,3 +1,4 @@
+import { accounts_schema } from './../../schemas/accounts.schema';
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -8,7 +9,7 @@ import e = require('express');
 import dbConnection from '../../modules/DbModule';
 import { UserAccountsData, userAccounts_schema, userAccounts_schema_table } from '../../schemas/userAccounts.schema';
 import { uuidIfc } from './uuidIfc';
-import { UserAccountsDTO } from '../../dtos/userAccounts.DTO';
+import { UserAccountDataDTO, UserAccountsDTO } from '../../dtos/userAccounts.DTO';
 import SysLog from '../../modules/SysLog';
 import SysEnv from '../../modules/SysEnv';
 import { accounts_schema_table } from '../../schemas/accounts.schema';
@@ -236,6 +237,54 @@ export class UserAccountModel {
             data
           )
           userAccountTypes.push(userAccount);
+        });
+        resolve(userAccountTypes);
+      })
+      .catch((err) => {
+        SysLog.error(JSON.stringify(err));
+        resolve(userAccountTypes);
+        return;
+      });
+    });
+  };
+
+
+  getUserAccounts = async (siteCode: string, userId: string, status: string): Promise<any[]> => {
+    return new Promise((resolve) => {
+      const userAccountTypes: any[] = [];
+      let sql = 'SELECT ' + SqlFormatter.formatTableSelect(accounts_schema_table, accounts_schema);
+      sql += ', BIN_TO_UUID(' + userAccounts_schema_table +'.user_id)';
+      sql += ', BIN_TO_UUID(' + userAccounts_schema_table +'.id)';
+      sql += ' FROM '+ userAccounts_schema_table;
+      sql += ' INNER JOIN ' + accounts_schema_table + ' ON ' + userAccounts_schema_table + '.account_id = ' + accounts_schema_table + '.id'
+      sql += ' WHERE ' + userAccounts_schema_table+ '.site_code = ' + SqlStr.escape(siteCode) + ' AND ';
+      sql += userAccounts_schema_table+ '.status = ' + SqlStr.escape(status) + ' AND ';
+      sql += SqlStr.format(userAccounts_schema_table+ '.user_id = UUID_TO_BIN(?);', [userId]);
+      dbConnection.DB.sql(sql).execute()
+      .then((result) => {
+        if (result.rows.length == 0) {
+          // not found Customer with the id
+          resolve(userAccountTypes);
+          return;
+        }
+        SysLog.info('get user accounts with id: ', userId);
+        result.rows.forEach(rowData => {
+          const userAccountDataDTO = new UserAccountDataDTO() as UserAccountsData
+          let colIdx = 0;
+          colIdx = SqlFormatter.transposeTableSelectColumns(colIdx,
+                                                            userAccountDataDTO,
+                                                            accounts_schema,
+                                                            rowData);
+          colIdx = SqlFormatter.transposeTableSelectColumnArray(
+            colIdx,
+            userAccountDataDTO,
+            [
+            'user_id',
+            'id'
+            ],
+            rowData
+          )
+          userAccountTypes.push(userAccountDataDTO);
         });
         resolve(userAccountTypes);
       })
