@@ -1,4 +1,4 @@
-import { AdCategoryDTO, UpdAdCategoryDTO } from '../../dtos/AdCategories.DTO';
+import { AdCategoryDTO, UpdAdCategoryDTO } from '../../dtos/adCategories.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import {AdCategoryModel} from "../models/adCategory.model";
@@ -35,6 +35,7 @@ export class AdCategoriesController implements Controller{
                     validationMiddleware(adCategories_schema),
                     this.newAdCategory);
     this.router.get(this.path, authMiddleware, this.getAll);
+    this.router.get(this.path+'/codesOnly', authMiddleware, this.getCodesOnly);
     this.router.get(this.path+'/byCategoryCode/:category', authMiddleware, this.findByCategory);
     this.router.get(this.path+'/byId/:id', authMiddleware, this.findById);
     this.router.patch(this.path+'/:id', authMiddleware, validationUpdateMiddleware(adCategories_schema), this.update);
@@ -97,6 +98,17 @@ export class AdCategoriesController implements Controller{
       }
     })
   }
+
+  getCodesOnly  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.adCategories.getCodesOnly().then((respAdCategoryDTOArray) => {
+      if (respAdCategoryDTOArray) {
+        response.send(respAdCategoryDTOArray);
+      } else {
+        next(new NoDataException())
+      }
+    })
+  }
+
 
   update  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.adCategories.updateById(request.params.id, request.body).then((respAdCategoryDTO) => {

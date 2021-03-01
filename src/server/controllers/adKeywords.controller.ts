@@ -35,6 +35,7 @@ export class AdKeywordsController implements Controller{
                     validationMiddleware(adKeywords_schema),
                     this.newAdKeyword);
     this.router.get(this.path, authMiddleware, this.getAll);
+    this.router.get(this.path+'/codesOnly', authMiddleware, this.getCodesOnly);
     this.router.get(this.path+'/byKeywordCode/:keyword', authMiddleware, this.findByKeyword);
     this.router.get(this.path+'/byId/:id', authMiddleware, this.findById);
     this.router.patch(this.path+'/:id', authMiddleware, validationUpdateMiddleware(adKeywords_schema), this.update);
@@ -90,6 +91,16 @@ export class AdKeywordsController implements Controller{
 
   getAll  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.adKeywords.getAll().then((respAdKeywordDTOArray) => {
+      if (respAdKeywordDTOArray) {
+        response.send(respAdKeywordDTOArray);
+      } else {
+        next(new NoDataException())
+      }
+    })
+  }
+
+  getCodesOnly  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.adKeywords.getCodesOnly().then((respAdKeywordDTOArray) => {
       if (respAdKeywordDTOArray) {
         response.send(respAdKeywordDTOArray);
       } else {

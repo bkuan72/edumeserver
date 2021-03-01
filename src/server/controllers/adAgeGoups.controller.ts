@@ -35,6 +35,7 @@ export class AdAgeGroupsController implements Controller{
                     validationMiddleware(adAgeGroups_schema),
                     this.newAdAgeGroup);
     this.router.get(this.path, authMiddleware, this.getAll);
+    this.router.get(this.path+'/codesOnly', authMiddleware, this.getCodesOnly);
     this.router.get(this.path+'/byAgeGroupCode/:ageGroup', authMiddleware, this.findByAgeGroup);
     this.router.get(this.path+'/byId/:id', authMiddleware, this.findById);
     this.router.patch(this.path+'/:id', authMiddleware, validationUpdateMiddleware(adAgeGroups_schema), this.update);
@@ -90,6 +91,16 @@ export class AdAgeGroupsController implements Controller{
 
   getAll  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.adAgeGroups.getAll().then((respAdAgeGroupDTOArray) => {
+      if (respAdAgeGroupDTOArray) {
+        response.send(respAdAgeGroupDTOArray);
+      } else {
+        next(new NoDataException())
+      }
+    })
+  }
+
+  getCodesOnly  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.adAgeGroups.getCodesOnly().then((respAdAgeGroupDTOArray) => {
       if (respAdAgeGroupDTOArray) {
         response.send(respAdAgeGroupDTOArray);
       } else {
