@@ -32,8 +32,9 @@ export class UserTimelineModel extends EntityModel {
 
   findByTimelineId = (
     timelineId: string
-  ): Promise<any | undefined> => {
+  ): Promise<any[]> => {
     return new Promise((resolve) => {
+      const resUserTimelineDTOArray: UserTimelineDTO[] = [];
       let sql =
         SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
@@ -43,7 +44,7 @@ export class UserTimelineModel extends EntityModel {
       dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
-          const resUserTimelineDTOArray: UserTimelineDTO[] = [];
+
           if (result.rows.length) {
             result.rows.forEach((rowData) => {
               const data = SqlFormatter.transposeResultSet(
@@ -68,7 +69,7 @@ export class UserTimelineModel extends EntityModel {
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
-          resolve(undefined);
+          resolve(resUserTimelineDTOArray);
           return;
         });
     });
@@ -78,7 +79,7 @@ export class UserTimelineModel extends EntityModel {
   findTimeline = (
     userId: string,
     offSetDays: string
-  ): Promise<any | undefined> => {
+  ): Promise<any[]> => {
     return new Promise((resolve) => {
       const fromDate = CommonFn.dateDeduct(
         new Date(),
