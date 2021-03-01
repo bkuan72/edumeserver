@@ -30,14 +30,31 @@ export const properties_schema: schemaIfc[] = [
   trim: true,
   description: 'property name'
   },
+  {    fieldName: 'property_type',
+    sqlType: 'ENUM',
+    size: 10,
+    enum: ['INT',
+        'TEXT'
+        ],
+    default: 'TEXT',
+    description: 'property value type'
+  },
   {    fieldName: 'value',
   sqlType: 'TEXT',
   size: 255,
-  allowNull: false,
+  allowNull: true,
   default: '',
   excludeFromUpdate: false,
   trim: true,
-  description: 'property data'
+  description: 'string property data'
+  },
+  {    fieldName: 'numValue',
+  sqlType: 'INT',
+  allowNull: false,
+  default: '0',
+  excludeFromUpdate: false,
+  trim: true,
+  description: 'numeric property data'
   },
   {    fieldName: 'status',
     sqlType: 'ENUM',
