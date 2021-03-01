@@ -46,7 +46,7 @@ export const accounts_schema: schemaIfc[] = [
     description: 'Account Name'
   },
   {    fieldName: 'description',
-    sqlType: 'VARCHAR(50)',
+    sqlType: 'VARCHAR(255)',
     size: 50,
     allowNull: false,
     default: '',
@@ -60,8 +60,8 @@ export const accounts_schema: schemaIfc[] = [
   },
   {
     fieldName: 'email',
-    sqlType: 'VARCHAR(60)',
-    size: 60,
+    sqlType: 'VARCHAR(100)',
+    size: 100,
     allowNull: false,
     excludeFromUpdate: false,
     default: '',
@@ -89,7 +89,7 @@ export const accounts_schema: schemaIfc[] = [
     description: 'mobile number'
   },
   {    fieldName: 'website',
-    sqlType: 'VARCHAR(120)',
+    sqlType: 'VARCHAR(255)',
     size: 120,
     allowNull: false,
     default: '',
@@ -112,7 +112,7 @@ export const accounts_schema: schemaIfc[] = [
     trim: true,
     description: 'language code'
   },
-  {    fieldName: 'adAgeGroups',
+  {    fieldName: 'ageGroups',
     sqlType: 'TEXT',
     default: '',
     description: 'a comma delimited string of ageGroups use for filtering'
