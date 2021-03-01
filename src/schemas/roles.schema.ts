@@ -30,7 +30,7 @@ export const roles_schema: schemaIfc[] = [
     default: 'OK',
     description: 'Status of record'
   },
-  {    fieldName: 'roles_code',
+  {    fieldName: 'role_code',
   sqlType: 'VARCHAR(10)',
   size: 10,
   allowNull: false,
@@ -93,8 +93,8 @@ export const roles_schema: schemaIfc[] = [
     sqlType: undefined,
     index: [
       {
-        name: 'roles_code_idx',
-        columns: ['site_code', 'roles_code'],
+        name: 'role_code_idx',
+        columns: ['site_code', 'role_code'],
         unique: true
       },
       {

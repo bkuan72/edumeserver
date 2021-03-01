@@ -30,7 +30,7 @@ export const modules_schema: schemaIfc[] = [
     default: 'OK',
     description: 'Status of record'
   },
-  {    fieldName: 'modules_code',
+  {    fieldName: 'module_code',
   sqlType: 'VARCHAR(100)',
   size: 100,
   allowNull: false,
@@ -58,8 +58,8 @@ export const modules_schema: schemaIfc[] = [
     sqlType: undefined,
     index: [
       {
-        name: 'modules_code_idx',
-        columns: ['site_code', 'modules_code'],
+        name: 'module_code_idx',
+        columns: ['site_code', 'module_code'],
         unique: true
       },
       {
