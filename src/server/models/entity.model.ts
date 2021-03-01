@@ -161,13 +161,14 @@ export class EntityModel {
   };
 
 
-  getAll = (): Promise<any[] | undefined> => {
+  getAll = (): Promise<any[]> => {
     return new Promise ((resolve) => {
+      const respEntityDTOArray:any[] = [];
       let sql = SqlFormatter.formatSelect(this.tableName, this.schema);
       sql += SqlFormatter.formatWhereAND('', {site_code: this.siteCode}, this.tableName, this.schema);
       dbConnection.DB.sql(sql).execute()
       .then((result) => {
-        const respEntityDTOArray:any[] = [];
+
         if (result.rows.length) {
 
           result.rows.forEach((rowData: any) => {
@@ -186,7 +187,7 @@ export class EntityModel {
       })
       .catch((err) => {
         SysLog.error(JSON.stringify(err));
-        resolve(undefined);
+        resolve(respEntityDTOArray);
         return;
       });
     });

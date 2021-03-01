@@ -97,7 +97,8 @@ export class UserAccountModel {
 
   find = (conditions: any,
           ignoreExclSelect?: boolean,
-          excludeSelectProp?: string[]): Promise<UserAccountsDTO[] | UserAccountsData[] | undefined> => {
+          excludeSelectProp?: string[]): Promise<UserAccountsDTO[] | UserAccountsData[]> => {
+    const respUserAccountsDTOArray:UserAccountsDTO[] = [];
     let sql = SqlFormatter.formatSelect(this.tableName, userAccounts_schema, ignoreExclSelect, excludeSelectProp);
     sql += SqlFormatter.formatWhereAND('', conditions, this.tableName, userAccounts_schema) + ' AND ';
     sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, userAccounts_schema);
@@ -119,24 +120,25 @@ export class UserAccountModel {
           return;
         }
         // not found with the id
-        resolve(undefined);
+        resolve(respUserAccountsDTOArray);
       })
       .catch((err) => {
         SysLog.error(JSON.stringify(err));
-        resolve (undefined);
+        resolve (respUserAccountsDTOArray);
         return;
       });
     });
   };
 
-  getAll = (): Promise<UserAccountsDTO[] | undefined> => {
+  getAll = (): Promise<UserAccountsDTO[]> => {
     return new Promise ((resolve) => {
+      const respUserAccountsDTOArray:UserAccountsDTO[] = [];
       let sql = SqlFormatter.formatSelect(this.tableName, userAccounts_schema);
       sql += SqlFormatter.formatWhereAND('', {site_code: this.siteCode}, this.tableName, userAccounts_schema);
       dbConnection.DB.sql(sql).execute()
       .then((result) => {
         if (result.rows.length) {
-          const respUserAccountsDTOArray:UserAccountsDTO[] = [];
+
           result.rows.forEach((rowData: any) => {
             const data = SqlFormatter.transposeResultSet(userAccounts_schema,
               undefined,
@@ -149,11 +151,11 @@ export class UserAccountModel {
           return;
         }
         // not found
-        resolve(undefined);
+        resolve(respUserAccountsDTOArray);
       })
       .catch((err) => {
         SysLog.error(JSON.stringify(err));
-        resolve(undefined);
+        resolve(respUserAccountsDTOArray);
         return;
       });
     });
@@ -252,8 +254,11 @@ export class UserAccountModel {
   getUserAccounts = async (siteCode: string, userId: string, status: string): Promise<any[]> => {
     return new Promise((resolve) => {
       const userAccountTypes: any[] = [];
-      let sql = 'SELECT ' + SqlFormatter.formatTableSelect(accounts_schema_table, accounts_schema);
+      let sql = 'SELECT ' + SqlFormatter.formatTableSelect(accounts_schema_table, 
+                                                           accounts_schema,
+                                                           ['id']);
       sql += ', BIN_TO_UUID(' + userAccounts_schema_table +'.user_id)';
+      sql += ', BIN_TO_UUID(' + userAccounts_schema_table +'.account_id)';
       sql += ', BIN_TO_UUID(' + userAccounts_schema_table +'.id)';
       sql += ' FROM '+ userAccounts_schema_table;
       sql += ' INNER JOIN ' + accounts_schema_table + ' ON ' + userAccounts_schema_table + '.account_id = ' + accounts_schema_table + '.id'
@@ -274,13 +279,15 @@ export class UserAccountModel {
           colIdx = SqlFormatter.transposeTableSelectColumns(colIdx,
                                                             userAccountDataDTO,
                                                             accounts_schema,
-                                                            rowData);
+                                                            rowData,
+                                                            ['id']);
           colIdx = SqlFormatter.transposeTableSelectColumnArray(
             colIdx,
             userAccountDataDTO,
             [
             'user_id',
-            'id'
+            'account_id',
+            'user_account_id'
             ],
             rowData
           )

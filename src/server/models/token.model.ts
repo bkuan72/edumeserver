@@ -142,7 +142,8 @@ export class TokenModel {
     showPassword?: boolean,
     ignoreExclSelect?: boolean,
     excludeSelectProp?: string[]
-  ): Promise<TokenDTO[] | TokenData[] | undefined> => {
+  ): Promise<TokenDTO[] | TokenData[]> => {
+    const respTokenDTOArray: TokenDTO[] = [];
     let sql = SqlFormatter.formatSelect(
       this.tableName,
       token_schema,
@@ -161,7 +162,7 @@ export class TokenModel {
       dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
-          const respTokenDTOArray: TokenDTO[] = [];
+
           if (result.rows.length) {
             result.rows.forEach((rowData: any) => {
               const data = SqlFormatter.transposeResultSet(
@@ -177,11 +178,11 @@ export class TokenModel {
             return;
           }
           // not found with the id return undefined
-          resolve(undefined);
+          resolve(respTokenDTOArray);
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
-          resolve(undefined);
+          resolve(respTokenDTOArray);
           return;
         });
     });

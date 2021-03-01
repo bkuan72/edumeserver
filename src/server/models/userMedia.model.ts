@@ -25,8 +25,9 @@ export class UserMediaModel extends EntityModel {
 
   findByUserId = (
     userId: string
-  ): Promise<any | undefined> => {
+  ): Promise<any[]> => {
     return new Promise((resolve) => {
+      const resUserMediaDTOArray: UserMediaDTO[] = [];
       let sql =
         SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
@@ -36,7 +37,7 @@ export class UserMediaModel extends EntityModel {
       dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
-          const resUserMediaDTOArray: UserMediaDTO[] = [];
+
           if (result.rows.length) {
             result.rows.forEach((rowData) => {
               const data = SqlFormatter.transposeResultSet(
@@ -56,7 +57,7 @@ export class UserMediaModel extends EntityModel {
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
-          resolve(undefined);
+          resolve(resUserMediaDTOArray);
           return;
         });
     });

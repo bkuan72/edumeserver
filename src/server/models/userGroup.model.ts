@@ -107,7 +107,8 @@ export class UserGroupModel {
     conditions: any,
     ignoreExclSelect?: boolean,
     excludeSelectProp?: string[]
-  ): Promise<UserGroupsDTO[] | undefined> => {
+  ): Promise<UserGroupsDTO[]> => {
+    const respUserGroupsDTOArray: UserGroupsDTO[] = [];
     let sql = SqlFormatter.formatSelect(
       this.tableName,
       userGroups_schema,
@@ -122,7 +123,7 @@ export class UserGroupModel {
         .execute()
         .then((result) => {
           if (result.rows.length) {
-            const respUserGroupsDTOArray: UserGroupsDTO[] = [];
+
             result.rows.forEach((rowData: any) => {
               const data = SqlFormatter.transposeResultSet(
                 userGroups_schema,
@@ -137,25 +138,26 @@ export class UserGroupModel {
             return;
           }
           // not found with the id
-          resolve(undefined);
+          resolve(respUserGroupsDTOArray);
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
-          resolve(undefined);
+          resolve(respUserGroupsDTOArray);
           return;
         });
     });
   };
 
-  getAll = (): Promise<UserGroupsDTO[] | undefined> => {
+  getAll = (): Promise<UserGroupsDTO[]> => {
     return new Promise((resolve) => {
+      const respUserGroupsDTOArray: UserGroupsDTO[] = [];
       let sql = SqlFormatter.formatSelect(this.tableName, userGroups_schema);
       sql += SqlFormatter.formatWhereAND('', {site_code: this.siteCode}, this.tableName, userGroups_schema);
       dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
           if (result.rows.length) {
-            const respUserGroupsDTOArray: UserGroupsDTO[] = [];
+
             result.rows.forEach((rowData: any) => {
               const data = SqlFormatter.transposeResultSet(
                 userGroups_schema,
@@ -170,11 +172,11 @@ export class UserGroupModel {
             return;
           }
           // not found
-          resolve(undefined);
+          resolve(respUserGroupsDTOArray);
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
-          resolve(undefined);
+          resolve(respUserGroupsDTOArray);
           return;
         });
     });
@@ -240,7 +242,8 @@ export class UserGroupModel {
     userId: string,
     ignoreExclSelect?: boolean,
     excludeSelectProp?: string[]
-  ): Promise<UserGroupInfoDTO[] | undefined> => {
+  ): Promise<UserGroupInfoDTO[]> => {
+    const respUserGroupsDTOArray: UserGroupInfoDTO[] = [];
     let sql = 'SELECT BIN_TO_UUID(' + SqlFormatter.fmtTableFieldStr(this.tableName, 'id') + '), ';
     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'status') + ', ';
     sql += 'BIN_TO_UUID('+SqlFormatter.fmtTableFieldStr(this.tableName, 'account_id') + '), ';
@@ -262,7 +265,7 @@ export class UserGroupModel {
       dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
-          const respUserGroupsDTOArray: UserGroupInfoDTO[] = [];
+
           if (result.rows.length) {
             result.rows.forEach((rowData: any) => {
             const data = SqlFormatter.transposeColumnResultSet([
@@ -287,7 +290,7 @@ export class UserGroupModel {
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
-          resolve(undefined);
+          resolve(respUserGroupsDTOArray);
           return;
         });
     });
@@ -298,7 +301,7 @@ export class UserGroupModel {
     accountId: string,
     ignoreExclSelect?: boolean,
     excludeSelectProp?: string[]
-  ): Promise<UserGroupInfoDTO[] | undefined> => {
+  ): Promise<UserGroupInfoDTO[]> => {
     let sql = 'SELECT BIN_TO_UUID(' + SqlFormatter.fmtTableFieldStr(this.tableName, 'id') + '), ';
     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'status') + ', ';
     sql += 'BIN_TO_UUID('+SqlFormatter.fmtTableFieldStr(this.tableName, 'account_id') + '), ';
@@ -317,10 +320,11 @@ export class UserGroupModel {
     SysLog.info('findById SQL: ' + sql);
     SysLog.info('find SQL: ' + sql);
     return new Promise((resolve) => {
+      const respUserGroupsDTOArray: UserGroupInfoDTO[] = [];
       dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
-          const respUserGroupsDTOArray: UserGroupInfoDTO[] = [];
+
           if (result.rows.length) {
             result.rows.forEach((rowData: any) => {
             const data = SqlFormatter.transposeColumnResultSet([
@@ -345,7 +349,7 @@ export class UserGroupModel {
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
-          resolve(undefined);
+          resolve(respUserGroupsDTOArray);
           return;
         });
     });
@@ -355,7 +359,8 @@ export class UserGroupModel {
     groupId: string,
     ignoreExclSelect?: boolean,
     excludeSelectProp?: string[]
-  ): Promise<UserGroupInfoDTO[] | undefined> => {
+  ): Promise<UserGroupInfoDTO[]> => {
+    const respUserGroupsDTOArray: UserGroupInfoDTO[] = [];
     let sql = 'SELECT BIN_TO_UUID(' + SqlFormatter.fmtTableFieldStr(this.tableName, 'id') + '), ';
     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'status') + ', ';
     sql += 'BIN_TO_UUID('+SqlFormatter.fmtTableFieldStr(this.tableName, 'account_id') + '), ';
@@ -377,7 +382,7 @@ export class UserGroupModel {
       dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
-          const respUserGroupsDTOArray: UserGroupInfoDTO[] = [];
+
           if (result.rows.length) {
             result.rows.forEach((rowData: any) => {
             const data = SqlFormatter.transposeColumnResultSet([
@@ -402,7 +407,7 @@ export class UserGroupModel {
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
-          resolve(undefined);
+          resolve(respUserGroupsDTOArray);
           return;
         });
     });

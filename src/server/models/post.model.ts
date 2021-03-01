@@ -32,8 +32,9 @@ export class PostModel extends EntityModel {
   findByUserId = (
     userId: string,
     offSetDays: string
-  ): Promise<any | undefined> => {
+  ): Promise<any[]> => {
     return new Promise((resolve) => {
+      const resPostDTOArray: PostDTO[] = [];
       const fromDate = CommonFn.dateDeduct(
         new Date(),
         DateAddIntervalEnum.DAY,
@@ -49,7 +50,7 @@ export class PostModel extends EntityModel {
       dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
-          const resPostDTOArray: PostDTO[] = [];
+
           if (result.rows.length) {
             result.rows.forEach((rowData) => {
               const data = SqlFormatter.transposeResultSet(
@@ -69,7 +70,7 @@ export class PostModel extends EntityModel {
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
-          resolve(undefined);
+          resolve(resPostDTOArray);
           return;
         });
     });
@@ -78,8 +79,9 @@ export class PostModel extends EntityModel {
   findForUserNFriends = (
     userId: string,
     offSetDays: string
-  ): Promise<any | undefined> => {
+  ): Promise<any[]> => {
     return new Promise((resolve) => {
+      const resPostDTOArray: PostDTO[] = [];
       const fromDate = CommonFn.dateDeduct(
         new Date(),
         DateAddIntervalEnum.DAY,
@@ -103,7 +105,7 @@ export class PostModel extends EntityModel {
         dbConnection.DB.sql(sql)
           .execute()
           .then((result) => {
-            const resPostDTOArray: PostDTO[] = [];
+
             if (result.rows.length) {
               result.rows.forEach((rowData) => {
                 const data = SqlFormatter.transposeResultSet(
@@ -128,7 +130,7 @@ export class PostModel extends EntityModel {
           })
           .catch((err) => {
             SysLog.error(JSON.stringify(err));
-            resolve(undefined);
+            resolve(resPostDTOArray);
             return;
           });
       });

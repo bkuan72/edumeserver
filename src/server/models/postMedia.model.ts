@@ -28,8 +28,9 @@ export class PostMediaModel extends EntityModel {
 
   findByPostId = (
     postId: string
-  ): Promise<any | undefined> => {
+  ): Promise<any[]> => {
     return new Promise((resolve) => {
+      const resPostDTOArray: PostMediaDTO[] = [];
       let sql =
         SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
@@ -39,7 +40,7 @@ export class PostMediaModel extends EntityModel {
       dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
-          const resPostDTOArray: PostMediaDTO[] = [];
+
           if (result.rows.length) {
             result.rows.forEach((rowData) => {
               const data = SqlFormatter.transposeResultSet(
@@ -59,7 +60,7 @@ export class PostMediaModel extends EntityModel {
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
-          resolve(undefined);
+          resolve(resPostDTOArray);
           return;
         });
     });

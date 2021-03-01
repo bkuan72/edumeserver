@@ -28,8 +28,9 @@ export class UserTimelineCommentModel extends EntityModel {
 
   findByTimelineId = (
     timelineId: string
-  ): Promise<any | undefined> => {
+  ): Promise<any[]> => {
     return new Promise((resolve) => {
+      const resTimelineDTOArray: UserTimelineCommentDTO[] = [];
       let sql =
         SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
@@ -39,7 +40,7 @@ export class UserTimelineCommentModel extends EntityModel {
       dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
-          const resTimelineDTOArray: UserTimelineCommentDTO[] = [];
+
           if (result.rows.length) {
             result.rows.forEach((rowData) => {
               const data = SqlFormatter.transposeResultSet(
@@ -59,7 +60,7 @@ export class UserTimelineCommentModel extends EntityModel {
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
-          resolve(undefined);
+          resolve(resTimelineDTOArray);
           return;
         });
     });

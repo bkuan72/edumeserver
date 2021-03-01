@@ -25,8 +25,9 @@ export class FriendModel extends EntityModel {
     this.schema = friends_schema;
   }
 
-  findByUserId = (userId: string): Promise<any | undefined> => {
+  findByUserId = (userId: string): Promise<any[]> => {
     return new Promise ((resolve) => {
+      const resFriendDTOArray: FriendDTO[] = [];
       let sql =
       SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
@@ -34,7 +35,7 @@ export class FriendModel extends EntityModel {
       SysLog.info('findById SQL: ' + sql);
       dbConnection.DB.sql(sql).execute()
       .then((result) => {
-        const resFriendDTOArray: FriendDTO[] = [];
+
         if (result.rows.length) {
 
             result.rows.forEach ((rowData) => {
@@ -53,15 +54,16 @@ export class FriendModel extends EntityModel {
       })
       .catch((err) => {
         SysLog.error(JSON.stringify(err));
-        resolve(undefined);
+        resolve(resFriendDTOArray);
         return;
       })
 
     });
   };
 
-  getFriendList = (userId: string): Promise<any | undefined> => {
+  getFriendList = (userId: string): Promise<any[]> => {
     return new Promise ((resolve) => {
+      const resFriendListDTOArray: FriendListDTO[] = [];
       let sql = '';
       sql = 'SELECT BIN_TO_UUID(' + SqlFormatter.fmtTableFieldStr(this.tableName, 'id') + '), ';
       sql += 'BIN_TO_UUID('+SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') + '), ';
@@ -78,7 +80,7 @@ export class FriendModel extends EntityModel {
       SysLog.info('findById SQL: ' + sql);
       dbConnection.DB.sql(sql).execute()
       .then((result) => {
-        const resFriendListDTOArray: FriendListDTO[] = [];
+
         if (result.rows.length) {
 
             result.rows.forEach ((rowData) => {
@@ -101,7 +103,7 @@ export class FriendModel extends EntityModel {
       })
       .catch((err) => {
         SysLog.error(JSON.stringify(err));
-        resolve(undefined);
+        resolve(resFriendListDTOArray);
         return;
       })
 

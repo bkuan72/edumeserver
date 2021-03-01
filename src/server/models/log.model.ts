@@ -25,8 +25,9 @@ export class LogModel extends EntityModel {
     this.schema = logs_schema;
   }
 
-  findByLogDate = (logDate: Date): Promise<any | undefined> => {
+  findByLogDate = (logDate: Date): Promise<any[]> => {
     return new Promise ((resolve) => {
+      const respEntityDTOArray: any[] = [];
       let sql =
       SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
       sql += SqlStr.format('EntryDate = ?', [logDate])
@@ -34,7 +35,7 @@ export class LogModel extends EntityModel {
       sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, this.schema);
       dbConnection.DB.sql(sql).execute()
       .then((result) => {
-        const respEntityDTOArray: any[] = [];
+ 
         if (result.rows.length) {
           result.rows.forEach((rowData) => {
             const data = SqlFormatter.transposeResultSet(this.schema,
@@ -52,7 +53,7 @@ export class LogModel extends EntityModel {
       })
       .catch((err) => {
         SysLog.error(JSON.stringify(err));
-        resolve(undefined);
+        resolve(respEntityDTOArray);
         return;
       })
     });

@@ -30,8 +30,9 @@ export class PostArticleModel extends EntityModel {
 
   findByPostId = (
     postId: string
-  ): Promise<any | undefined> => {
+  ): Promise<any[]> => {
     return new Promise((resolve) => {
+      const resPostArticleDTOArray: PostArticleDTO[] = [];
       let sql =
         SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
@@ -41,7 +42,7 @@ export class PostArticleModel extends EntityModel {
       dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
-          const resPostArticleDTOArray: PostArticleDTO[] = [];
+
           if (result.rows.length) {
             result.rows.forEach((rowData) => {
               const data = SqlFormatter.transposeResultSet(
@@ -66,7 +67,7 @@ export class PostArticleModel extends EntityModel {
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
-          resolve(undefined);
+          resolve(resPostArticleDTOArray);
           return;
         });
     });

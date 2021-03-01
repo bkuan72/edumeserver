@@ -103,7 +103,8 @@ export class UserModel {
     showPassword?: boolean,
     ignoreExclSelect?: boolean,
     excludeSelectProp?: string[]
-  ): Promise<ResponseUserDTO[] | UserData[] | undefined> => {
+  ): Promise<ResponseUserDTO[] | UserData[]> => {
+    const respUserDTOArray: ResponseUserDTO[] = [];
     let sql = SqlFormatter.formatSelect(
       this.tableName,
       users_schema,
@@ -122,7 +123,7 @@ export class UserModel {
       dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
-          const respUserDTOArray: ResponseUserDTO[] = [];
+
           if (result.rows.length) {
             result.rows.forEach((rowData: any[]) => {
               const data = SqlFormatter.transposeResultSet(
@@ -142,20 +143,21 @@ export class UserModel {
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
-          resolve(undefined);
+          resolve(respUserDTOArray);
           return;
         });
     });
   };
 
-  getAll = (): Promise<ResponseUserDTO[] | UserData[] | undefined> => {
+  getAll = (): Promise<ResponseUserDTO[] | UserData[]> => {
     return new Promise((resolve) => {
+      const respUserDTOArray: ResponseUserDTO[] = [];
       let sql = SqlFormatter.formatSelect(this.tableName, users_schema);
       sql += SqlFormatter.formatWhereAND('', {site_code: this.siteCode}, this.tableName, users_schema);
       dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
-          const respUserDTOArray: ResponseUserDTO[] = [];
+
           if (result.rows.length) {
             result.rows.forEach((rowData: any) => {
               const data = SqlFormatter.transposeResultSet(
@@ -175,7 +177,7 @@ export class UserModel {
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
-          resolve(undefined);
+          resolve(respUserDTOArray);
           return;
         });
     });

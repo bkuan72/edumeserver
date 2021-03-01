@@ -30,8 +30,9 @@ export class ActivityModel extends EntityModel {
   findByTimelineUserId = (
     timelineUserId: string,
     offSetDays: string
-  ): Promise<any | undefined> => {
+  ): Promise<any[]> => {
     return new Promise((resolve) => {
+      const resActivityDTOArray: ActivityDTO[] = [];
       const fromDate = CommonFn.dateDeduct(new Date(), DateAddIntervalEnum.DAY, parseInt(offSetDays));
       let sql =
         SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
@@ -43,7 +44,7 @@ export class ActivityModel extends EntityModel {
       dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
-          const resActivityDTOArray: ActivityDTO[] = [];
+
           if (result.rows.length) {
             result.rows.forEach((rowData) => {
               const data = SqlFormatter.transposeResultSet(
@@ -63,7 +64,7 @@ export class ActivityModel extends EntityModel {
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
-          resolve(undefined);
+          resolve(resActivityDTOArray);
           return;
         });
     });

@@ -73,7 +73,7 @@ export class UserGroupsController implements Controller{
       group_id: userGroup.group_id
      })
     if (
-      CommonFn.isUndefined(groups) || groups?.length === 0
+      groups.length > 0
     ) {
       next(new UserGroupAlreadyExistsException(userGroup.user_id, userGroup.group_id));
     } else {
