@@ -28,16 +28,22 @@ export class AccountsController implements Controller{
   }
 
   public intializeRoutes() {
-    this.router.post(this.path,
+
+    this.router.post(this.path+'/normal',
                     authMiddleware,
                     validationMiddleware(accounts_schema),
-                    this.newAccount);
+                    this.newNormalAccount);
+    this.router.post(this.path+'/service',
+                      authMiddleware,
+                      validationMiddleware(accounts_schema),
+                      this.newServiceAccount);
     this.router.get(this.path, authMiddleware, this.getAll);
     this.router.get(this.path+'/byUserId/:userId', authMiddleware, this.findByUserId);
     this.router.get(this.path+'/byAccountId/:accountId', authMiddleware, this.findById);
-    this.router.patch(this.path+'/:accountId', authMiddleware, validationUpdateMiddleware(accounts_schema), this.update);
+    this.router.patch(this.path+'/byAccountId/:accountId', authMiddleware, validationUpdateMiddleware(accounts_schema), this.update);
+    this.router.put(this.path+'/avatar/byAccountId/:accountId', authMiddleware, validationUpdateMiddleware(accounts_schema), this.update);
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
-    this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/updDTO', authMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     return;
   }
@@ -54,8 +60,17 @@ export class AccountsController implements Controller{
     response.send(accounts_schema);
   }
 
-  newAccount  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-      this.accounts.create(request.body).then((respAccountDTO) => {
+  newServiceAccount  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+      this.accounts.createServiceAccount(request.body).then((respAccountDTO) => {
+        if (respAccountDTO) {
+            response.send(respAccountDTO);
+          } else {
+            next(new PostDataFailedException())
+          }
+      })
+  };
+  newNormalAccount  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+      this.accounts.createNormalAccount(request.body).then((respAccountDTO) => {
         if (respAccountDTO) {
             response.send(respAccountDTO);
           } else {

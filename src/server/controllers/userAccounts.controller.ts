@@ -46,14 +46,19 @@ export class UserAccountsController implements Controller{
                         validationUpdateMiddleware(userAccounts_schema),
                         validationUserAccountMiddleware(),
                          this.update);
+    this.router.get(this.path+'/userAccountDTO', adminAuthMiddleware, this.apiUserAccountDTO);
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
     this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     return;
   }
 
-  apiDTO  = (request: express.Request, response: express.Response) => {
+  apiUserAccountDTO  = (request: express.Request, response: express.Response) => {
     const dto = new UserAccountDataDTO();
+    response.send(dto);
+  }
+  apiDTO  = (request: express.Request, response: express.Response) => {
+    const dto = new UserAccountsDTO();
     response.send(dto);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
@@ -74,7 +79,7 @@ export class UserAccountsController implements Controller{
       account_id: userAccount.account_id
      })
     if (
-      CommonFn.isUndefined(accounts) || accounts?.length === 0
+      accounts.length > 0
     ) {
       next(new UserAccountAlreadyExistsException(userAccount.user_id, userAccount.account_id));
     } else {
