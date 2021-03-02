@@ -36,7 +36,7 @@ export class UpdUserAccountsDTO {
 
 export class UserAccountDataDTO {
   constructor(userAccountData?: any) {
-    DTOGenerator.genDTOFromSchema(this, accounts_schema);
+    DTOGenerator.genDTOFromSchema(this, accounts_schema, ['id']);
     if (!CommonFn.isUndefined(userAccountData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(userAccountData, prop)) {
@@ -47,6 +47,11 @@ export class UserAccountDataDTO {
     DTOGenerator.defineProperty(
       this,
       'user_account_id',
+      ''
+      );
+    DTOGenerator.defineProperty(
+      this,
+      'account_id',
       ''
       );
     DTOGenerator.defineProperty(
