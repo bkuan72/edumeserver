@@ -1,3 +1,4 @@
+import { FilterIfc } from './../models/advertisement.model';
 import { AdvertisementDTO, UpdAdvertisementDTO } from './../../dtos/advertisements.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
@@ -39,6 +40,7 @@ export class AdvertisementsController implements Controller{
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
     this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
+    this.router.get(this.path+'/filterDTO', adminAuthMiddleware, this.filterDTO);
     return;
   }
 
@@ -52,6 +54,18 @@ export class AdvertisementsController implements Controller{
   }
   apiSchema  = (request: express.Request, response: express.Response) => {
     response.send(advertisements_schema);
+  }
+  filterDTO  = (request: express.Request, response: express.Response) => {
+    const dto: FilterIfc = {
+      categories: ['category1', 'category2'],
+      age_groups: ['age1','age2'],
+      keywords:   ['word1','word2','word3'],
+      date_range: ['start date','end date'],
+      date_array: ['date1', 'date2', 'date3'],
+      price_range: [0, 1],
+      locations: ['city','country', 'post_code']
+    }
+    response.send(dto);
   }
 
   newAdvertisement  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -96,7 +110,8 @@ export class AdvertisementsController implements Controller{
   private searchAdvertisement = async (request: express.Request, response: express.Response) => {
 
     const searchResult = await this.advertisements.findKeyword(this.siteCode,
-        request.params.searchStr
+        request.params.searchStr,
+        request.body
       );
       if (searchResult === undefined) {
         response.send([]);

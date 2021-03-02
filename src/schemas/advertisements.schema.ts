@@ -39,6 +39,14 @@ export const advertisements_schema: schemaIfc[] = [
     excludeFromUpdate: true,
     description: 'link to either users, accounts, groups'
   },
+  {    fieldName: 'business_name',
+    sqlType: 'VARCHAR(100)',
+    size: 100,
+    allowNull: true,
+    default: '',
+    trim: true,
+    description: 'Business Name'
+  },
   {    fieldName: 'header',
   sqlType: 'VARCHAR(100)',
   size: 100,
@@ -73,20 +81,26 @@ export const advertisements_schema: schemaIfc[] = [
   trim: true,
   description: 'advertisement excerpt'
   },
-  {
-    fieldName: 'category',
+  {    fieldName: 'adAgeGroups',
     sqlType: 'TEXT',
+    default: '',
+    description: 'a comma delimited string of ageGroups use for filtering'
+  },
+  {
+    fieldName: 'categories',
+    sqlType: 'TEXT',
+    default: '',
     excludeFromUpdate: false,
     trim: true,
     description: 'a comma delimited string of categories use for filtering'
   },
   {    fieldName: 'keywords',
-  sqlType: 'TEXT',
-  allowNull: false,
-  default: '',
-  excludeFromUpdate: false,
-  trim: true,
-  description: 'a comma delimited string of keywords use for filtering'
+    sqlType: 'TEXT',
+    allowNull: false,
+    default: '',
+    excludeFromUpdate: false,
+    trim: true,
+    description: 'a comma delimited string of keywords use for filtering'
   },
   {    fieldName: 'image',
     sqlType: 'MEDIUMBLOB',
@@ -160,6 +174,15 @@ export const advertisements_schema: schemaIfc[] = [
     default: '',
     trim: true,
     description: 'Country'
+  },
+  {
+    fieldName: 'post_code',
+    sqlType: 'VARCHAR(10)',
+    size: 10,
+    allowNull: true,
+    default: '',
+    trim: true,
+    description: 'Post Code'
   },
   {    fieldName: 'status',
     sqlType: 'ENUM',
