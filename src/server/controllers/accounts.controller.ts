@@ -1,4 +1,4 @@
-import { AccountDTO, UpdAccountDTO } from './../../dtos/accounts.DTO';
+import { AccountDTO, UpdAccountDTO, AboutAccountDTO } from './../../dtos/accounts.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import {AccountModel} from "../models/account.model";
@@ -14,6 +14,7 @@ import validationMiddleware from "../../middleware/validation.middleware";
 import PostDataFailedException from "../../exceptions/PostDataFailedException";
 import SysEnv from "../../modules/SysEnv";
 import adminAuthMiddleware from '../../middleware/admin.auth.middleware';
+import CommonFn from '../../modules/CommonFnModule';
 
 export class AccountsController implements Controller{
   public path='/accounts';
@@ -38,6 +39,8 @@ export class AccountsController implements Controller{
                       validationMiddleware(accounts_schema),
                       this.newServiceAccount);
     this.router.get(this.path, authMiddleware, this.getAll);
+    this.router.get(this.path+'/basicInfo/byAccountId/:accountId', this.getBasicAccountInfo);
+    this.router.get(this.path+'/profile-about/byAccountId/:accountId', authMiddleware, this.getAbout);
     this.router.get(this.path+'/byUserId/:userId', authMiddleware, this.findByUserId);
     this.router.get(this.path+'/byAccountId/:accountId', authMiddleware, this.findById);
     this.router.patch(this.path+'/byAccountId/:accountId', authMiddleware, validationUpdateMiddleware(accounts_schema), this.update);
@@ -119,5 +122,55 @@ export class AccountsController implements Controller{
         next(new DataNotFoundException(request.params.accountId))
       }
     })
+  }
+
+  getAbout  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.accounts.findById(request.params.accountId).then((respAccountDTO) => {
+      if (respAccountDTO) {
+        const aboutDTO = new AboutAccountDTO();
+        aboutDTO.general.account_name = respAccountDTO?.account_name;
+        aboutDTO.general.about = respAccountDTO?.about_me;
+        if (!CommonFn.isEmpty(respAccountDTO?.city)) {
+          aboutDTO.general.locations.push(respAccountDTO?.city);
+        }
+        if (!CommonFn.isEmpty(respAccountDTO?.country)) {
+         aboutDTO.general.locations.push(respAccountDTO?.country);
+        }
+        aboutDTO.contact.address = respAccountDTO?.address;
+        if (!CommonFn.isEmpty(respAccountDTO?.phone_no)) {
+          aboutDTO.contact.tel.push(respAccountDTO?.phone_no);
+        }
+        if (!CommonFn.isEmpty(respAccountDTO?.mobile_no)) {
+          aboutDTO.contact.tel.push(respAccountDTO?.mobile_no);
+        }
+        if (!CommonFn.isEmpty(respAccountDTO?.website)) {
+          aboutDTO.contact.websites.push(respAccountDTO?.website);
+        }
+        if (!CommonFn.isEmpty(respAccountDTO?.email)) {
+          aboutDTO.contact.emails.push(respAccountDTO?.email);
+        }
+
+        //aboutDTO.friends // TODO need to implement friends api
+        //aboutDTO.groups // TODO need to implement groups api
+        response.send(aboutDTO);
+      } else {
+        next(new DataNotFoundException(request.params.accountId))
+      }
+    })
+  }
+
+  getBasicAccountInfo  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.accounts.findById(request.params.accountId)
+    .then((respAccountDTO) => {
+      if (respAccountDTO) {
+        response.send({
+          id: respAccountDTO.id,
+          user_name: respAccountDTO.account_name,
+          avatar: respAccountDTO.avatar
+        });
+      } else {
+        next(new DataNotFoundException(request.params.accountId))
+      }
+    });
   }
 }

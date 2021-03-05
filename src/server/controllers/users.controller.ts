@@ -28,10 +28,10 @@ export class UsersController implements Controller{
   public intializeRoutes() {
     this.router.get(this.path, authMiddleware, this.getAll);
     this.router.get(this.path+'/basicInfo/byUserId/:userId', this.getBasicUserInfo);
+    this.router.get(this.path+'/profile-about/byUserId/:userId', authMiddleware, this.getAbout);
     this.router.get(this.path+'/byUserId/:userId', authMiddleware, this.findById);
     this.router.get(this.path+'/byEmail/:email', authMiddleware, this.findById);
     this.router.patch(this.path+'/byUserId/:userId', authMiddleware, validationUpdateMiddleware(users_schema), this.update);
-    this.router.get(this.path+'/profile-about/byUserId/:userId', authMiddleware, this.getAbout);
     this.router.put(this.path+'/updateAvatar/:userId', authMiddleware, this.update);
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
     this.router.get(this.path+'/InsDTO', devAuthMiddleware, this.apiInsDTO);
@@ -130,8 +130,7 @@ export class UsersController implements Controller{
         if (!CommonFn.isEmpty(respUserDTO?.jobs)) {
           aboutDTO.work.jobs =  respUserDTO?.jobs;
         }
-        //aboutDTO.friends // TODO need to implement friends api
-        //aboutDTO.groups // TODO need to implement groups api
+
         response.send(aboutDTO);
       } else {
         next(new DataNotFoundException(request.params.userId))
