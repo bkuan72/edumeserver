@@ -212,4 +212,45 @@ export class EntityModel {
     });
   };
 
+  deleteById = (
+    id: string
+  ): Promise<any[]> => {
+    return new Promise((resolve) => {
+      const resEntityDTOArray: any[] = [];
+      let sql ='UPDATE ' + this.tableName;
+      sql += ' SET status = ' + SqlStr.escape('DELETED')
+      sql += ' WHERE ';
+      sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
+      sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
+      sql += SqlStr.format('id = UUID_TO_BIN(?)', [id]);
+      SysLog.info('findByUserId SQL: ' + sql);
+      dbConnection.DB.sql(sql)
+        .execute()
+        .then((result) => {
+
+          if (result.rows.length) {
+            result.rows.forEach((rowData) => {
+              const data = SqlFormatter.transposeResultSet(
+                this.schema,
+                undefined,
+                undefined,
+                rowData
+              );
+              const respEntityDTO = new this.responseDTO(data);
+              resEntityDTOArray.push(respEntityDTO);
+            });
+            resolve(resEntityDTOArray);
+            return;
+          }
+          // not found Customer with the id
+          resolve(resEntityDTOArray);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(resEntityDTOArray);
+          return;
+        });
+    });
+  };
+
 }
