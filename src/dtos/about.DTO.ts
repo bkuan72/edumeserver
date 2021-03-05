@@ -16,15 +16,6 @@ export class AboutDTO {
         websites: string[];
         emails: string[];
     };
-    groups: {
-        name: string;
-        category: string;
-        members: string
-    }[];
-    friends: {
-        name: string,
-        avatar: string
-    }[];
 
     constructor ( ) {
         this.general = {
@@ -44,7 +35,6 @@ export class AboutDTO {
             websites:[],
             emails:[]
         };
-        this.groups = [];
-        this.friends = [];
+
     }
 }
