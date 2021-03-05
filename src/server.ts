@@ -1,3 +1,7 @@
+import { AccountGroupMediaPeriodsController } from './server/controllers/accountGroupMediaPeriods.controller';
+import { AccountGroupMediasController } from './server/controllers/accountGroupMedias.controller';
+import { UserMediaPeriodsController } from './server/controllers/userMediaPeriods.controller';
+import { UserMediasController } from './server/controllers/userMedias.controller';
 import { UserModuleRolesController } from './server/controllers/userModuleRoles.controller';
 import { ModulesController } from './server/controllers/modules.controller';
 import { RolesController } from './server/controllers/roles.controller';
@@ -8,7 +12,6 @@ import SysLog from './modules/SysLog';
 import toobusy_js from 'toobusy-js';
 import SysEnv from './modules/SysEnv';
 import { ActivitiesController } from './server/controllers/activities.controller';
-import { MediasController } from './server/controllers/userMedias.controller';
 import { GroupsController } from './server/controllers/groups.controller';
 import { FriendsController } from './server/controllers/friends.controller';
 import { PostMediasController } from './server/controllers/postMedias.controller';
@@ -35,6 +38,8 @@ import { UserGroupsController } from './server/controllers/userGroups.controller
 import SysMailer from './modules/SysEmailerModule';
 import { AdActivitiesController } from './server/controllers/adActivities.controller';
 import { AdAgeGroupsController } from './server/controllers/adAgeGoups.controller';
+import { AccountGroupTimelinessController } from './server/controllers/accountGroupTimelines.controller';
+import { AccountGroupTimelineCommentsController } from './server/controllers/accountGroupTimelineComments.controller';
 
 // validate that all required environment variable is present
 SysEnv.init();
@@ -63,7 +68,6 @@ const app = new App (
     new FriendsController(),
     new GroupsController(),
     new UserGroupsController(),
-    new MediasController(),
     new ActivitiesController(),
     new UserTimelinessController(),
     new AdCategoriesController(),
@@ -73,6 +77,12 @@ const app = new App (
     new RolesController(),
     new ModulesController(),
     new UserModuleRolesController(),
+    new UserMediasController(),
+    new UserMediaPeriodsController(),
+    new AccountGroupMediasController(),
+    new AccountGroupMediaPeriodsController(),
+    new AccountGroupTimelinessController(),
+    new AccountGroupTimelineCommentsController()
   ],
   port
 );

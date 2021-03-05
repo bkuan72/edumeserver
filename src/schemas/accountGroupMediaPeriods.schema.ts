@@ -1,9 +1,9 @@
 import { schemaIfc } from '../modules/DbModule';
 import DTOGenerator from '../modules/ModelGenerator';
 
-export const userMedias_schema_table = 'userMedias';
+export const accountGroupMediaPeriods_schema_table = 'accountGroupMediaPeriods';
 
-export const userMedias_schema: schemaIfc[] = [
+export const accountGroupMediaPeriods_schema: schemaIfc[] = [
   {
     fieldName: 'id',
     sqlType: 'BINARY(16) PRIMARY KEY',
@@ -40,19 +40,35 @@ export const userMedias_schema: schemaIfc[] = [
     description: 'link to users - owner'
   },
   {
-    fieldName: 'userMediaPeriod_id',
+    fieldName: 'account_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
     excludeFromUpdate: true,
-    description: 'link to userMediaPeriod'
+    description: 'link to accounts - owner'
+  },
+  {
+    fieldName: 'group_id',
+    sqlType: 'BINARY(16)',
+    primaryKey: false,
+    uuidProperty: true,
+    excludeFromUpdate: true,
+    description: 'link to users - owner'
+  },
+  {
+    fieldName: 'period',
+    sqlType: 'VARCHAR(20)',
+    size: 20,
+    allowNull: false,
+    excludeFromUpdate: false,
+    trim: false,
+    description: 'period eg Month YYYY'
   },
   {
     fieldName: 'upload_date',
     sqlType: 'VARCHAR(25)',
     size: 25,
     allowNull: false,
-    default: '',
     excludeFromUpdate: false,
     trim: false,
     description: 'date time media uploaded'
@@ -113,18 +129,13 @@ export const userMedias_schema: schemaIfc[] = [
     sqlType: undefined,
     index: [
       {
-        name: 'user_id_idx',
-        columns: ['site_code', 'user_id', 'lastUpdateUsec'],
-        unique: false
-      },
-      {
-        name: 'userMediaPeriod_id_idx',
-        columns: ['site_code', 'userMediaPeriod_id', 'lastUpdateUsec'],
+        name: 'accountGroup_id_idx',
+        columns: ['site_code', 'account_id', 'group_id', 'period'],
         unique: false
       }
     ]
   }
 ];
 
-const UserMediaSchemaModel = DTOGenerator.genSchemaModel(userMedias_schema);
-export type UserMediaData = typeof UserMediaSchemaModel;
+const AccountGroupMediaPeriodSchemaModel = DTOGenerator.genSchemaModel(accountGroupMediaPeriods_schema);
+export type AccountGroupMediaPeriodData = typeof AccountGroupMediaPeriodSchemaModel;

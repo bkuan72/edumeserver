@@ -2,13 +2,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import DTOGenerator from '../modules/ModelGenerator';
 import CommonFn from '../modules/CommonFnModule';
-import { UserMediaData, userMedias_schema } from '../schemas/userMedias.schema';
+import { AccountGroupMediaData, accountGroupMedias_schema } from '../schemas/accountGroupMedias.schema';
 
 
-export class UserMediaDTO {
-  data: UserMediaData;
+export class AccountGroupMediaDTO {
+  data: AccountGroupMediaData;
   constructor(propertyData?: any) {
-    DTOGenerator.genDTOFromSchema(this, userMedias_schema, ['fullImage']);
+    DTOGenerator.genDTOFromSchema(this, accountGroupMedias_schema, ['fullImage']);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -19,10 +19,10 @@ export class UserMediaDTO {
   }
 }
 
-export class UpdUserMediaDTO {
-  data: UserMediaData;
+export class UpdAccountGroupMediaDTO {
+  data: AccountGroupMediaData;
   constructor(propertyData?: any) {
-    DTOGenerator.genUpdDTOFromSchema(this, userMedias_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, accountGroupMedias_schema);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -33,26 +33,26 @@ export class UpdUserMediaDTO {
   }
 }
 
-export class RequestUserMediaDTO {
-  data: UserMediaData;
-  constructor(propertyData?: any) {
-    DTOGenerator.genDTOFromSchema(this, userMedias_schema);
-    if (!CommonFn.isUndefined(propertyData)) {
-      for (const prop in this) {
-        if (CommonFn.hasProperty(propertyData, prop)) {
-          this[prop] = propertyData[prop];
-        }
-      }
-    }
-  }
-}
-
-export class UserMediaFullImageDTO {
+export class AccountGroupMediaFullImageDTO {
   id: string;
   fullImage: string;
   constructor(propertyData?: any) {
     this.id = '';
     this.fullImage = '';
+    if (!CommonFn.isUndefined(propertyData)) {
+      for (const prop in this) {
+        if (CommonFn.hasProperty(propertyData, prop)) {
+          this[prop] = propertyData[prop];
+        }
+      }
+    }
+  }
+}
+
+export class RequestAccountGroupMediaDTO {
+  data: AccountGroupMediaData;
+  constructor(propertyData?: any) {
+    DTOGenerator.genDTOFromSchema(this, accountGroupMedias_schema);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {

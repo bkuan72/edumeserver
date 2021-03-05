@@ -1,40 +1,39 @@
-import { UserMediaFullImageDTO, RequestUserMediaDTO } from './../../dtos/userMedias.DTO';
 import { SqlFormatter } from '../../modules/sql.strings';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { userMedias_schema, userMedias_schema_table } from '../../schemas/userMedias.schema';
-import { UserMediaDTO } from '../../dtos/userMedias.DTO';
+import { accountGroupMedias_schema, accountGroupMedias_schema_table } from '../../schemas/accountGroupMedias.schema';
+import { AccountGroupMediaDTO, AccountGroupMediaFullImageDTO, RequestAccountGroupMediaDTO } from '../../dtos/accountGroupMedias.DTO';
 import { EntityModel } from './entity.model';
 import SqlStr = require('sqlstring');
 import SysLog from '../../modules/SysLog';
 import dbConnection from '../../modules/DbModule';
 
-export class UserMediaModel extends EntityModel {
+export class AccountGroupMediaModel extends EntityModel {
   constructor (altTable?: string) {
     super();
 
     if (altTable) {
       super(altTable);
     } else  {
-      this.tableName = userMedias_schema_table;
+      this.tableName = accountGroupMedias_schema_table;
     }
-    this.requestDTO = RequestUserMediaDTO;
-    this.responseDTO = UserMediaDTO;
-    this.schema = userMedias_schema;
+    this.requestDTO = RequestAccountGroupMediaDTO;
+    this.responseDTO = AccountGroupMediaDTO;
+    this.schema = accountGroupMedias_schema;
   }
 
-  findByUserMediaPeriodId = (
-    userMediaPeriodId: string
+  findByAccountGroupMediaPeriodId = (
+    accountGroupPeriodId: string
   ): Promise<any[]> => {
     return new Promise((resolve) => {
-      const resUserMediaDTOArray: UserMediaDTO[] = [];
+      const resAccountGroupMediaDTOArray: AccountGroupMediaDTO[] = [];
       let sql =
         SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
-      sql += SqlStr.format('userMediaPeriod_id = UUID_TO_BIN(?)', [userMediaPeriodId]);
-      SysLog.info('findByUserId SQL: ' + sql);
+      sql += SqlStr.format('accountGroupPeriod_id = UUID_TO_BIN(?)', [accountGroupPeriodId]);
+      SysLog.info('findByAccountGroupId SQL: ' + sql);
       dbConnection.DB.sql(sql)
         .execute()
         .then((result) => {
@@ -47,29 +46,28 @@ export class UserMediaModel extends EntityModel {
                 undefined,
                 rowData
               );
-              const respUserMediaDTO = new this.responseDTO(data) as UserMediaDTO;
-              resUserMediaDTOArray.push(respUserMediaDTO);
+              const respAccountGroupMediaDTO = new this.responseDTO(data) as AccountGroupMediaDTO;
+              resAccountGroupMediaDTOArray.push(respAccountGroupMediaDTO);
             });
-            resolve(resUserMediaDTOArray);
+            resolve(resAccountGroupMediaDTOArray);
             return;
           }
           // not found Customer with the id
-          resolve(resUserMediaDTOArray);
+          resolve(resAccountGroupMediaDTOArray);
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
-          resolve(resUserMediaDTOArray);
+          resolve(resAccountGroupMediaDTOArray);
           return;
         });
     });
   };
-
-  findFullImageById = (userMediaId: string): Promise<any | undefined> => {
+  findFullImageById = (accountGroupMediaId: string): Promise<any | undefined> => {
     return new Promise ((resolve) => {
       let sql = 'SELECT BIN_TO_UUID(id), fullImage';
       sql += ' FROM ' + this.tableName;
       sql += ' WHERE ';
-      sql += SqlStr.format('id = UUID_TO_BIN(?)', [userMediaId]);
+      sql += SqlStr.format('id = UUID_TO_BIN(?)', [accountGroupMediaId]);
       SysLog.info('findById SQL: ' + sql);
       dbConnection.DB.sql(sql).execute()
       .then((result) => {
@@ -84,8 +82,7 @@ export class UserMediaModel extends EntityModel {
           const blobString = blob.toString('utf-8');
           data.id = rowData1;
           data.fullImage = blobString;
-
-          const respFullImageDTO = new UserMediaFullImageDTO(data);
+          const respFullImageDTO = new AccountGroupMediaFullImageDTO(data);
           resolve(respFullImageDTO);
           return;
         }
@@ -98,32 +95,5 @@ export class UserMediaModel extends EntityModel {
         return;
       })
     });
-  };
-
-  deleteByUserMediaPeriodId = (
-    userMediaPeriodId: string
-  ): Promise<any[]> => {
-    return new Promise((resolve) => {
-      const resUserMediaDTOArray: UserMediaDTO[] = [];
-      let sql ='UPDATE ' + this.tableName;
-      sql += ' SET status = ' + SqlStr.escape('DELETED')
-      sql += ' WHERE ';
-      sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
-      sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
-      sql += SqlStr.format('userMediaPeriod_id = UUID_TO_BIN(?)', [userMediaPeriodId]);
-      SysLog.info('findByUserId SQL: ' + sql);
-      dbConnection.DB.sql(sql)
-        .execute()
-        .then((result) => {
-          resolve(resUserMediaDTOArray);
-        })
-        .catch((err) => {
-          SysLog.error(JSON.stringify(err));
-          resolve(resUserMediaDTOArray);
-          return;
-        });
-    });
-  };
-
-
+  }
 }

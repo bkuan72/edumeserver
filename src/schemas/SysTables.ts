@@ -23,6 +23,11 @@ import { userTimelines_schema, userTimelines_schema_table } from './userTimeline
 import { roles_schema, roles_schema_table } from './roles.schema';
 import { modules_schema, modules_schema_table } from './modules.schema';
 import { userModuleRoles_schema, userModuleRoles_schema_table } from './userModuleRoles.schema';
+import { accountGroupTimelines_schema, accountGroupTimelines_schema_table } from './accountGroupTimelines.schema';
+import { accountGroupTimelineComments_schema, accountGroupTimelineComments_schema_table } from './accountGroupTimelineComments.schema';
+import { accountGroupMedias_schema, accountGroupMedias_schema_table } from './accountGroupMedias.schema';
+import { accountGroupMediaPeriods_schema, accountGroupMediaPeriods_schema_table } from './accountGroupMediaPeriods.schema';
+import { userMediaPeriods_schema, userMediaPeriods_schema_table } from './userMediaPeriods.schema';
 
 export const sysTables: tableIfc[] = [
   {
@@ -74,12 +79,16 @@ export const sysTables: tableIfc[] = [
     schema: userTimelineComments_schema
   },
   {
-    name: friends_schema_table,
-    schema: friends_schema
-  },
-  {
     name: userMedias_schema_table,
     schema: userMedias_schema
+  },
+  {
+    name: userMediaPeriods_schema_table,
+    schema: userMediaPeriods_schema
+  },
+  {
+    name: friends_schema_table,
+    schema: friends_schema
   },
   {
     name: activities_schema_table,
@@ -124,5 +133,21 @@ export const sysTables: tableIfc[] = [
   {
     name: userModuleRoles_schema_table,
     schema: userModuleRoles_schema
+  },
+  {
+    name: accountGroupTimelines_schema_table,
+    schema: accountGroupTimelines_schema
+  },
+  {
+    name: accountGroupTimelineComments_schema_table,
+    schema: accountGroupTimelineComments_schema
+  },
+  {
+    name: accountGroupMedias_schema_table,
+    schema: accountGroupMedias_schema
+  },
+  {
+    name: accountGroupMediaPeriods_schema_table,
+    schema: accountGroupMediaPeriods_schema
   },
 ];

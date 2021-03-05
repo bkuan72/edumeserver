@@ -1,9 +1,9 @@
 import { schemaIfc } from '../modules/DbModule';
 import DTOGenerator from '../modules/ModelGenerator';
 
-export const userMedias_schema_table = 'userMedias';
+export const userMediaPeriods_schema_table = 'userMediaPeriods';
 
-export const userMedias_schema: schemaIfc[] = [
+export const userMediaPeriods_schema: schemaIfc[] = [
   {
     fieldName: 'id',
     sqlType: 'BINARY(16) PRIMARY KEY',
@@ -40,19 +40,27 @@ export const userMedias_schema: schemaIfc[] = [
     description: 'link to users - owner'
   },
   {
-    fieldName: 'userMediaPeriod_id',
-    sqlType: 'BINARY(16)',
-    primaryKey: false,
-    uuidProperty: true,
-    excludeFromUpdate: true,
-    description: 'link to userMediaPeriod'
+    fieldName: 'period',
+    sqlType: 'VARCHAR(20)',
+    size: 20,
+    allowNull: false,
+    excludeFromUpdate: false,
+    trim: false,
+    description: 'period eg Month YYYY'
+  },
+  {
+    fieldName: 'info',
+    sqlType: 'TEXT',
+    allowNull: false,
+    excludeFromUpdate: false,
+    trim: false,
+    description: 'period info'
   },
   {
     fieldName: 'upload_date',
     sqlType: 'VARCHAR(25)',
     size: 25,
     allowNull: false,
-    default: '',
     excludeFromUpdate: false,
     trim: false,
     description: 'date time media uploaded'
@@ -114,17 +122,12 @@ export const userMedias_schema: schemaIfc[] = [
     index: [
       {
         name: 'user_id_idx',
-        columns: ['site_code', 'user_id', 'lastUpdateUsec'],
-        unique: false
-      },
-      {
-        name: 'userMediaPeriod_id_idx',
-        columns: ['site_code', 'userMediaPeriod_id', 'lastUpdateUsec'],
+        columns: ['site_code', 'user_id', 'period', 'lastUpdateUsec'],
         unique: false
       }
     ]
   }
 ];
 
-const UserMediaSchemaModel = DTOGenerator.genSchemaModel(userMedias_schema);
-export type UserMediaData = typeof UserMediaSchemaModel;
+const UserMediaPeriodSchemaModel = DTOGenerator.genSchemaModel(userMediaPeriods_schema);
+export type UserMediaPeriodData = typeof UserMediaPeriodSchemaModel;
