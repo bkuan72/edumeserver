@@ -167,8 +167,10 @@ export class EntityModel {
  */
   find = (
     conditions: any,
+    showPassword?: boolean,
     ignoreExclSelect?: boolean,
-    excludeSelectProp?: string[]
+    excludeSelectProp?: string[],
+
   ): Promise<any[]> => {
     const respEntityDTOArray: any[] = [];
     let sql = SqlFormatter.formatSelect(
@@ -191,7 +193,7 @@ export class EntityModel {
               ignoreExclSelect,
               excludeSelectProp,
               rowData);
-            const respEntityDTO = new this.responseDTO(data);
+            const respEntityDTO = new this.responseDTO(data, showPassword);
             respEntityDTOArray.push(respEntityDTO);
           });
           resolve(respEntityDTOArray);

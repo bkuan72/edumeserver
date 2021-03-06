@@ -115,7 +115,7 @@ class AuthenticationController implements Controller {
         const authorization = jwt.sign(dataStoredInToken, SysEnv.JWT_SECRET, {
           expiresIn
         });
-        this.tokens.create(dataStoredInToken, authorization).then(() => {
+        this.tokens.createToken(dataStoredInToken, authorization).then(() => {
           resolve({
             expiresIn,
             token: authorization
@@ -276,7 +276,7 @@ class AuthenticationController implements Controller {
       ) as DataStoredInToken;
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      this.blacklistTokens.create(verificationResponse, authToken).then(() => {
+      this.blacklistTokens.createToken(verificationResponse, authToken).then(() => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         this.tokens.removeByUuid(verificationResponse.uuid);
         if (SysEnv.CookieAuth()) {

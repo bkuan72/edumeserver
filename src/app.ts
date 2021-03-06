@@ -79,7 +79,7 @@ class App {
       optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
     }
     this.app.use(cors(corsOptions));
-    this.app.use(express.urlencoded({ limit: "4kb", extended: true }));
+    this.app.use(express.urlencoded({ limit: "5mb", extended: true }));
     this.app.use(express.json({ limit: "10mb" }));
     // this.app.use(express.multipart({ limit:"10mb" }));
     // this.app.use(express.limit("5kb")); // this will be valid for every other content type

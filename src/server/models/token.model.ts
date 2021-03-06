@@ -13,19 +13,26 @@ import DataStoredInToken from '../../interfaces/DataStoredInToken';
 import CommonFn, { DateAddIntervalEnum } from '../../modules/CommonFnModule';
 import SysLog from '../../modules/SysLog';
 import SysEnv from '../../modules/SysEnv';
+import { EntityModel } from './entity.model';
 
-export class TokenModel {
-  tableName = tokens_schema_table;
-  siteCode = SysEnv.SITE_CODE;
+export class TokenModel extends EntityModel{
 
-  constructor(altTable: string) {
+
+  constructor (altTable?: string) {
+    super();
+
     if (altTable) {
-      this.tableName = altTable;
-      this.siteCode = SysEnv.SITE_CODE;
+      super(altTable);
+    } else  {
+      this.tableName = tokens_schema_table;
     }
+    this.requestDTO = TokenDTO;
+    this.responseDTO = TokenDTO;
+    this.schema = token_schema;
   }
 
-  create = (
+
+  createToken = (
     dataInToken: DataStoredInToken,
     jwtSignToken: string
   ): Promise<TokenDTO | TokenData | undefined> => {
@@ -72,172 +79,6 @@ export class TokenModel {
             return;
           });
       });
-    });
-  };
-
-  findById = (tokenId: string): Promise<TokenDTO | TokenData | undefined> => {
-    return new Promise((resolve) => {
-      let sql =
-        SqlFormatter.formatSelect(this.tableName, token_schema) + ' WHERE ';
-      sql += SqlStr.format('id = UUID_TO_BIN(?)', [tokenId]);
-      SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
-        .execute()
-        .then((result) => {
-          if (result.rows.length) {
-            const data = SqlFormatter.transposeResultSet(
-              token_schema,
-              undefined,
-              undefined,
-              result.rows[0]
-            );
-            const respTokenDTO = new TokenDTO(data);
-            resolve(respTokenDTO);
-            return;
-          }
-          // not found token with the id
-          resolve(undefined);
-        })
-        .catch((err) => {
-          SysLog.error(JSON.stringify(err));
-          resolve(undefined);
-          return;
-        });
-    });
-  };
-
-  updateById = async (
-    tokenId: string,
-    tokenDTO: any
-  ): Promise<TokenDTO | TokenData | undefined> => {
-    return new Promise((resolve) => {
-      SqlFormatter.formatUpdate(this.tableName, token_schema, tokenDTO).then(
-        (sql) => {
-          sql += SqlFormatter.formatWhereAND(
-            '',
-            { id: tokenId },
-            this.tableName,
-            token_schema
-          );
-          dbConnection.DB.sql(sql)
-            .execute()
-            .then((result) => {
-              SysLog.info('updated token: ', { id: tokenId, ...tokenDTO });
-              this.findById(tokenId).then((respTokenDTO) => {
-                resolve(respTokenDTO);
-              });
-            })
-            .catch((err) => {
-              SysLog.error(JSON.stringify(err));
-              resolve(undefined);
-              return;
-            });
-        }
-      );
-    });
-  };
-
-  find = (
-    conditions: any,
-    showPassword?: boolean,
-    ignoreExclSelect?: boolean,
-    excludeSelectProp?: string[]
-  ): Promise<TokenDTO[] | TokenData[]> => {
-    const respTokenDTOArray: TokenDTO[] = [];
-    let sql = SqlFormatter.formatSelect(
-      this.tableName,
-      token_schema,
-      ignoreExclSelect,
-      excludeSelectProp
-    );
-    sql += SqlFormatter.formatWhereAND(
-      '',
-      conditions,
-      this.tableName,
-      token_schema
-    ) + ' AND ';
-    sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, token_schema);
-    SysLog.info('find SQL: ' + sql);
-    return new Promise((resolve) => {
-      dbConnection.DB.sql(sql)
-        .execute()
-        .then((result) => {
-
-          if (result.rows.length) {
-            result.rows.forEach((rowData: any) => {
-              const data = SqlFormatter.transposeResultSet(
-                token_schema,
-                ignoreExclSelect,
-                excludeSelectProp,
-                rowData
-              );
-              const respTokenDTO = new TokenDTO(data);
-              respTokenDTOArray.push(respTokenDTO);
-            });
-            resolve(respTokenDTOArray);
-            return;
-          }
-          // not found with the id return undefined
-          resolve(respTokenDTOArray);
-        })
-        .catch((err) => {
-          SysLog.error(JSON.stringify(err));
-          resolve(respTokenDTOArray);
-          return;
-        });
-    });
-  };
-
-  getAll = (): Promise<TokenDTO[] | undefined> => {
-    return new Promise((resolve) => {
-      let sql = SqlFormatter.formatSelect(this.tableName, token_schema);
-      sql += SqlFormatter.formatWhereAND('', {site_code: this.siteCode}, this.tableName, token_schema);
-      dbConnection.DB.sql(sql)
-        .execute()
-        .then((result) => {
-          const respTokenDTOArray: TokenDTO[] = [];
-          if (result.rows.length) {
-            result.rows.forEach((rowData: any) => {
-              const data = SqlFormatter.transposeResultSet(
-                token_schema,
-                undefined,
-                undefined,
-                rowData
-              );
-              const respTokenDTO = new TokenDTO(data);
-              respTokenDTOArray.push(respTokenDTO);
-            });
-            resolve(respTokenDTOArray);
-            return;
-          }
-          // not found
-          resolve(respTokenDTOArray);
-        })
-        .catch((err) => {
-          SysLog.error('error: ', err);
-          resolve(undefined);
-          return;
-        });
-    });
-  };
-
-  remove = (id: string): Promise<any | undefined> => {
-    return new Promise((resolve) => {
-      let sql = 'DELETE FROM ' + this.tableName + ' WHERE ';
-      sql += SqlStr.format('id = UUID_TO_BIN(?)', [id]);
-      dbConnection.DB.sql(sql)
-        .execute()
-        .then((result) => {
-          SysLog.info('deleted ' + this.tableName + ' with id: ', id);
-          resolve({
-            deleted_id: id
-          });
-        })
-        .catch((err) => {
-          SysLog.error('error: ', err);
-          resolve(undefined);
-          return;
-        });
     });
   };
 
