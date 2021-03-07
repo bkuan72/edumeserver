@@ -28,6 +28,7 @@ import { accountGroupTimelineComments_schema, accountGroupTimelineComments_schem
 import { accountGroupMedias_schema, accountGroupMedias_schema_table } from './accountGroupMedias.schema';
 import { accountGroupMediaPeriods_schema, accountGroupMediaPeriods_schema_table } from './accountGroupMediaPeriods.schema';
 import { userMediaPeriods_schema, userMediaPeriods_schema_table } from './userMediaPeriods.schema';
+import { accountGroupMembers_schema, accountGroupMembers_schema_table } from './accountGroupMembers.schema';
 
 export const sysTables: tableIfc[] = [
   {
@@ -149,5 +150,9 @@ export const sysTables: tableIfc[] = [
   {
     name: accountGroupMediaPeriods_schema_table,
     schema: accountGroupMediaPeriods_schema
+  },
+  {
+    name: accountGroupMembers_schema_table,
+    schema: accountGroupMembers_schema
   },
 ];

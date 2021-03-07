@@ -40,6 +40,7 @@ import { AdActivitiesController } from './server/controllers/adActivities.contro
 import { AdAgeGroupsController } from './server/controllers/adAgeGoups.controller';
 import { AccountGroupTimelinessController } from './server/controllers/accountGroupTimelines.controller';
 import { AccountGroupTimelineCommentsController } from './server/controllers/accountGroupTimelineComments.controller';
+import { AccountGroupMembersController } from './server/controllers/accountGroupMembers.controller';
 
 // validate that all required environment variable is present
 SysEnv.init();
@@ -82,7 +83,8 @@ const app = new App (
     new AccountGroupMediasController(),
     new AccountGroupMediaPeriodsController(),
     new AccountGroupTimelinessController(),
-    new AccountGroupTimelineCommentsController()
+    new AccountGroupTimelineCommentsController(),
+    new AccountGroupMembersController(),
   ],
   port
 );
