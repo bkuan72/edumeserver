@@ -77,7 +77,7 @@ export class AccountGroupMediaModel extends EntityModel {
             fullImage: ''
           }
           const rowData1: any = result.rows[0][0];
-          const blob = SqlFormatter.translatePropValue('BLOB', result.rows, 1);
+          const blob = SqlFormatter.translatePropValue('BLOB', result.rows[0], 1);
           data.id = rowData1;
           data.fullImage = blob;
           const respFullImageDTO = new AccountGroupMediaFullImageDTO(data);
