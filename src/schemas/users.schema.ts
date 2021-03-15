@@ -60,6 +60,15 @@ export const users_schema: schemaIfc[] = [
     description: 'last name'
   },
   {
+    fieldName: 'company',
+    sqlType: 'VARCHAR(60)',
+    size: 60,
+    allowNull: false,
+    excludeFromUpdate: false,
+    default: '',
+    description: 'company name'
+  },
+  {
     fieldName: 'password',
     sqlType: 'VARCHAR(256)',
     size: 20,

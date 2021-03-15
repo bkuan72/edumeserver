@@ -49,9 +49,18 @@ export class SqlFormatter {
             }
           } else {
             if (addPropEqual) {
-              valueArray.push(prop.fieldName + ' = UUID_TO_BIN('+ SqlStr.escape(obj[prop.fieldName]) +')');
+              if (CommonFn.isEmpty(obj[prop.fieldName])) {
+                valueArray.push(prop.fieldName + ' = 0 )');
+              } else {
+                valueArray.push(prop.fieldName + ' = UUID_TO_BIN('+ SqlStr.escape(obj[prop.fieldName]) +')');
+              }
+
             } else {
+              if (CommonFn.isEmpty(obj[prop.fieldName])) {
+                valueArray.push('0');
+              } else {
               valueArray.push('UUID_TO_BIN('+ SqlStr.escape(obj[prop.fieldName]) +')');
+              }
             }
           }
           lresolve();
@@ -451,7 +460,9 @@ export class SqlFormatter {
               !prop.excludeFromSelect) {
             if (ignoreExclFromSelect ||
               SqlFormatter.includeInSql(prop, fmtPropArr)) {
-                dataObj[prop.fieldName] = sqlRowData[startCol++];
+                const propValue =  SqlFormatter.translatePropValue(prop.sqlType, sqlRowData, startCol);
+                dataObj[prop.fieldName] = propValue;
+                startCol++;
             }
           }
         }
@@ -529,18 +540,14 @@ export class SqlFormatter {
             !prop.excludeFromSelect) {
           if (ignoreExclFromSelect ||
             SqlFormatter.includeInSql(prop, fmtPropArr)) {
-            if (prop.sqlType?.includes('BLOB')) { 
-              const blob = dataRow[idx++] as Buffer;
-              const blobString = blob.toString('utf-8');
+              const propValue =  SqlFormatter.translatePropValue(prop.sqlType, dataRow, idx);
               data = DTOGenerator.defineProperty(data,
                 prop.fieldName,
-                blobString
+                propValue
               );
-            } else {
-              data = DTOGenerator.defineProperty(data,
-                prop.fieldName,
-                dataRow[idx++]);
-            }
+              idx++
+
+
 
           }
         }
@@ -549,6 +556,26 @@ export class SqlFormatter {
 
     return data;
   };
+
+
+
+  static translatePropValue = (sqlType: string | undefined, dataRow: any, idx: number): any => {
+    let propValue: any;
+    if (sqlType?.includes('BLOB')) {
+      const blob = dataRow[idx++] as Buffer;
+      propValue = blob.toString('utf-8');
+    } else {
+      if (sqlType?.includes('BOOLEAN')) {
+        propValue = false;
+        if (dataRow[idx] > 0) {
+          propValue = true;
+        }
+      } else {
+        propValue = dataRow[idx];
+      }
+    }
+    return propValue;
+  }
 
   /**
    * This function formats the SQL UPDATE statement based on schema configuration and data object properties
@@ -690,6 +717,12 @@ export class SqlFormatter {
   static fmtTableFieldStr(tableName: string, fieldName: string) {
     const sql = tableName + '.' + fieldName;
     return sql;
+  }
+
+  static fmtLIKECondition(tableField: string, value: string) {
+    let condition = '';
+    condition = tableField + ' LIKE ' + SqlStr.escape('%'+value+'%');
+    return condition;
   }
 }
 

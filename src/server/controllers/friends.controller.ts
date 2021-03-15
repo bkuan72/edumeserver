@@ -35,8 +35,14 @@ export class FriendsController implements Controller{
                     validationMiddleware(friends_schema),
                     this.newFriend);
     this.router.get(this.path+'/friendList/byUserId/:userId', authMiddleware, this.getFriendListByUserId);
+    this.router.get(this.path+'/contactList/byUserId/:userId', authMiddleware, this.getContactListByUserId);
+    // this.router.get(this.path+'/byUserId/keyword/:userId/:keyword', authMiddleware, this.findByUserIdKeyword);
     this.router.get(this.path+'/byFriendId/:friendId', authMiddleware, this.findById);
     this.router.patch(this.path+'/:friendId', authMiddleware, validationUpdateMiddleware(friends_schema), this.update);
+    this.router.patch(this.path+'/toggleStar/:id', authMiddleware, this.toggleContactStar);
+    this.router.patch(this.path+'/incrFrequency/:friendId', authMiddleware, this.incrementFrequencyById);
+    this.router.patch(this.path+'/remove/:id', authMiddleware, this.removeContact);
+
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
     this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
@@ -75,6 +81,16 @@ export class FriendsController implements Controller{
     })
   }
 
+  removeContact  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.friends.remove(request.params.id).then((respFriendDTO) => {
+      if (respFriendDTO) {
+        response.send(respFriendDTO);
+      } else {
+        next(new DataNotFoundException(request.params.friendId))
+      }
+    })
+  }
+
   update  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.friends.updateById(request.params.friendId, request.body).then((respFriendDTO) => {
       if (respFriendDTO) {
@@ -85,6 +101,25 @@ export class FriendsController implements Controller{
     })
   }
 
+  toggleContactStar  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.friends.toggleContactStar(request.params.id).then((respFriendDTO) => {
+      if (respFriendDTO) {
+        response.send(respFriendDTO);
+      } else {
+        next(new DataNotFoundException(request.params.friendId))
+      }
+    })
+  }
+
+  incrementFrequencyById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.friends.incrementFrequencyById(request.params.friendId).then((respFriendDTO) => {
+      if (respFriendDTO) {
+        response.send(respFriendDTO);
+      } else {
+        next(new DataNotFoundException(request.params.friendId))
+      }
+    })
+  }
   getFriendListByUserId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.friends.getFriendList(request.params.userId).then((respFriendDTO: FriendDTO[]) => {
       if (respFriendDTO) {
@@ -94,4 +129,22 @@ export class FriendsController implements Controller{
       }
     })
   }
+  getContactListByUserId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.friends.getContactList(request.params.userId).then((respFriendDTO: FriendDTO[]) => {
+      if (respFriendDTO) {
+        response.send(respFriendDTO);
+      } else {
+        next(new NoDataException())
+      }
+    })
+  }
+  // findByUserIdKeyword  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+  //   this.friends.searchFriendsByKeyword(request.params.userId, request.params.keyword).then((respFriendDTO: FriendDTO[]) => {
+  //     if (respFriendDTO) {
+  //       response.send(respFriendDTO);
+  //     } else {
+  //       next(new NoDataException())
+  //     }
+  //   })
+  // }
 }

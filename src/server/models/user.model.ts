@@ -174,6 +174,55 @@ export class UserModel extends EntityModel {
       }
     });
   };
+
+  searchUserByKeyword(keyword: string): Promise<any[]> {
+
+    return new Promise ((resolve) => {
+      const resUserListDTOArray: any[] = [];
+      let sql = '';
+      sql = 'SELECT BIN_TO_UUID(' + SqlFormatter.fmtTableFieldStr(this.tableName, 'id') + '), ';
+      sql += 'CONCAT(' + SqlFormatter.fmtTableFieldStr(users_schema_table, 'first_name') + ',' + SqlStr.escape(' ');
+      sql += ',' + SqlFormatter.fmtTableFieldStr(users_schema_table, 'last_name') + '), ';
+      sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'first_name') + ', ';
+      sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'avatar') + ', ';
+      sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'email');
+      sql += ' FROM ' + users_schema_table;
+      sql += ' WHERE ';
+      sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') + SqlStr.format(' = ?', [this.siteCode]) + ' AND ';
+      sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'status') + ' != ' + SqlStr.escape('DELETED') + ' AND ';
+      sql += '(' + SqlFormatter.fmtLIKECondition(SqlFormatter.fmtTableFieldStr(users_schema_table, 'user_name'), keyword)  + '  OR  ';
+      sql += SqlFormatter.fmtLIKECondition(SqlFormatter.fmtTableFieldStr(users_schema_table, 'email'), keyword)  + ') ';
+
+      SysLog.info('searchUserByKeyword SQL: ' + sql);
+      dbConnection.DB.sql(sql).execute()
+      .then((result) => {
+
+        if (result.rows.length) {
+
+            result.rows.forEach ((rowData) => {
+                const data = SqlFormatter.transposeColumnResultSet([
+                    'id',
+                    'full_name',
+                    'first_name',
+                    'avatar',
+                    'email'
+                ],
+                rowData);
+                resUserListDTOArray.push(data);
+            });
+          resolve(resUserListDTOArray);
+          return;
+        }
+        // not found Customer with the id
+        resolve(resUserListDTOArray);
+      })
+      .catch((err) => {
+        SysLog.error(JSON.stringify(err));
+        resolve(resUserListDTOArray);
+        return;
+      })
+    });
+  }
 }
 
 export default UserModel;

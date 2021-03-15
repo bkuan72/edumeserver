@@ -28,6 +28,7 @@ export class UsersController implements Controller{
   public intializeRoutes() {
     this.router.get(this.path, authMiddleware, this.getAll);
     this.router.get(this.path+'/basicInfo/byUserId/:userId', this.getBasicUserInfo);
+    this.router.get(this.path+'/basicInfo/byKeyword/:keyword', this.getBasicUserInfosByKeyword);
     this.router.get(this.path+'/profile-about/byUserId/:userId', authMiddleware, this.getAbout);
     this.router.get(this.path+'/byUserId/:userId', authMiddleware, this.findById);
     this.router.get(this.path+'/byEmail/:email', authMiddleware, this.findById);
@@ -149,6 +150,17 @@ export class UsersController implements Controller{
         });
       } else {
         next(new DataNotFoundException(request.params.userId))
+      }
+    });
+  }
+
+  getBasicUserInfosByKeyword = (request: express.Request, response: express.Response) => {
+    this.users.searchUserByKeyword(request.params.keyword)
+    .then((respUserDTO) => {
+      if (respUserDTO) {
+        response.send(respUserDTO);
+      } else {
+        response.send([]);
       }
     });
   }

@@ -1,23 +1,30 @@
-import { users_schema_table } from './../../schemas/users.schema';
+import { users_schema, users_schema_table } from './../../schemas/users.schema';
 import { SqlFormatter } from './../../modules/sql.strings';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { friends_schema, friends_schema_table } from '../../schemas/friends.schema';
-import { FriendDTO } from '../../dtos/friends.DTO';
+import {
+  friends_schema,
+  friends_schema_table
+} from '../../schemas/friends.schema';
+import {
+  FriendDTO,
+  FriendListDTO,
+  ContactListDTO,
+  ContactListData
+} from '../../dtos/friends.DTO';
 import { EntityModel } from './entity.model';
 import dbConnection from '../../modules/DbModule';
 import SysLog from '../../modules/SysLog';
 import SqlStr = require('sqlstring');
-import { FriendListDTO } from '../../dtos/friendList.DTO';
 
 export class FriendModel extends EntityModel {
-  constructor (altTable?: string) {
+  constructor(altTable?: string) {
     super();
 
     if (altTable) {
       super(altTable);
-    } else  {
+    } else {
       this.tableName = friends_schema_table;
     }
     this.requestDTO = FriendDTO;
@@ -26,87 +33,282 @@ export class FriendModel extends EntityModel {
   }
 
   findByUserId = (userId: string): Promise<any[]> => {
-    return new Promise ((resolve) => {
+    return new Promise((resolve) => {
       const resFriendDTOArray: FriendDTO[] = [];
       let sql =
-      SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
+        SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += SqlStr.format('user_id = UUID_TO_BIN(?)', [userId]);
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql).execute()
-      .then((result) => {
-
-        if (result.rows.length) {
-
-            result.rows.forEach ((rowData) => {
-                const data = SqlFormatter.transposeResultSet(this.schema,
+      dbConnection.DB.sql(sql)
+        .execute()
+        .then((result) => {
+          if (result.rows.length) {
+            result.rows.forEach((rowData) => {
+              const data = SqlFormatter.transposeResultSet(
+                this.schema,
                 undefined,
                 undefined,
-                rowData);
-                const respFriendDTO = new this.responseDTO(data) as FriendDTO;
-                resFriendDTOArray.push(respFriendDTO);
+                rowData
+              );
+              const respFriendDTO = new this.responseDTO(data) as FriendDTO;
+              resFriendDTOArray.push(respFriendDTO);
             });
+            resolve(resFriendDTOArray);
+            return;
+          }
+          // not found Customer with the id
+          resolve(resFriendDTOArray);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
           resolve(resFriendDTOArray);
           return;
-        }
-        // not found Customer with the id
-        resolve(resFriendDTOArray);
-      })
-      .catch((err) => {
-        SysLog.error(JSON.stringify(err));
-        resolve(resFriendDTOArray);
-        return;
-      })
-
+        });
     });
   };
 
   getFriendList = (userId: string): Promise<any[]> => {
-    return new Promise ((resolve) => {
+    return new Promise((resolve) => {
       const resFriendListDTOArray: FriendListDTO[] = [];
       let sql = '';
-      sql = 'SELECT BIN_TO_UUID(' + SqlFormatter.fmtTableFieldStr(this.tableName, 'id') + '), ';
-      sql += 'BIN_TO_UUID('+SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') + '), ';
-      sql += 'BIN_TO_UUID('+SqlFormatter.fmtTableFieldStr(this.tableName, 'friend_id') + '), ';
-      sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'user_name') + ', ';
+      sql = 'SELECT BIN_TO_UUID(' + SqlFormatter.fmtTableFieldStr(this.tableName, 'id') +'), ';
+      sql += 'BIN_TO_UUID(' + SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') + '), ';
+      sql += 'BIN_TO_UUID(' + SqlFormatter.fmtTableFieldStr(this.tableName, 'friend_id') + '), ';
+      sql += 'CONCAT(' + SqlFormatter.fmtTableFieldStr(this.tableName, 'first_name') + ',' + SqlStr.escape(' ');
+      sql += ',' + SqlFormatter.fmtTableFieldStr(this.tableName, 'last_name') + '), ';
       sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'avatar') + ',';
       sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'friend_date');
-      sql += ' FROM ' + this.tableName + ', ' + users_schema_table;
+      sql += ' FROM ' + this.tableName;
+      sql += ' LEFT OUTER JOIN ' + users_schema_table + ' ON ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(users_schema_table, 'id') +
+        ' = ' +
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'friend_id');
       sql += ' WHERE ';
-      sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') + SqlStr.format(' = ?', [this.siteCode]) + ' AND ';
-      sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'status') + ' != ' + SqlStr.escape('DELETED') + ' AND ';
-      sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') + SqlStr.format(' = UUID_TO_BIN(?)', [userId]) + ' AND ';
-      sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'id') + ' = ' + SqlFormatter.fmtTableFieldStr(this.tableName, 'friend_id');
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') +
+        SqlStr.format(' = ?', [this.siteCode]) +
+        ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'status') +
+        ' != ' +
+        SqlStr.escape('DELETED') +
+        ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') +
+        ' = UUID_TO_BIN(' +
+        SqlStr.escape(userId) +
+        ') ';
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql).execute()
-      .then((result) => {
-
-        if (result.rows.length) {
-
-            result.rows.forEach ((rowData) => {
-                const data = SqlFormatter.transposeColumnResultSet([
-                    'id',
-                    'user_id',
-                    'friend_id',
-                    'name',
-                    'avatar',
-                    'since'
-                ],
-                rowData);
-                resFriendListDTOArray.push(data);
+      dbConnection.DB.sql(sql)
+        .execute()
+        .then((result) => {
+          if (result.rows.length) {
+            result.rows.forEach((rowData) => {
+              const data = SqlFormatter.transposeColumnResultSet(
+                ['id', 'user_id', 'friend_id', 'name', 'avatar', 'since'],
+                rowData
+              );
+              resFriendListDTOArray.push(data);
             });
+            resolve(resFriendListDTOArray);
+            return;
+          }
+          // not found Customer with the id
+          resolve(resFriendListDTOArray);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
           resolve(resFriendListDTOArray);
           return;
-        }
-        // not found Customer with the id
-        resolve(resFriendListDTOArray);
-      })
-      .catch((err) => {
-        SysLog.error(JSON.stringify(err));
-        resolve(resFriendListDTOArray);
-        return;
-      })
-
+        });
     });
   };
+
+  getContactList = (userId: string): Promise<any[]> => {
+    return new Promise((resolve) => {
+      const resContactListDTOArray: ContactListDTO[] = [];
+      let sql = 'SELECT ';
+      sql += SqlFormatter.formatTableSelect(this.tableName, this.schema) + ', ';
+      sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'avatar');
+      sql += ' FROM ' + this.tableName;
+      sql += ' LEFT OUTER JOIN ' + users_schema_table + ' ON ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(users_schema_table, 'id') +
+        ' = ' +
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'friend_id');
+      sql += ' WHERE ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') +
+        SqlStr.format(' = ?', [this.siteCode]) +
+        ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'status') +
+        ' != ' +
+        SqlStr.escape('DELETED') +
+        ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') +
+        ' = UUID_TO_BIN(' +
+        SqlStr.escape(userId) +
+        ') ';
+      SysLog.info('findById SQL: ' + sql);
+      dbConnection.DB.sql(sql)
+        .execute()
+        .then((result) => {
+          if (result.rows.length) {
+            result.rows.forEach((rowData) => {
+              const data = new ContactListDTO() as ContactListData;
+              let idx = 0;
+              idx = SqlFormatter.transposeTableSelectColumns(
+                idx,
+                data,
+                this.schema,
+                rowData
+              );
+              idx = SqlFormatter.transposeTableSelectColumnArray(
+                idx,
+                data.user,
+                ['avatar'],
+                rowData
+              );
+
+              resContactListDTOArray.push(data);
+            });
+            resolve(resContactListDTOArray);
+            return;
+          }
+          // not found Customer with the id
+          resolve(resContactListDTOArray);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(resContactListDTOArray);
+          return;
+        });
+    });
+  };
+
+  toggleContactStar = (id: string): Promise<any | undefined> => {
+    return new Promise((resolve) => {
+      this.findById(id)
+        .then((friendDTO) => {
+          let sql = '';
+          sql = 'UPDATE ' + this.tableName;
+          sql += ' SET ' + 'starred' + ' = ';
+          sql += !friendDTO.starred + ' ';
+          sql += SqlFormatter.formatWhereAND(
+            '',
+            { id: id },
+            this.tableName,
+            this.schema
+          );
+          dbConnection.DB.sql(sql)
+            .execute()
+            .then((result) => {
+              SysLog.info('updated friends starred: ', { id: id });
+              this.findById(id).then((respFriendDTO) => {
+                resolve(respFriendDTO);
+              });
+            })
+            .catch((err) => {
+              SysLog.error(JSON.stringify(err));
+              resolve(undefined);
+              return;
+            });
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(undefined);
+          return;
+        });
+    });
+  };
+
+  incrementFrequencyById = (friendId: string): Promise<any | undefined> => {
+    return new Promise((resolve) => {
+      let sql = '';
+      sql = 'UPDATE ' + SqlStr.escape(this.tableName);
+      sql =
+        ' SET ' +
+        SqlStr.escape('frequent') +
+        ' = ' +
+        SqlStr.escape('frequent') +
+        ' + 1 ';
+      sql += SqlFormatter.formatWhereAND(
+        '',
+        { id: friendId },
+        this.tableName,
+        this.schema
+      );
+      dbConnection.DB.sql(sql)
+        .execute()
+        .then((result) => {
+          SysLog.info('updated friend frequency: ', { id: friendId });
+          this.findById(friendId).then((respFriendDTO) => {
+            resolve(respFriendDTO);
+          });
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(undefined);
+          return;
+        });
+    });
+  };
+
+  // searchFriendsByKeyword(userId: string, keyword: string): Promise<any[]> {
+  //   const resFriendListDTOArray: FriendListDTO[] = [];
+  //   return new Promise ((resolve) => {
+  //     const resFriendListDTOArray: FriendListDTO[] = [];
+  //     let sql = '';
+  //     sql = 'SELECT BIN_TO_UUID(' + SqlFormatter.fmtTableFieldStr(users_schema_table, 'id') + '), ';
+  //     sql += 'BIN_TO_UUID(' + SqlFormatter.fmtTableFieldStr(this.tableName, 'id') + '), ';
+  //     sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'user_name') + ', ';
+  //     sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'avatar') + ',';
+  //     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'friend_date');
+  //     sql += ' FROM ' + users_schema_table;
+  //     sql += ' LEFT OUTER JOIN ' + this.tableName + ' ON ('
+  //     sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'id') + ' = ' + SqlFormatter.fmtTableFieldStr(this.tableName, 'friend_id') + ' AND ';
+  //     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') + ' = UUID_TO_BIN(' + userId + ') ';
+  //     sql += ') ';
+  //     sql += ' WHERE ';
+  //     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') + SqlStr.format(' = ?', [this.siteCode]) + ' AND ';
+  //     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'status') + ' != ' + SqlStr.escape('DELETED') + ' AND ';
+  //     sql += '(' + SqlFormatter.fmtTableFieldStr(users_schema_table, 'user_name') + ' LIKE ' + SqlStr.escape(keyword)  + '  OR  ';
+  //     sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'email') + ' LIKE ' + SqlStr.escape(keyword)  + ') ';
+
+  //     SysLog.info('findById SQL: ' + sql);
+  //     dbConnection.DB.sql(sql).execute()
+  //     .then((result) => {
+
+  //       if (result.rows.length) {
+
+  //           result.rows.forEach ((rowData) => {
+  //               const data = SqlFormatter.transposeColumnResultSet([
+  //                   'id',
+  //                   'user_id',
+  //                   'name',
+  //                   'avatar',
+  //                   'since'
+  //               ],
+  //               rowData);
+  //               resFriendListDTOArray.push(data);
+  //           });
+  //         resolve(resFriendListDTOArray);
+  //         return;
+  //       }
+  //       // not found Customer with the id
+  //       resolve(resFriendListDTOArray);
+  //     })
+  //     .catch((err) => {
+  //       SysLog.error(JSON.stringify(err));
+  //       resolve(resFriendListDTOArray);
+  //       return;
+  //     })
+
+  //     resolve(resFriendListDTOArray);
+  //   });
+  // }
 }
