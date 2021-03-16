@@ -46,31 +46,6 @@ export const userAccounts_schema: schemaIfc[] = [
     default: 'HOLDER',
     description: 'account type - holder or sub user'
   },
-  {    fieldName: 'allow_notification',
-    sqlType: 'TINYINT(1)',
-    default: '0',
-    description: 'allow application notification'
-  },
-  {    fieldName: 'allow_promo',
-    sqlType: 'TINYINT(1)',
-    default: '0',
-    description: 'allow promotional emails'
-  },
-  {    fieldName: 'allow_msg',
-    sqlType: 'TINYINT(1)',
-    default: '0',
-    description: 'allow messaging'
-  },
-  {    fieldName: 'allow_friends',
-    sqlType: 'TINYINT(1)',
-    default: '0',
-    description: 'allow friending'
-  },
-  {    fieldName: 'public',
-    sqlType: 'TINYINT(1)',
-    default: '1',
-    description: 'allow user profile to be discoverable'
-  },
   {    fieldName: 'status',
     sqlType: 'ENUM',
     size: 10,

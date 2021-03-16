@@ -120,12 +120,13 @@ export const users_schema: schemaIfc[] = [
     trim: true,
     description: 'user`s own website'
   },
-  { fieldName: 'avatar',
+  {
+    fieldName: 'avatar',
     sqlType: 'TEXT',
     trim: true,
     default: '',
     description: 'user`s avatar blob - type png'
-   },
+  },
   {
     fieldName: 'language',
     sqlType: 'VARCHAR(2)',
@@ -230,6 +231,36 @@ export const users_schema: schemaIfc[] = [
     default: ''
   },
   {
+    fieldName: 'allow_notification',
+    sqlType: 'BOOLEAN',
+    default: '1',
+    description: 'allow application notification'
+  },
+  {
+    fieldName: 'allow_promo',
+    sqlType: 'BOOLEAN',
+    default: '1',
+    description: 'allow promotional emails'
+  },
+  {
+    fieldName: 'allow_msg',
+    sqlType: 'BOOLEAN',
+    default: '1',
+    description: 'allow messaging'
+  },
+  {
+    fieldName: 'allow_friends',
+    sqlType: 'BOOLEAN',
+    default: '1',
+    description: 'allow friending'
+  },
+  {
+    fieldName: 'public',
+    sqlType: 'BOOLEAN',
+    default: '1',
+    description: 'allow user profile to be discoverable'
+  },
+  {
     fieldName: 'status',
     sqlType: 'ENUM',
     size: 10,
@@ -237,15 +268,17 @@ export const users_schema: schemaIfc[] = [
     excludeFromUpdate: false,
     default: 'ENABLED'
   },
-  { fieldName: 'reg_confirm_key', 
-    sqlType: 'VARCHAR(60)', 
+  {
+    fieldName: 'reg_confirm_key',
+    sqlType: 'VARCHAR(60)',
     size: 60,
-    description: 'code used in confirming new user registration' 
+    description: 'code used in confirming new user registration'
   },
-  { fieldName: 'pwd_reset_key', 
-    sqlType: 'VARCHAR(60)', 
-    size: 60, 
-    description: 'keys set for password reset' 
+  {
+    fieldName: 'pwd_reset_key',
+    sqlType: 'VARCHAR(60)',
+    size: 60,
+    description: 'keys set for password reset'
   },
   {
     fieldName: 'lastUpdateUsec',
