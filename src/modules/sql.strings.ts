@@ -720,8 +720,9 @@ export class SqlFormatter {
   }
 
   static fmtLIKECondition(tableField: string, value: string) {
+    const lowerCaseKeyword = value.toLowerCase();
     let condition = '';
-    condition = 'LOWER(' +tableField + ') LIKE ' + SqlStr.escape(value+'%');
+    condition = 'LOWER(' +tableField + ') LIKE ' + SqlStr.escape(lowerCaseKeyword+'%');
     return condition;
   }
 }
