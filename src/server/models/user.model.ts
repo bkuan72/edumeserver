@@ -178,6 +178,7 @@ export class UserModel extends EntityModel {
   searchUserByKeyword(keyword: string): Promise<any[]> {
 
     return new Promise ((resolve) => {
+      const lowerCaseKeyword = keyword.toLowerCase();
       const resUserListDTOArray: any[] = [];
       let sql = '';
       sql = 'SELECT BIN_TO_UUID(' + SqlFormatter.fmtTableFieldStr(this.tableName, 'id') + '), ';
@@ -190,8 +191,11 @@ export class UserModel extends EntityModel {
       sql += ' WHERE ';
       sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') + SqlStr.format(' = ?', [this.siteCode]) + ' AND ';
       sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'status') + ' != ' + SqlStr.escape('DELETED') + ' AND ';
-      sql += '(' + SqlFormatter.fmtLIKECondition(SqlFormatter.fmtTableFieldStr(users_schema_table, 'user_name'), keyword)  + '  OR  ';
-      sql += SqlFormatter.fmtLIKECondition(SqlFormatter.fmtTableFieldStr(users_schema_table, 'email'), keyword)  + ') ';
+      sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'allow_friends') + ' = true AND ';
+      sql += '(' + SqlFormatter.fmtLIKECondition(SqlFormatter.fmtTableFieldStr(users_schema_table, 'first_name'), lowerCaseKeyword)  + '  OR  ';
+      sql += SqlFormatter.fmtLIKECondition(SqlFormatter.fmtTableFieldStr(users_schema_table, 'last_name'), lowerCaseKeyword)  + '  OR  '
+      sql += SqlFormatter.fmtLIKECondition(SqlFormatter.fmtTableFieldStr(users_schema_table, 'user_name'), lowerCaseKeyword)  + '  OR  '
+      sql += SqlFormatter.fmtLIKECondition(SqlFormatter.fmtTableFieldStr(users_schema_table, 'email'), lowerCaseKeyword)  + ') ';
 
       SysLog.info('searchUserByKeyword SQL: ' + sql);
       dbConnection.DB.sql(sql).execute()

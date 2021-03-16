@@ -721,7 +721,7 @@ export class SqlFormatter {
 
   static fmtLIKECondition(tableField: string, value: string) {
     let condition = '';
-    condition = tableField + ' LIKE ' + SqlStr.escape('%'+value+'%');
+    condition = 'LOWER(' +tableField + ') LIKE ' + SqlStr.escape(value+'%');
     return condition;
   }
 }
