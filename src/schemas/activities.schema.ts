@@ -40,6 +40,38 @@ export const activities_schema: schemaIfc[] = [
     description: 'link to users table - activity initiator'
   },
   {
+    fieldName: 'friends_id',
+    sqlType: 'BINARY(16)',
+    primaryKey: false,
+    uuidProperty: true,
+    excludeFromUpdate: true,
+    description: 'link to friends table - for friend request'
+  },
+  {
+    fieldName: 'accounts_id',
+    sqlType: 'BINARY(16)',
+    primaryKey: false,
+    uuidProperty: true,
+    excludeFromUpdate: true,
+    description: 'link to accounts table - activity initiator'
+  },
+  {
+    fieldName: 'groups_id',
+    sqlType: 'BINARY(16)',
+    primaryKey: false,
+    uuidProperty: true,
+    excludeFromUpdate: true,
+    description: 'link to groups table - activity initiator'
+  },
+  {
+    fieldName: 'members_id',
+    sqlType: 'BINARY(16)',
+    primaryKey: false,
+    uuidProperty: true,
+    excludeFromUpdate: true,
+    description: 'link to accountGroupMembers table - for member request'
+  },
+  {
     fieldName: 'timeline_user_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
@@ -53,7 +85,7 @@ export const activities_schema: schemaIfc[] = [
     primaryKey: false,
     uuidProperty: true,
     excludeFromUpdate: true,
-    description: 'link to usetTimelines table'
+    description: 'link to userTimelines table'
   },
   {
     fieldName: 'activity_type',
