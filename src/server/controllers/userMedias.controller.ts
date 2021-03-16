@@ -40,7 +40,7 @@ export class UserMediasController implements Controller{
     this.router.patch(this.path+'/:id', authMiddleware, validationUpdateMiddleware(userMedias_schema), this.update);
     this.router.get(this.path+'/byUserMediaPeriodId/:userMediaPeriodId', authMiddleware, this.findByUserMediaPeriodId);
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
-    this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/updDTO', authMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     this.router.get(this.path+'/fullImage/:id', authMiddleware, this.findFullImageById);
     return;

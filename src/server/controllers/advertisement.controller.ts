@@ -38,7 +38,7 @@ export class AdvertisementsController implements Controller{
     this.router.patch(this.path+'/:advertisementId', authMiddleware, validationUpdateMiddleware(advertisements_schema), this.update);
     this.router.get(this.path+'/search/:searchStr', this.searchAdvertisement);
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
-    this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/updDTO', authMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     this.router.get(this.path+'/filterDTO', adminAuthMiddleware, this.filterDTO);
     return;

@@ -36,7 +36,7 @@ export class UsersController implements Controller{
     this.router.put(this.path+'/updateAvatar/:userId', authMiddleware, this.update);
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
     this.router.get(this.path+'/InsDTO', devAuthMiddleware, this.apiInsDTO);
-    this.router.get(this.path+'/updDTO', devAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/updDTO', authMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', devAuthMiddleware, this.apiSchema);
     return;
   }

@@ -44,7 +44,7 @@ export class FriendsController implements Controller{
     this.router.patch(this.path+'/remove/:id', authMiddleware, this.removeContact);
 
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
-    this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/updDTO', authMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     return;
   }

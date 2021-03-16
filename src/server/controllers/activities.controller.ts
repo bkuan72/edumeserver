@@ -37,7 +37,7 @@ export class ActivitiesController implements Controller{
     this.router.get(this.path+'/byActivityId/:activityId', authMiddleware, this.findById);
     this.router.patch(this.path+'/:activityId', authMiddleware, validationUpdateMiddleware(activities_schema), this.update);
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
-    this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/updDTO', authMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     this.router.put(this.path+'/remove/:activityId', authMiddleware, this.removeById);
     this.router.get(this.path+'/likes/byTimelineIdUserId/:timelineId/:userId', authMiddleware, this.getLikeActivityByTimelineIdUserId);

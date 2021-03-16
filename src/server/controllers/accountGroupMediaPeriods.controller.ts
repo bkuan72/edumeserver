@@ -40,7 +40,7 @@ export class AccountGroupMediaPeriodsController implements Controller{
     this.router.patch(this.path+'/:id', authMiddleware, validationUpdateMiddleware(accountGroupMediaPeriods_schema), this.update);
     this.router.get(this.path+'/byAccountGroupId/:accountId/:groupId', authMiddleware, this.findByAccountGroupId);
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
-    this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/updDTO', authMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     return;
   }

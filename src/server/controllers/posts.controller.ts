@@ -37,7 +37,7 @@ export class PostsController implements Controller{
     this.router.get(this.path+'/byPostId/:postId', authMiddleware, this.findById);
     this.router.patch(this.path+'/:postId', authMiddleware, validationUpdateMiddleware(posts_schema), this.update);
     this.router.get(this.path+'/DTO', devAuthMiddleware, this.apiDTO);
-    this.router.get(this.path+'/updDTO', devAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/updDTO', authMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', devAuthMiddleware, this.apiSchema);
     return;
   }

@@ -46,7 +46,7 @@ export class UserGroupsController implements Controller{
     this.router.get(this.path+'/byAccountId/:accountId', authMiddleware, this.findByAccountId);
     this.router.get(this.path+'/byGroupId/:groupId', authMiddleware, this.findByGroupId);
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
-    this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/updDTO', authMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     return;
   }

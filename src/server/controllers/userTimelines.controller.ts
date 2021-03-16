@@ -45,7 +45,7 @@ export class UserTimelinessController implements Controller{
     this.router.get(this.path+'/byId/:id', authMiddleware, this.findById);
     this.router.patch(this.path+'/:id', authMiddleware, validationUpdateMiddleware(userTimelines_schema), this.update);
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
-    this.router.get(this.path+'/updDTO', adminAuthMiddleware, this.apiUpdDTO);
+    this.router.get(this.path+'/updDTO', authMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     this.router.get(this.path+'/timelineDTO', devAuthMiddleware, this.apiTimelineDTO);
     this.router.get(this.path+'/profile-timeline/timelineUserIdNOffsetDays/:timelineUserId/:offSetDays', authMiddleware, this.getTimeline);
