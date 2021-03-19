@@ -1,5 +1,4 @@
 import { CommonFn, DateAddIntervalEnum } from './../../modules/CommonFnModule';
-import { FriendModel } from './friend.model';
 import { SqlFormatter } from './../../modules/sql.strings';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -12,7 +11,6 @@ import SysLog from '../../modules/SysLog';
 import SqlStr = require('sqlstring');
 
 export class ActivityModel extends EntityModel {
-  friends: FriendModel;
   constructor(altTable?: string) {
     super();
 
@@ -24,7 +22,6 @@ export class ActivityModel extends EntityModel {
     this.requestDTO = ActivityDTO;
     this.responseDTO = ActivityDTO;
     this.schema = activities_schema;
-    this.friends = new FriendModel();
   }
 
   findByTimelineUserId = (
@@ -113,4 +110,23 @@ export class ActivityModel extends EntityModel {
     });
   };
 
+
+  addFriendRequest(friends: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+        this.create({
+          timeline_user_id: friends.friend_id,
+          user_id: friends.user_id,
+          friends_id: friends.id,
+          activity_type: 'FRIEND_REQUEST',
+          message: 'Want to Add you to their Contact.',
+          activity_date: new Date().toISOString()
+        }).then((activityDTO) => {
+          resolve(activityDTO);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          reject(undefined)
+        });
+    });
+  }
 }

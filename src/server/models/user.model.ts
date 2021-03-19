@@ -185,7 +185,13 @@ export class UserModel extends EntityModel {
       sql += ',' + SqlFormatter.fmtTableFieldStr(users_schema_table, 'last_name') + '), ';
       sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'first_name') + ', ';
       sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'avatar') + ', ';
-      sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'email');
+      sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'email') + ', ';
+      sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'allow_notification')+ ', ';
+      sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'allow_msg')+ ', ';
+      sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'allow_friends')+ ', ';
+      sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'allow_promo')+ ', ';
+      sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'allow_follows')+ ', ';
+      sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'public');
       sql += ' FROM ' + users_schema_table;
       sql += ' WHERE ';
       sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') + SqlStr.format(' = ?', [this.siteCode]) + ' AND ';
@@ -208,7 +214,13 @@ export class UserModel extends EntityModel {
                     'full_name',
                     'first_name',
                     'avatar',
-                    'email'
+                    'email',
+                    'allow_notification',
+                    'allow_msg',
+                    'allow_friends',
+                    'allow_promo',
+                    'allow_follows',
+                    'public'
                 ],
                 rowData);
                 resUserListDTOArray.push(data);

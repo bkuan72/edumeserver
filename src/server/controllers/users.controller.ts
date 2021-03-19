@@ -146,7 +146,13 @@ export class UsersController implements Controller{
         response.send({
           id: respUserDTO.id,
           user_name: respUserDTO.user_name,
-          avatar: respUserDTO.avatar
+          avatar: respUserDTO.avatar,
+          allow_promo: respUserDTO.allow_promo,
+          allow_friends: respUserDTO.allow_friends,
+          allow_notification: respUserDTO.allow_notification,
+          allow_msg: respUserDTO.allow_msg,
+          allow_follows: respUserDTO.allow_follows,
+          public: respUserDTO.public
         });
       } else {
         next(new DataNotFoundException(request.params.userId))

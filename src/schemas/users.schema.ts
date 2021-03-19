@@ -255,10 +255,16 @@ export const users_schema: schemaIfc[] = [
     description: 'allow friending'
   },
   {
+    fieldName: 'allow_follows',
+    sqlType: 'BOOLEAN',
+    default: '1',
+    description: 'allow followings'
+  },
+  {
     fieldName: 'public',
     sqlType: 'BOOLEAN',
     default: '1',
-    description: 'allow user profile to be discoverable'
+    description: 'allow user profile data to be shown'
   },
   {
     fieldName: 'status',

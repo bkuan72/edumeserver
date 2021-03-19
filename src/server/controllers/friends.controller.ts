@@ -38,6 +38,8 @@ export class FriendsController implements Controller{
     this.router.get(this.path+'/contactList/byUserId/:userId', authMiddleware, this.getContactListByUserId);
     // this.router.get(this.path+'/byUserId/keyword/:userId/:keyword', authMiddleware, this.findByUserIdKeyword);
     this.router.get(this.path+'/byFriendId/:friendId', authMiddleware, this.findById);
+    this.router.get(this.path+'/areFriends/:user_id/:friend_id', authMiddleware, this.areFriends);
+    this.router.get(this.path+'/isBlockedByFriend/:user_id/:friend_id', authMiddleware, this.isBlockedByFriend);
     this.router.patch(this.path+'/:friendId', authMiddleware, validationUpdateMiddleware(friends_schema), this.update);
     this.router.patch(this.path+'/toggleStar/:id', authMiddleware, this.toggleContactStar);
     this.router.patch(this.path+'/incrFrequency/:friendId', authMiddleware, this.incrementFrequencyById);
@@ -62,7 +64,7 @@ export class FriendsController implements Controller{
   }
 
   newFriend  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-      this.friends.create(request.body).then((respFriendDTO) => {
+      this.friends.createFriend(request.body).then((respFriendDTO) => {
         if (respFriendDTO) {
             response.send(respFriendDTO);
           } else {
@@ -138,13 +140,35 @@ export class FriendsController implements Controller{
       }
     })
   }
-  // findByUserIdKeyword  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-  //   this.friends.searchFriendsByKeyword(request.params.userId, request.params.keyword).then((respFriendDTO: FriendDTO[]) => {
-  //     if (respFriendDTO) {
-  //       response.send(respFriendDTO);
-  //     } else {
-  //       next(new NoDataException())
-  //     }
-  //   })
-  // }
+
+  areFriends  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.friends.areFriends(request.params).then((respFriend) => {
+      if (respFriend) {
+        if (respFriend.friends) {
+          this.friends.isBlockedByFriend(request.param).then((blockResp) => {
+            respFriend.blocked = blockResp.blocked;
+            response.send(respFriend);
+          })
+          .catch(() => {
+            response.send(respFriend);
+          })
+        } else {
+          response.send(respFriend);
+        }
+      } else {
+        next(new DataNotFoundException(request.params.friendId))
+      }
+    })
+  }
+
+  isBlockedByFriend  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.friends.isBlockedByFriend(request.params).then((respFriend) => {
+      if (respFriend) {
+        response.send(respFriend);
+      } else {
+        next(new DataNotFoundException(request.params.friendId))
+      }
+    })
+  }
+
 }

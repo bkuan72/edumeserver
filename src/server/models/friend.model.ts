@@ -1,4 +1,5 @@
-import { users_schema, users_schema_table } from './../../schemas/users.schema';
+import { ActivityModel } from './activity.model';
+import { users_schema_table } from './../../schemas/users.schema';
 import { SqlFormatter } from './../../modules/sql.strings';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -17,8 +18,10 @@ import { EntityModel } from './entity.model';
 import dbConnection from '../../modules/DbModule';
 import SysLog from '../../modules/SysLog';
 import SqlStr = require('sqlstring');
+import { rejects } from 'assert';
 
 export class FriendModel extends EntityModel {
+  activities = new ActivityModel();
   constructor(altTable?: string) {
     super();
 
@@ -32,6 +35,35 @@ export class FriendModel extends EntityModel {
     this.schema = friends_schema;
   }
 
+  /**
+   * Create a friends record with friend_status = REQUEST
+   * and an activity for friend request for target user
+   * @param dataInEntity - friends DTO data
+   * @returns 
+   */
+  createFriend(dataInEntity: any): Promise<any> 
+  {
+    return new Promise((resolve) => {
+      this.create(dataInEntity).then((newFriend) => {
+        if (newFriend.friend_status === 'REQUEST') {
+          this.activities.addFriendRequest(newFriend).finally(() => {
+            resolve(newFriend);
+          })
+        } else {
+          resolve(newFriend);
+        }
+      })
+      .catch(() => {
+        resolve(undefined);
+      })
+    })
+  }
+
+  /**
+   * Find the friends list for user
+   * @param userId - user
+   * @returns 
+   */
   findByUserId = (userId: string): Promise<any[]> => {
     return new Promise((resolve) => {
       const resFriendDTOArray: FriendDTO[] = [];
@@ -68,6 +100,11 @@ export class FriendModel extends EntityModel {
     });
   };
 
+  /**
+   * Get the friend list for user - friend_status = OK
+   * @param userId - user
+   * @returns 
+   */
   getFriendList = (userId: string): Promise<any[]> => {
     return new Promise((resolve) => {
       const resFriendListDTOArray: FriendListDTO[] = [];
@@ -94,6 +131,11 @@ export class FriendModel extends EntityModel {
         SqlFormatter.fmtTableFieldStr(this.tableName, 'status') +
         ' != ' +
         SqlStr.escape('DELETED') +
+        ' AND ';
+        sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'friend_status') +
+        ' = ' +
+        SqlStr.escape('OK') +
         ' AND ';
       sql +=
         SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') +
@@ -126,6 +168,11 @@ export class FriendModel extends EntityModel {
     });
   };
 
+  /**
+   * Get Contact List for user
+   * @param userId - user
+   * @returns 
+   */
   getContactList = (userId: string): Promise<any[]> => {
     return new Promise((resolve) => {
       const resContactListDTOArray: ContactListDTO[] = [];
@@ -190,6 +237,11 @@ export class FriendModel extends EntityModel {
     });
   };
 
+/**
+ * Toggle the starred in the friends record
+ * @param id - friends.id
+ * @returns 
+ */
   toggleContactStar = (id: string): Promise<any | undefined> => {
     return new Promise((resolve) => {
       this.findById(id)
@@ -226,6 +278,11 @@ export class FriendModel extends EntityModel {
     });
   };
 
+/**
+ * Increment the frequency of contact
+ * @param friendId  point to user(friend_id)
+ * @returns 
+ */
   incrementFrequencyById = (friendId: string): Promise<any | undefined> => {
     return new Promise((resolve) => {
       let sql = '';
@@ -258,57 +315,126 @@ export class FriendModel extends EntityModel {
     });
   };
 
-  // searchFriendsByKeyword(userId: string, keyword: string): Promise<any[]> {
-  //   const resFriendListDTOArray: FriendListDTO[] = [];
-  //   return new Promise ((resolve) => {
-  //     const resFriendListDTOArray: FriendListDTO[] = [];
-  //     let sql = '';
-  //     sql = 'SELECT BIN_TO_UUID(' + SqlFormatter.fmtTableFieldStr(users_schema_table, 'id') + '), ';
-  //     sql += 'BIN_TO_UUID(' + SqlFormatter.fmtTableFieldStr(this.tableName, 'id') + '), ';
-  //     sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'user_name') + ', ';
-  //     sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'avatar') + ',';
-  //     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'friend_date');
-  //     sql += ' FROM ' + users_schema_table;
-  //     sql += ' LEFT OUTER JOIN ' + this.tableName + ' ON ('
-  //     sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'id') + ' = ' + SqlFormatter.fmtTableFieldStr(this.tableName, 'friend_id') + ' AND ';
-  //     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') + ' = UUID_TO_BIN(' + userId + ') ';
-  //     sql += ') ';
-  //     sql += ' WHERE ';
-  //     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') + SqlStr.format(' = ?', [this.siteCode]) + ' AND ';
-  //     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'status') + ' != ' + SqlStr.escape('DELETED') + ' AND ';
-  //     sql += '(' + SqlFormatter.fmtTableFieldStr(users_schema_table, 'user_name') + ' LIKE ' + SqlStr.escape(keyword)  + '  OR  ';
-  //     sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'email') + ' LIKE ' + SqlStr.escape(keyword)  + ') ';
+/**
+ * Check if user(friend_id) is already a friend to user(user_id)
+ * @param req - request body { user_id, friend_id}
+ * @returns 
+ */
+  areFriends(req: any): Promise<any> {
+    return new Promise((resolve) => {
+      let sql = '';
+      const resp = {
+        user_id: req.user_id,
+        friend_id: req.friend_id,
+        friends: false,
+        blocked: false
+      };
+      sql += 'SELECT BIN_TO_UUID(id)';
+      sql += ' FROM ' + this.tableName;
+      sql += ' WHERE ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') +
+        SqlStr.format(' = ?', [this.siteCode]) +
+        ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'status') +
+        ' != ' +
+        SqlStr.escape('DELETED') +
+        ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'friend_status') +
+        ' = ' +
+        SqlStr.escape('OK') +
+        ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') +
+        ' = UUID_TO_BIN(' +
+        SqlStr.escape(req.user_id) +
+        ') ' + ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'friend_id') +
+        ' = UUID_TO_BIN(' +
+        SqlStr.escape(req.friend_id) +
+        ') '
+      SysLog.info('findById SQL: ' + sql);
+      dbConnection.DB.sql(sql)
+        .execute()
+        .then((result) => {
+          if (result.rows.length) {
+            resp.friends = true;
+            resolve(resp);
+            return;
+          }
+          // not found Customer with the id
+          resolve(resp);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(resp);
+          return;
+        });
+    })
+  }
 
-  //     SysLog.info('findById SQL: ' + sql);
-  //     dbConnection.DB.sql(sql).execute()
-  //     .then((result) => {
 
-  //       if (result.rows.length) {
+/**
+ * Check if user is blocked by friend
+ * @param req - request body { user_id, friend_id}
+ * @returns 
+ */
+   isBlockedByFriend(req: any): Promise<any> {
+    return new Promise((resolve) => {
+      let sql = '';
+      const resp = {
+        user_id: req.user_id,
+        friend_id: req.friend_id,
+        blocked: false
+      };
+      sql += 'SELECT friend_status ';
+      sql += ' FROM ' + this.tableName;
+      sql += ' WHERE ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') +
+        SqlStr.format(' = ?', [this.siteCode]) +
+        ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'status') +
+        ' != ' +
+        SqlStr.escape('DELETED') +
+        ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'friend_status') +
+        ' = ' +
+        SqlStr.escape('BLOCKED') +
+        ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') +
+        ' = UUID_TO_BIN(' +
+        SqlStr.escape(req.friend_id) +
+        ') ' + ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'friend_id') +
+        ' = UUID_TO_BIN(' +
+        SqlStr.escape(req.user_id) +
+        ') '
+      SysLog.info('findById SQL: ' + sql);
+      dbConnection.DB.sql(sql)
+        .execute()
+        .then((result) => {
+          if (result.rows.length) {
+            resp.blocked = true;
+            resolve(resp);
+            return;
+          }
+          // not found Customer with the id
+          resolve(resp);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(resp);
+          return;
+        });
+    })
+  }
 
-  //           result.rows.forEach ((rowData) => {
-  //               const data = SqlFormatter.transposeColumnResultSet([
-  //                   'id',
-  //                   'user_id',
-  //                   'name',
-  //                   'avatar',
-  //                   'since'
-  //               ],
-  //               rowData);
-  //               resFriendListDTOArray.push(data);
-  //           });
-  //         resolve(resFriendListDTOArray);
-  //         return;
-  //       }
-  //       // not found Customer with the id
-  //       resolve(resFriendListDTOArray);
-  //     })
-  //     .catch((err) => {
-  //       SysLog.error(JSON.stringify(err));
-  //       resolve(resFriendListDTOArray);
-  //       return;
-  //     })
-
-  //     resolve(resFriendListDTOArray);
-  //   });
-  // }
 }
