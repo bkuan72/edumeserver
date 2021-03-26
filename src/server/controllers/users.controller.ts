@@ -146,6 +146,8 @@ export class UsersController implements Controller{
         response.send({
           id: respUserDTO.id,
           user_name: respUserDTO.user_name,
+          first_name: respUserDTO.first_name,
+          last_name: respUserDTO.last_name,
           avatar: respUserDTO.avatar,
           allow_promo: respUserDTO.allow_promo,
           allow_friends: respUserDTO.allow_friends,
