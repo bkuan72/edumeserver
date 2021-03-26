@@ -45,7 +45,7 @@ export class AccountsController implements Controller{
     this.router.get(this.path+'/byAccountId/:accountId', authMiddleware, this.findById);
     this.router.patch(this.path+'/byAccountId/:accountId', authMiddleware, validationUpdateMiddleware(accounts_schema), this.update);
     this.router.put(this.path+'/avatar/byAccountId/:accountId', authMiddleware, validationUpdateMiddleware(accounts_schema), this.update);
-    this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
+    this.router.get(this.path+'/DTO', authMiddleware, this.apiDTO);
     this.router.get(this.path+'/updDTO', authMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     return;

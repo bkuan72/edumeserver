@@ -24,9 +24,17 @@ select * from modules;
 select BIN_TO_UUID(user_id), BIN_TO_UUID(module_id),  BIN_TO_UUID(role_id)  from userModuleRoles;
 select * from tokens;
 select * from blacklist_tokens;
+select * from activities;
 
 select  BIN_TO_UUID(id) from userMediaPeriods;
-select BIN_TO_UUID(userMediaPeriod_id), BIN_TO_UUID(id),  BIN_TO_UUID(user_id) from userMedias;
+select BIN_TO_UUID(userMediaPeriod_id), BIN_TO_UUID(id),  BIN_TO_UUID(user_id) from userMedias where id = UUID_TO_BIN('3ea95a5f-7d8b-11eb-aecf-3417ebc95b70');
+select * from userMediaPeriods;
+select * from userMedias;	
+
+select * from friends;
+select * from activities;
+
+
 
 delete from userMediaPeriods;
 delete from userMedias;	
@@ -39,10 +47,14 @@ delete from tokens;
 delete from blacklist_tokens;
 delete from advertisements;
 
+
+
 delete from posts;
 delete from user_timeline_comments;
 delete from user_timelines;
+
 delete from activities;
+delete from friends;
 
 drop table accounts, users, accounts;
 drop table advertisements;
@@ -61,7 +73,10 @@ drop table activities;
 drop table accountGroupMedias, accountGroup_timeline_comments, accountGroup_timelines;
 drop table accountGroupMedias, userMedias;
 drop table logs;
+drop table friends;
 
+SELECT BIN_TO_UUID(friends.id) , friends.site_code, friends.status, BIN_TO_UUID(friends.user_id) , BIN_TO_UUID(friends.friend_id) , friends.friend_date, friends.friend_group, friends.first_name, friends.last_name, friends.avatar, friends.nickname, friends.email, friends.phone_no, friends.company, friends.job_title, friends.address, friends.birthday, friends.notes, friends.starred, friends.frequent, friends.friend_req_date, friends.friend_block_date, friends.friend_status, friends.lastUpdateUsec, BIN_TO_UUID(users.id) , users.site_code, users.title, users.user_name, users.first_name, users.last_name, users.email, users.phone_no, users.mobile_no, users.website, users.avatar, users.language, users.address, users.suburb, users.city, users.state, users.country, users.gender, users.birthday, users.post_code, users.about_me, users.occupation, users.skills, users.jobs, users.status, users.reg_confirm_key, users.pwd_reset_key, users.lastUpdateUsec FROM friends LEFT OUTER JOIN users ON users.id = friends.friend_id WHERE friends.site_code = 'TEST' AND friends.status != 'DELETED' AND friends.user_id = UUID_TO_BIN('023e125d-7829-11eb-bf79-3417ebc95b70');
+SELECT BIN_TO_UUID(users.id), users.user_name, users.avatar FROM users WHERE users.site_code = 'TEST' AND users.status != 'DELETED' AND (users.user_name LIKE '%edu%'  OR  users.email LIKE '%edu%');
 
 drop table advertisements;
 drop table userMedias;
@@ -75,6 +90,7 @@ drop table properties;
 drop table postArticles;
 drop table accgroups;
 drop table properties;
+drop table friends;
 
 
 ALTER TABLE accounts MODIFY account_type ENUM('ADMIN','DEV','NORMAL','SERVICE');
