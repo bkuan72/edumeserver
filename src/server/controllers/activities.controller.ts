@@ -39,7 +39,7 @@ export class ActivitiesController implements Controller{
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
     this.router.get(this.path+'/updDTO', authMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
-    this.router.put(this.path+'/remove/:activityId', authMiddleware, this.removeById);
+    this.router.patch(this.path+'/remove/:activityId', authMiddleware, this.removeById);
     this.router.get(this.path+'/likes/byTimelineIdUserId/:timelineId/:userId', authMiddleware, this.getLikeActivityByTimelineIdUserId);
     return;
   }
@@ -77,7 +77,7 @@ export class ActivitiesController implements Controller{
   }
 
   removeById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-    this.activities.remove(request.params.activityId).then((activityIdDTO) => {
+    this.activities.deleteById(request.params.activityId).then((activityIdDTO) => {
       if (activityIdDTO) {
         response.send(activityIdDTO);
       } else {
