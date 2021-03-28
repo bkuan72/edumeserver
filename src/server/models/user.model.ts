@@ -201,7 +201,7 @@ export class UserModel extends EntityModel {
       sql += SqlFormatter.fmtLIKECondition(SqlFormatter.fmtTableFieldStr(users_schema_table, 'last_name'), keyword)  + '  OR  '
       sql += SqlFormatter.fmtLIKECondition(SqlFormatter.fmtTableFieldStr(users_schema_table, 'user_name'), keyword)  + '  OR  '
       sql += SqlFormatter.fmtLIKECondition(SqlFormatter.fmtTableFieldStr(users_schema_table, 'email'), keyword)  + ') ';
-
+      sql += ' LIMIT 10;'
       SysLog.info('searchUserByKeyword SQL: ' + sql);
       dbConnection.DB.sql(sql).execute()
       .then((result) => {
