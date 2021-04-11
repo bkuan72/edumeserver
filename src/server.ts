@@ -1,3 +1,4 @@
+import { AccountGroupActivitiesController } from './server/controllers/accountGroupActivities.controller';
 import { AccountGroupMediaPeriodsController } from './server/controllers/accountGroupMediaPeriods.controller';
 import { AccountGroupMediasController } from './server/controllers/accountGroupMedias.controller';
 import { UserMediaPeriodsController } from './server/controllers/userMediaPeriods.controller';
@@ -85,6 +86,7 @@ const app = new App (
     new AccountGroupTimelinessController(),
     new AccountGroupTimelineCommentsController(),
     new AccountGroupMembersController(),
+    new AccountGroupActivitiesController(),
   ],
   port
 );

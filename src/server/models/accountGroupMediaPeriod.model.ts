@@ -23,9 +23,8 @@ export class AccountGroupMediaPeriodModel extends EntityModel {
     this.schema = accountGroupMediaPeriods_schema;
   }
 
-  findByAccountGroupId = (
+  findByAccountId = (
     accountId: string,
-    groupId: string
   ): Promise<any[]> => {
     return new Promise((resolve) => {
       const resAccountGroupMediaPeriodDTOArray: AccountGroupMediaPeriodDTO[] = [];
@@ -34,6 +33,47 @@ export class AccountGroupMediaPeriodModel extends EntityModel {
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('account_id = UUID_TO_BIN(?)', [accountId]) + ' AND ';
+      sql += 'group_id = 0 ';
+      SysLog.info('findByAccountGroupId SQL: ' + sql);
+      dbConnection.DB.sql(sql)
+        .execute()
+        .then((result) => {
+
+          if (result.rows.length) {
+            result.rows.forEach((rowData) => {
+              const data = SqlFormatter.transposeResultSet(
+                this.schema,
+                undefined,
+                undefined,
+                rowData
+              );
+              const respAccountGroupMediaPeriodDTO = new this.responseDTO(data) as AccountGroupMediaPeriodDTO;
+              resAccountGroupMediaPeriodDTOArray.push(respAccountGroupMediaPeriodDTO);
+            });
+            resolve(resAccountGroupMediaPeriodDTOArray);
+            return;
+          }
+          // not found Customer with the id
+          resolve(resAccountGroupMediaPeriodDTOArray);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(resAccountGroupMediaPeriodDTOArray);
+          return;
+        });
+    });
+  };
+
+
+  findByGroupId = (
+    groupId: string,
+  ): Promise<any[]> => {
+    return new Promise((resolve) => {
+      const resAccountGroupMediaPeriodDTOArray: AccountGroupMediaPeriodDTO[] = [];
+      let sql =
+        SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
+      sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
+      sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('group_id = UUID_TO_BIN(?)', [groupId]);
       SysLog.info('findByAccountGroupId SQL: ' + sql);
       dbConnection.DB.sql(sql)

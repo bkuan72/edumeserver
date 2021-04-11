@@ -76,9 +76,8 @@ export class AccountGroupTimelineModel extends EntityModel {
   };
 
 
-  findTimeline = (
+  findAccountTimeline = (
     accountId: string,
-    groupId: string,
     offSetDays: string
   ): Promise<any[]> => {
     return new Promise((resolve) => {
@@ -99,7 +98,7 @@ export class AccountGroupTimelineModel extends EntityModel {
       sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'status') + ' != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'lastUpdateUsec') + ' >= ' + fromDate?.valueOf() + ' AND ';
       sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'account_id') + ' = ' + SqlStr.format('UUID_TO_BIN(?)', [accountId]) + ' AND ';
-      sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'group_id') + ' = ' + SqlStr.format('UUID_TO_BIN(?)', [groupId]);
+      sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'group_id') + ' = 0';
       sql += ' ORDER BY ' + SqlFormatter.fmtTableFieldStr(this.tableName, 'lastUpdateUsec') + ' DESC ';
       sql += ';';
       SysLog.info('findByTimelineAccountGroupId SQL: ' + sql);
@@ -136,6 +135,63 @@ export class AccountGroupTimelineModel extends EntityModel {
     });
   };
 
+  findGroupTimeline = (
+    groupId: string,
+    offSetDays: string
+  ): Promise<any[]> => {
+    return new Promise((resolve) => {
+      const fromDate = CommonFn.dateDeduct(
+        new Date(),
+        DateAddIntervalEnum.DAY,
+        parseInt(offSetDays)
+      );
+      const resPostDTOArray: AccountGroupTimelineDTO[] = [];
+
+      let sql = 'SELECT ' + SqlFormatter.formatTableSelect(this.tableName, this.schema) + ', ';
+      sql += SqlFormatter.formatTableSelect(posts_schema_table, posts_schema);
+      sql += ' FROM ' + this.tableName;
+      sql += ' INNER JOIN ' + posts_schema_table + ' ON ';
+      sql += SqlFormatter.fmtTableFieldStr(posts_schema_table, 'id') + ' = ';
+      sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'post_id');
+      sql += ' WHERE ' + SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') + ' = ' + SqlStr.escape(this.siteCode) + ' AND ';
+      sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'status') + ' != ' + SqlStr.escape('DELETED') + ' AND ';
+      sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'lastUpdateUsec') + ' >= ' + fromDate?.valueOf() + ' AND ';
+      sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'group_id') + ' = ' + SqlStr.format('UUID_TO_BIN(?)', [groupId]);
+      sql += ' ORDER BY ' + SqlFormatter.fmtTableFieldStr(this.tableName, 'lastUpdateUsec') + ' DESC ';
+      sql += ';';
+      SysLog.info('findByTimelineAccountGroupId SQL: ' + sql);
+      dbConnection.DB.sql(sql)
+        .execute()
+        .then((result) => {
+
+         if (result.rows.length > 0) {
+            result.rows.forEach((rowData) => {
+              const respTimelinePostDTO = new TimelinePostDTO() as AccountGroupTimelinePostData;
+              let colIdx = 0;
+              colIdx = SqlFormatter.transposeTableSelectColumns(colIdx,
+                                                                respTimelinePostDTO,
+                                                                this.schema,
+                                                                rowData);
+              colIdx = SqlFormatter.transposeTableSelectColumns(colIdx,
+                                                                respTimelinePostDTO.post,
+                                                                posts_schema,
+                                                                rowData);
+
+              resPostDTOArray.push(respTimelinePostDTO);
+            });
+            resolve(resPostDTOArray);
+            return;
+          }
+          // not found Customer with the id
+          resolve(resPostDTOArray);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(resPostDTOArray);
+          return;
+        });
+    });
+  };
 
 
   incrementLikesById = (

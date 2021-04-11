@@ -38,7 +38,8 @@ export class AccountGroupMediaPeriodsController implements Controller{
     this.router.get(this.path, authMiddleware, this.getAll);
     this.router.get(this.path+'/byId/:id', authMiddleware, this.findById);
     this.router.patch(this.path+'/:id', authMiddleware, validationUpdateMiddleware(accountGroupMediaPeriods_schema), this.update);
-    this.router.get(this.path+'/byAccountGroupId/:accountId/:groupId', authMiddleware, this.findByAccountGroupId);
+    this.router.get(this.path+'/byAccountId/:accountId', authMiddleware, this.findByAccountId);
+    this.router.get(this.path+'/byGroupId/:groupId', authMiddleware, this.findByGroupId);
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
     this.router.get(this.path+'/updDTO', authMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
@@ -101,8 +102,18 @@ export class AccountGroupMediaPeriodsController implements Controller{
     })
   }
 
-  findByAccountGroupId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-    this.accountGroupMediaPeriods.findByAccountGroupId(request.params.accountId, request.params.groupId).then((respMediaDTO) => {
+  findByAccountId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.accountGroupMediaPeriods.findByAccountId(request.params.accountId).then((respMediaDTO) => {
+      if (respMediaDTO) {
+        response.send(respMediaDTO);
+      } else {
+        next(new DataNotFoundException(request.params.userId))
+      }
+    })
+  }
+
+  findByGroupId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.accountGroupMediaPeriods.findByGroupId(request.params.groupId).then((respMediaDTO) => {
       if (respMediaDTO) {
         response.send(respMediaDTO);
       } else {

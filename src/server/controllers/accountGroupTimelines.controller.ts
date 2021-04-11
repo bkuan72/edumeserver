@@ -47,7 +47,8 @@ export class AccountGroupTimelinessController implements Controller{
     this.router.get(this.path+'/updDTO', authMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     this.router.get(this.path+'/timelineDTO', devAuthMiddleware, this.apiTimelineDTO);
-    this.router.get(this.path+'/profile-timeline/timelineAccountGroupIdNOffsetDays/:offSetDays', authMiddleware, this.getTimeline);
+    this.router.get(this.path+'/profile-timeline/timelineAccountIdNOffsetDays/:offSetDays', authMiddleware, this.getAccountTimeline);
+    this.router.get(this.path+'/profile-timeline/timelineGroupIdNOffsetDays/:offSetDays', authMiddleware, this.getGroupTimeline);
     this.router.put(this.path+'/like/:timelineId', authMiddleware, this.incrementTimelineLikes);
     this.router.put(this.path+'/unlike/:timelineId', authMiddleware, this.decrementTimelineLikes);
     this.router.put(this.path+'/share/:timelineId', authMiddleware, this.updateShared);
@@ -111,9 +112,19 @@ export class AccountGroupTimelinessController implements Controller{
   }
 
 
-  getTimeline  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-    this.accountGroupTimelines.findTimeline(request.body.accountId,
-                                            request.body.groupId,
+  getAccountTimeline  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.accountGroupTimelines.findAccountTimeline(request.body.accountId,
+                                            request.params.offSetDays).then((respPostDTO: AccountGroupTimelineDTO[]) => {
+      if (respPostDTO) {
+        response.send(respPostDTO);
+      } else {
+        next(new DataNotFoundException(request.params.accountGroupId))
+      }
+    })
+  }
+
+  getGroupTimeline  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.accountGroupTimelines.findGroupTimeline(request.body.groupId,
                                             request.params.offSetDays).then((respPostDTO: AccountGroupTimelineDTO[]) => {
       if (respPostDTO) {
         response.send(respPostDTO);

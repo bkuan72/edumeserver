@@ -11,7 +11,7 @@ import validationMiddleware from "../../middleware/validation.middleware";
 
 import PostDataFailedException from "../../exceptions/PostDataFailedException";
 import SysEnv from "../../modules/SysEnv";
-import { AccountGroupMemberDTO, AccountGroupMemberListDTO, UpdAccountGroupMemberDTO } from "../../dtos/accountGroupMembers.DTO";
+import { AccountGroupMemberDTO, UpdAccountGroupMemberDTO } from "../../dtos/accountGroupMembers.DTO";
 import NoDataException from "../../exceptions/NoDataExceptions";
 import adminAuthMiddleware from "../../middleware/admin.auth.middleware";
 
@@ -34,12 +34,17 @@ export class AccountGroupMembersController implements Controller{
                     authMiddleware,
                     validationMiddleware(accountGroupMembers_schema),
                     this.newAccountGroupMember);
-    this.router.get(this.path+'/accountMemberList/byAccountId/:accountId', authMiddleware, this.getAccountMemberListByAccountId);
-    this.router.get(this.path+'/groupMemberList/byGroupId/:groupId', authMiddleware, this.getGroupMemberListByGroupId);
+    this.router.get(this.path+'/accountGroupMemberList/byAccountId/:accountId', authMiddleware, this.getAccountGroupMemberListByAccountId);
+    this.router.get(this.path+'/contactList/byAccountId/:accountId', authMiddleware, this.getContactListByAccountId);
     this.router.get(this.path+'/byAccountGroupMemberId/:accountGroupMemberId', authMiddleware, this.findById);
+    this.router.get(this.path+'/areAccountMembers/:account_id/:accountGroupMember_id', authMiddleware, this.areAccountMembers);
+    this.router.get(this.path+'/isBlockedByAccountGroupMember/:account_id/:accountGroupMember_id', authMiddleware, this.isBlockedByAccountGroupMember);
     this.router.patch(this.path+'/:accountGroupMemberId', authMiddleware, validationUpdateMiddleware(accountGroupMembers_schema), this.update);
+    this.router.patch(this.path+'/toggleStar/:id', authMiddleware, this.toggleContactStar);
+    this.router.patch(this.path+'/incrFrequency/:accountGroupMemberId', authMiddleware, this.incrementFrequencyById);
+    this.router.patch(this.path+'/remove/:id', authMiddleware, this.removeContact);
+
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
-    this.router.get(this.path+'/memberListDTO', adminAuthMiddleware, this.apiMemberListDTO);
     this.router.get(this.path+'/updDTO', authMiddleware, this.apiUpdDTO);
     this.router.get(this.path+'/schema', adminAuthMiddleware, this.apiSchema);
     return;
@@ -47,10 +52,6 @@ export class AccountGroupMembersController implements Controller{
 
   apiDTO  = (request: express.Request, response: express.Response) => {
     const dto = new AccountGroupMemberDTO();
-    response.send(dto);
-  }
-  apiMemberListDTO  = (request: express.Request, response: express.Response) => {
-    const dto = new AccountGroupMemberListDTO();
     response.send(dto);
   }
   apiUpdDTO  = (request: express.Request, response: express.Response) => {
@@ -62,7 +63,7 @@ export class AccountGroupMembersController implements Controller{
   }
 
   newAccountGroupMember  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-      this.accountGroupMembers.create(request.body).then((respAccountGroupMemberDTO) => {
+      this.accountGroupMembers.createAccountGroupMember(request.body).then((respAccountGroupMemberDTO) => {
         if (respAccountGroupMemberDTO) {
             response.send(respAccountGroupMemberDTO);
           } else {
@@ -81,6 +82,16 @@ export class AccountGroupMembersController implements Controller{
     })
   }
 
+  removeContact  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.accountGroupMembers.remove(request.params.id).then((respAccountGroupMemberDTO) => {
+      if (respAccountGroupMemberDTO) {
+        response.send(respAccountGroupMemberDTO);
+      } else {
+        next(new DataNotFoundException(request.params.accountGroupMemberId))
+      }
+    })
+  }
+
   update  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.accountGroupMembers.updateById(request.params.accountGroupMemberId, request.body).then((respAccountGroupMemberDTO) => {
       if (respAccountGroupMemberDTO) {
@@ -91,8 +102,27 @@ export class AccountGroupMembersController implements Controller{
     })
   }
 
-  getAccountMemberListByAccountId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-    this.accountGroupMembers.getAccountMemberList(request.params.accountId).then((respAccountGroupMemberDTO: AccountGroupMemberDTO[]) => {
+  toggleContactStar  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.accountGroupMembers.toggleContactStar(request.params.id).then((respAccountGroupMemberDTO) => {
+      if (respAccountGroupMemberDTO) {
+        response.send(respAccountGroupMemberDTO);
+      } else {
+        next(new DataNotFoundException(request.params.accountGroupMemberId))
+      }
+    })
+  }
+
+  incrementFrequencyById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.accountGroupMembers.incrementFrequencyById(request.params.accountGroupMemberId).then((respAccountGroupMemberDTO) => {
+      if (respAccountGroupMemberDTO) {
+        response.send(respAccountGroupMemberDTO);
+      } else {
+        next(new DataNotFoundException(request.params.accountGroupMemberId))
+      }
+    })
+  }
+  getAccountGroupMemberListByAccountId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.accountGroupMembers.getAccountGroupMemberList(request.params.accountId).then((respAccountGroupMemberDTO: AccountGroupMemberDTO[]) => {
       if (respAccountGroupMemberDTO) {
         response.send(respAccountGroupMemberDTO);
       } else {
@@ -100,8 +130,8 @@ export class AccountGroupMembersController implements Controller{
       }
     })
   }
-  getGroupMemberListByGroupId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-    this.accountGroupMembers.getAccountMemberList(request.params.groupId).then((respAccountGroupMemberDTO: AccountGroupMemberDTO[]) => {
+  getContactListByAccountId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.accountGroupMembers.getContactList(request.params.accountId).then((respAccountGroupMemberDTO: AccountGroupMemberDTO[]) => {
       if (respAccountGroupMemberDTO) {
         response.send(respAccountGroupMemberDTO);
       } else {
@@ -109,4 +139,35 @@ export class AccountGroupMembersController implements Controller{
       }
     })
   }
+
+  areAccountMembers  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.accountGroupMembers.areAccountMembers(request.params).then((respAccountGroupMember) => {
+      if (respAccountGroupMember) {
+        if (respAccountGroupMember.accountGroupMembers) {
+          this.accountGroupMembers.isBlockedByAccountMember(request.param).then((blockResp) => {
+            respAccountGroupMember.blocked = blockResp.blocked;
+            response.send(respAccountGroupMember);
+          })
+          .catch(() => {
+            response.send(respAccountGroupMember);
+          })
+        } else {
+          response.send(respAccountGroupMember);
+        }
+      } else {
+        next(new DataNotFoundException(request.params.accountGroupMemberId))
+      }
+    })
+  }
+
+  isBlockedByAccountGroupMember  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.accountGroupMembers.isBlockedByAccountMember(request.params).then((respAccountGroupMember) => {
+      if (respAccountGroupMember) {
+        response.send(respAccountGroupMember);
+      } else {
+        next(new DataNotFoundException(request.params.accountGroupMemberId))
+      }
+    })
+  }
+
 }

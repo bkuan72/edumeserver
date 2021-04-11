@@ -48,7 +48,7 @@ export const accountGroupMembers_schema: schemaIfc[] = [
     description: 'link to groups - group '
   },
   {
-    fieldName: 'user_id',
+    fieldName: 'accountGroupMember_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
