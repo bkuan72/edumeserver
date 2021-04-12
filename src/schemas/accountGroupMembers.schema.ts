@@ -83,6 +83,13 @@ export const accountGroupMembers_schema: schemaIfc[] = [
     description: 'date accountGroupMember blocked'
   },
   {
+    fieldName: 'accountGroupMember_type',
+    sqlType: 'ENUM',
+    size: 10,
+    enum: ['ADMIN', 'USER', 'GUEST'],
+    default: 'USER'
+  },
+  {
     fieldName: 'accountGroupMember_status',
     sqlType: 'ENUM',
     size: 10,
@@ -102,7 +109,7 @@ export const accountGroupMembers_schema: schemaIfc[] = [
     index: [
       {
         name: 'user_id_idx',
-        columns: ['site_code', 'user_id', 'accountGroupMember_date'],
+        columns: ['site_code', 'accountGroupMember_id', 'accountGroupMember_date'],
         unique: false
       },
       {

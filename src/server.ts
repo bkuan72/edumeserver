@@ -38,8 +38,8 @@ import { UserGroupsController } from './server/controllers/userGroups.controller
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import SysMailer from './modules/SysEmailerModule';
 import { AdActivitiesController } from './server/controllers/adActivities.controller';
-import { AdAgeGroupsController } from './server/controllers/adAgeGoups.controller';
-import { AccountGroupTimelinessController } from './server/controllers/accountGroupTimelines.controller';
+import { AdAgeGroupsController } from './server/controllers/adAgeGroups.controller';
+import { AccountGroupTimelinesController } from './server/controllers/accountGroupTimelines.controller';
 import { AccountGroupTimelineCommentsController } from './server/controllers/accountGroupTimelineComments.controller';
 import { AccountGroupMembersController } from './server/controllers/accountGroupMembers.controller';
 
@@ -83,7 +83,7 @@ const app = new App (
     new UserMediaPeriodsController(),
     new AccountGroupMediasController(),
     new AccountGroupMediaPeriodsController(),
-    new AccountGroupTimelinessController(),
+    new AccountGroupTimelinesController(),
     new AccountGroupTimelineCommentsController(),
     new AccountGroupMembersController(),
     new AccountGroupActivitiesController(),

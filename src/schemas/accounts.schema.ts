@@ -186,6 +186,42 @@ export const accounts_schema: schemaIfc[] = [
     trim: true,
     description: 'Post Code'
   },
+  {
+    fieldName: 'allow_notification',
+    sqlType: 'BOOLEAN',
+    default: '1',
+    description: 'allow application notification'
+  },
+  {
+    fieldName: 'allow_promo',
+    sqlType: 'BOOLEAN',
+    default: '1',
+    description: 'allow promotional emails'
+  },
+  {
+    fieldName: 'allow_msg',
+    sqlType: 'BOOLEAN',
+    default: '1',
+    description: 'allow messaging'
+  },
+  {
+    fieldName: 'allow_friends',
+    sqlType: 'BOOLEAN',
+    default: '1',
+    description: 'allow friending'
+  },
+  {
+    fieldName: 'allow_follows',
+    sqlType: 'BOOLEAN',
+    default: '1',
+    description: 'allow followings'
+  },
+  {
+    fieldName: 'public',
+    sqlType: 'BOOLEAN',
+    default: '1',
+    description: 'allow user profile data to be shown'
+  },
   {    fieldName: 'status',
     sqlType: 'ENUM',
     size: 10,
