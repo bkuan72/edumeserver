@@ -34,14 +34,13 @@ export class AccountGroupActivitiesController implements Controller{
                 validationMiddleware(accountGroupActivities_schema),
                 this.addNewLikeAccountActivity);
     this.router.get(this.path+'/accountActivityList/byTimelineAccountIdOffSetDays/:timelineAccountId/:offSetDays', authMiddleware, this.getActivitiesByTimelineAccountId);
-    this.router.get(this.path+'/account/likes/byTimelineIdAccountId/:timelineId/:accountId', authMiddleware, this.getLikeAccountGroupActivityByTimelineIdAccountId);
+    this.router.get(this.path+'/likes/byTimelineIdUserId/:timelineId/:userId', authMiddleware, this.getLikeAccountGroupActivityByTimelineIdUserId);
 
     this.router.post(this.path+'/group/likes',
                 authMiddleware,
                 validationMiddleware(accountGroupActivities_schema),
                 this.addNewLikeGroupActivity);
     this.router.get(this.path+'/groupActivityList/byTimelineGroupIdOffSetDays/:timelineGroupId/:offSetDays', authMiddleware, this.getActivitiesByTimelineGroupId);
-    this.router.get(this.path+'/group/likes/byTimelineIdGroupId/:timelineId/:groupId', authMiddleware, this.getLikeAccountGroupActivityByTimelineIdGroupId);
 
 
 
@@ -87,7 +86,7 @@ export class AccountGroupActivitiesController implements Controller{
   }
 
   removeById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-    this.accountGroupActivities.deleteById(request.params.accountGroupActivityId).then((accountGroupActivityIdDTO) => {
+    this.accountGroupActivities.remove(request.params.accountGroupActivityId).then((accountGroupActivityIdDTO) => {
       if (accountGroupActivityIdDTO) {
         response.send(accountGroupActivityIdDTO);
       } else {
@@ -126,24 +125,11 @@ export class AccountGroupActivitiesController implements Controller{
     })
   }
 
-  getLikeAccountGroupActivityByTimelineIdAccountId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-    this.accountGroupActivities.findByTypeTimelineIdAccountId(
+  getLikeAccountGroupActivityByTimelineIdUserId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.accountGroupActivities.findByTypeTimelineIdUserId(
               'LIKES',
               request.params.timelineId,
-              request.params.accountId).then((respAccountGroupActivityDTO: AccountGroupActivityDTO[]) => {
-      if (respAccountGroupActivityDTO) {
-        response.send(respAccountGroupActivityDTO);
-      } else {
-        next(new NoDataException())
-      }
-    })
-  }
-
-  getLikeAccountGroupActivityByTimelineIdGroupId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-    this.accountGroupActivities.findByTypeTimelineIdGroupId(
-              'LIKES',
-              request.params.timelineId,
-              request.params.groupId).then((respAccountGroupActivityDTO: AccountGroupActivityDTO[]) => {
+              request.params.userId).then((respAccountGroupActivityDTO: AccountGroupActivityDTO[]) => {
       if (respAccountGroupActivityDTO) {
         response.send(respAccountGroupActivityDTO);
       } else {
@@ -159,7 +145,7 @@ export class AccountGroupActivitiesController implements Controller{
                               timeline_account_id: request.body.timeline_account_id,
                               accountGroupActivity_type: 'LIKES',
                               message: request.body.message,
-                              accountGroupActivity_date: new Date().toISOString()
+                              activity_date: new Date().toISOString()
                             }).then((respAccountGroupActivityDTO: AccountGroupActivityDTO[]) => {
       if (respAccountGroupActivityDTO) {
         response.send(respAccountGroupActivityDTO);

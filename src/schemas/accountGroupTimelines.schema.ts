@@ -30,7 +30,7 @@ export const accountGroupTimelines_schema: schemaIfc[] = [
     default: 'OK',
     description: 'status of record'
   },
-  {    fieldName: 'user_id',
+  {    fieldName: 'post_user_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,

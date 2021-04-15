@@ -32,12 +32,12 @@ export const accountGroupMedias_schema: schemaIfc[] = [
     description: 'record status'
   },
   {
-    fieldName: 'accountGroupPeriod_id',
+    fieldName: 'accountGroupMediaPeriod_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
     excludeFromUpdate: true,
-    description: 'link to accountGroupPeriods'
+    description: 'link to accountGroupMediaPeriods'
   },
   {
     fieldName: 'user_id',
@@ -62,15 +62,6 @@ export const accountGroupMedias_schema: schemaIfc[] = [
     uuidProperty: true,
     excludeFromUpdate: true,
     description: 'link to users - owner'
-  },
-  {
-    fieldName: 'period',
-    sqlType: 'VARCHAR(20)',
-    size: 20,
-    allowNull: false,
-    excludeFromUpdate: false,
-    trim: false,
-    description: 'period eg Month YYYY'
   },
   {
     fieldName: 'upload_date',
@@ -138,7 +129,7 @@ export const accountGroupMedias_schema: schemaIfc[] = [
     index: [
       {
         name: 'accountGroupPeriod_id_idx',
-        columns: ['site_code', 'accountGroupPeriod_id', 'account_id', 'group_id', 'lastUpdateUsec'],
+        columns: ['site_code', 'accountGroupMediaPeriod_id', 'account_id', 'group_id', 'lastUpdateUsec'],
         unique: false
       }
     ]

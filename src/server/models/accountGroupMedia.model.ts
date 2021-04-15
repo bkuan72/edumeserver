@@ -32,7 +32,7 @@ export class AccountGroupMediaModel extends EntityModel {
         SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
-      sql += SqlStr.format('accountGroupPeriod_id = UUID_TO_BIN(?)', [accountGroupPeriodId]);
+      sql += SqlStr.format('accountGroupMediaPeriod_id = UUID_TO_BIN(?)', [accountGroupPeriodId]);
       SysLog.info('findByAccountGroupId SQL: ' + sql);
       dbConnection.DB.sql(sql)
         .execute()

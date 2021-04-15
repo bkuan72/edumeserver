@@ -68,10 +68,10 @@ export class AccountGroupActivityModel extends EntityModel {
     });
   };
 
-  findByTypeTimelineIdAccountId = (
+  findByTypeTimelineIdUserId = (
     activityType: string,
     timelineId: string,
-    accountId: string
+    userId: string
   ): Promise<AccountGroupActivityDTO[]> => {
     return new Promise((resolve, reject) => {
       const resAccountGroupActivityDTOArray: AccountGroupActivityDTO[] = [];
@@ -79,7 +79,7 @@ export class AccountGroupActivityModel extends EntityModel {
         SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += 'activity_type = ' + SqlStr.escape(activityType) + ' AND ';
-      sql += SqlStr.format('account_id = UUID_TO_BIN(?)', [accountId]) + ' AND ';
+      sql += SqlStr.format('user_id = UUID_TO_BIN(?)', [userId]) + ' AND ';
       sql += 'group_id = 0 AND ';
       sql += SqlStr.format('timeline_id = UUID_TO_BIN(?)', [timelineId]);
       SysLog.info('findById SQL: ' + sql);

@@ -123,10 +123,6 @@ export class AccountGroupMemberModel extends EntityModel {
         SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') +
         '), ';
       sql +=
-        'BIN_TO_UUID(' +
-        SqlFormatter.fmtTableFieldStr(this.tableName, 'accountGroupMember_id') +
-        '), ';
-      sql +=
         'CONCAT(' +
         SqlFormatter.fmtTableFieldStr(this.tableName, 'first_name') +
         ',' +
@@ -145,7 +141,7 @@ export class AccountGroupMemberModel extends EntityModel {
       sql +=
         SqlFormatter.fmtTableFieldStr(users_schema_table, 'id') +
         ' = ' +
-        SqlFormatter.fmtTableFieldStr(this.tableName, 'accountGroupMember_id');
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id');
       sql += ' WHERE ';
       sql +=
         SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') +
@@ -177,7 +173,6 @@ export class AccountGroupMemberModel extends EntityModel {
                 [
                   'id',
                   'user_id',
-                  'accountGroupMember_id',
                   'name',
                   'avatar',
                   'since'
@@ -216,7 +211,7 @@ export class AccountGroupMemberModel extends EntityModel {
       sql +=
         SqlFormatter.fmtTableFieldStr(users_schema_table, 'id') +
         ' = ' +
-        SqlFormatter.fmtTableFieldStr(this.tableName, 'accountGroupMember_id');
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id');
       sql += ' WHERE ';
       sql +=
         SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') +
@@ -313,7 +308,7 @@ export class AccountGroupMemberModel extends EntityModel {
 
   /**
    * Increment the frequency of contact
-   * @param accountGroupMemberId  point to user(accountGroupMember_id)
+   * @param accountGroupMemberId  point to accountGroupMembers record
    * @returns
    */
   incrementFrequencyById = (
@@ -355,8 +350,8 @@ export class AccountGroupMemberModel extends EntityModel {
   };
 
   /**
-   * Check if account(accountGroupMember_id) is already a accountGroupMember to account(user_id)
-   * @param req - request body { account_id, accountGroupMember_id}
+   * Check if account(user_id) is already a accountGroupMember to account(user_id)
+   * @param req - request body { account_id, user_id}
    * @returns
    */
   areAccountMembers(req: any): Promise<any> {
@@ -364,7 +359,7 @@ export class AccountGroupMemberModel extends EntityModel {
       let sql = '';
       const resp = {
         account_id: req.account_id,
-        accountGroupMember_id: req.accountGroupMember_id,
+        user_id: req.user_id,
         accountGroupMembers: false,
         blocked: false
       };
@@ -395,9 +390,9 @@ export class AccountGroupMemberModel extends EntityModel {
         ') ' +
         ' AND ';
       sql +=
-        SqlFormatter.fmtTableFieldStr(this.tableName, 'accountGroupMember_id') +
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') +
         ' = UUID_TO_BIN(' +
-        SqlStr.escape(req.accountGroupMember_id) +
+        SqlStr.escape(req.user_id) +
         ') ';
       SysLog.info('findById SQL: ' + sql);
       dbConnection.DB.sql(sql)
@@ -421,7 +416,7 @@ export class AccountGroupMemberModel extends EntityModel {
 
   /**
    * Check if user is blocked by accountGroupMember
-   * @param req - request body { user_id, accountGroupMember_id}
+   * @param req - request body { account_id, user_id}
    * @returns
    */
   isBlockedByAccountMember(req: any): Promise<any> {
@@ -429,7 +424,7 @@ export class AccountGroupMemberModel extends EntityModel {
       let sql = '';
       const resp = {
         account_id: req.account_id,
-        accountGroupMember_id: req.accountGroupMember_id,
+        user_id: req.user_id,
         blocked: false
       };
       sql += 'SELECT friend_status ';

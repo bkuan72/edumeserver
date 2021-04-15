@@ -48,7 +48,7 @@ export const accountGroupMembers_schema: schemaIfc[] = [
     description: 'link to groups - group '
   },
   {
-    fieldName: 'accountGroupMember_id',
+    fieldName: 'user_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
@@ -109,7 +109,7 @@ export const accountGroupMembers_schema: schemaIfc[] = [
     index: [
       {
         name: 'user_id_idx',
-        columns: ['site_code', 'accountGroupMember_id', 'accountGroupMember_date'],
+        columns: ['site_code', 'user_id', 'accountGroupMember_date'],
         unique: false
       },
       {

@@ -37,8 +37,8 @@ export class AccountGroupMembersController implements Controller{
     this.router.get(this.path+'/accountGroupMemberList/byAccountId/:accountId', authMiddleware, this.getAccountGroupMemberListByAccountId);
     this.router.get(this.path+'/contactList/byAccountId/:accountId', authMiddleware, this.getContactListByAccountId);
     this.router.get(this.path+'/byAccountGroupMemberId/:accountGroupMemberId', authMiddleware, this.findById);
-    this.router.get(this.path+'/areAccountMembers/:account_id/:accountGroupMember_id', authMiddleware, this.areAccountMembers);
-    this.router.get(this.path+'/isBlockedByAccountGroupMember/:account_id/:accountGroupMember_id', authMiddleware, this.isBlockedByAccountGroupMember);
+    this.router.get(this.path+'/areAccountMembers/:account_id/:user_id', authMiddleware, this.areAccountMembers);
+    this.router.get(this.path+'/isBlockedByAccountGroupMember/:account_id/:user_id', authMiddleware, this.isBlockedByAccountGroupMember);
     this.router.patch(this.path+'/:accountGroupMemberId', authMiddleware, validationUpdateMiddleware(accountGroupMembers_schema), this.update);
     this.router.patch(this.path+'/toggleStar/:id', authMiddleware, this.toggleContactStar);
     this.router.patch(this.path+'/incrFrequency/:accountGroupMemberId', authMiddleware, this.incrementFrequencyById);

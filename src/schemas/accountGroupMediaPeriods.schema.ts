@@ -65,6 +65,14 @@ export const accountGroupMediaPeriods_schema: schemaIfc[] = [
     description: 'period eg Month YYYY'
   },
   {
+    fieldName: 'info',
+    sqlType: 'TEXT',
+    allowNull: false,
+    excludeFromUpdate: false,
+    trim: false,
+    description: 'period info'
+  },
+  {
     fieldName: 'upload_date',
     sqlType: 'VARCHAR(25)',
     size: 25,

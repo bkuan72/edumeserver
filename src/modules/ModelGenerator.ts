@@ -164,7 +164,7 @@ class ModelGenerator {
         for (const prop in requestDTO) {
             const colProp = this.getSchema(schema, prop);
             if (colProp === undefined) {
-                error += prop + ' not defined! ';
+                error += prop + ' not in schema! ';
             } else {
                 error = this.validateProperty(colProp, error, requestDTO);
             }
@@ -182,7 +182,7 @@ class ModelGenerator {
         for (const prop in requestDTO) {
             const colProp = this.getSchema(schema, prop);
             if (colProp === undefined) {
-                error += prop + ' not defined! ';
+                error += prop + ' not in schema! ';
             } else {
                 if (colProp.excludeFromUpdate != undefined && colProp.excludeFromUpdate) {
                     error += prop + ' cannot be updated! ';

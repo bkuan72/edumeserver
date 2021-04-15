@@ -41,7 +41,6 @@ export class AccountsController implements Controller{
     this.router.get(this.path, authMiddleware, this.getAll);
     this.router.get(this.path+'/basicInfo/byAccountId/:accountId', this.getBasicAccountInfo);
     this.router.get(this.path+'/profile-about/byAccountId/:accountId', authMiddleware, this.getAbout);
-    this.router.get(this.path+'/byUserId/:userId', authMiddleware, this.findByUserId);
     this.router.get(this.path+'/byAccountId/:accountId', authMiddleware, this.findById);
     this.router.patch(this.path+'/byAccountId/:accountId', authMiddleware, validationUpdateMiddleware(accounts_schema), this.update);
     this.router.put(this.path+'/avatar/byAccountId/:accountId', authMiddleware, validationUpdateMiddleware(accounts_schema), this.update);
@@ -81,18 +80,6 @@ export class AccountsController implements Controller{
           }
       })
   };
-
-  findByUserId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-    this.accounts.find({
-      user_id: request.params.userId
-    }).then((respAccountDTO) => {
-      if (respAccountDTO) {
-        response.send(respAccountDTO);
-      } else {
-        next(new DataNotFoundException(request.params.accountId))
-      }
-    })
-  }
 
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.accounts.findById(request.params.accountId).then((respAccountDTO) => {
@@ -165,7 +152,7 @@ export class AccountsController implements Controller{
       if (respAccountDTO) {
         response.send({
           id: respAccountDTO.id,
-          user_name: respAccountDTO.account_name,
+          account_name: respAccountDTO.account_name,
           avatar: respAccountDTO.avatar
         });
       } else {
