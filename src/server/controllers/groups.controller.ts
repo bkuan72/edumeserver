@@ -35,7 +35,7 @@ export class GroupsController implements Controller{
                     validationMiddleware(socialGroups_schema),
                     this.newGroup);
     this.router.get(this.path+'/byAccountId/:accountId', authMiddleware, this.getByAccountId);
-    this.router.get(this.path+'/byId/:id', authMiddleware, this.findById);
+    this.router.get(this.path+'/byGroupId/:id', authMiddleware, this.findById);
     this.router.patch(this.path+'/:id', authMiddleware, validationUpdateMiddleware(socialGroups_schema), this.update);
     this.router.get(this.path+'/DTO', adminAuthMiddleware, this.apiDTO);
     this.router.get(this.path+'/updDTO', authMiddleware, this.apiUpdDTO);

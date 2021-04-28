@@ -129,4 +129,43 @@ export class ActivityModel extends EntityModel {
         });
     });
   }
+
+  addAccountMemberRequest(member: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+        this.create({
+          timeline_user_id: member.user_id,
+          account_id: member.account_id,
+          member_id: member.id,
+          activity_type: 'ACC_MEMBER_REQ',
+          message: 'Want to Add you as Member.',
+          activity_date: new Date().toISOString()
+        }).then((activityDTO) => {
+          resolve(activityDTO);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          reject(undefined)
+        });
+    });
+  }
+
+  addGroupMemberRequest(member: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+        this.create({
+          timeline_user_id: member.user_id,
+          account_id: member.account_id,
+          group_id: member.group_id,
+          member_id: member.id,
+          activity_type: 'GRP_MEMBER_REQ',
+          message: 'Want to Add you as Member.',
+          activity_date: new Date().toISOString()
+        }).then((activityDTO) => {
+          resolve(activityDTO);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          reject(undefined)
+        });
+    });
+  }
 }

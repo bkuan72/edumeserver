@@ -56,41 +56,154 @@ export const accountGroupMembers_schema: schemaIfc[] = [
     description: 'link to users - member'
   },
   {
-    fieldName: 'accountGroupMember_date',
+    fieldName: 'member_date',
     sqlType: 'VARCHAR(25)',
     size: 25,
     allowNull: false,
     excludeFromUpdate: false,
     trim: false,
-    description: 'date accountGroupMembered'
+    description: 'date membered'
   },
   {
-    fieldName: 'accountGroupMember_req_date',
-    sqlType: 'VARCHAR(25)',
-    size: 25,
+    fieldName: 'first_name',
+    sqlType: 'VARCHAR(60)',
+    size: 60,
     allowNull: false,
     excludeFromUpdate: false,
-    trim: false,
-    description: 'date accountGroupMember requested'
+    default: '',
+    description: 'first name'
   },
   {
-    fieldName: 'accountGroupMember_block_date',
-    sqlType: 'VARCHAR(25)',
-    size: 25,
-    allowNull: false,
+    fieldName: 'last_name',
+    sqlType: 'VARCHAR(60)',
+    size: 60,
+    allowNull: true,
+    excludeFromUpdate: false,
+    default: '',
+    description: 'last name'
+  },
+  { fieldName: 'avatar',
+    sqlType: 'TEXT',
+    trim: true,
+    default: '',
+    description: 'user`s avatar blob - type png'
+  },
+  {
+    fieldName: 'nickname',
+    sqlType: 'VARCHAR(40)',
+    size: 40,
+    allowNull: true,
     excludeFromUpdate: false,
     trim: false,
-    description: 'date accountGroupMember blocked'
+    default: '',
+    description: 'member nickname'
   },
   {
-    fieldName: 'accountGroupMember_type',
+    fieldName: 'email',
+    sqlType: 'VARCHAR(60)',
+    size: 60,
+    allowNull: true,
+    excludeFromUpdate: false,
+    default: '',
+    trim: true,
+    description: 'user email address'
+  },
+  {
+    fieldName: 'mobile_no',
+    sqlType: 'VARCHAR(30)',
+    size: 30,
+    allowNull: true,
+    excludeFromUpdate: false,
+    default: '',
+    trim: true,
+    description: 'land line phone number'
+  },
+  {
+    fieldName: 'company',
+    sqlType: 'VARCHAR(60)',
+    size: 60,
+    allowNull: true,
+    excludeFromUpdate: false,
+    default: '',
+    trim: true,
+    description: 'company name'
+  },
+  {
+    fieldName: 'job_title',
+    sqlType: 'VARCHAR(60)',
+    size: 60,
+    allowNull: true,
+    excludeFromUpdate: false,
+    default: '',
+    trim: true,
+    description: 'Job Title'
+  },
+  {
+    fieldName: 'address',
+    sqlType: 'VARCHAR(255)',
+    size: 255,
+    allowNull: true,
+    excludeFromUpdate: false,
+    default: '',
+    trim: true,
+    description: 'user`s address'
+  },
+  {
+    fieldName: 'birthday',
+    sqlType: 'VARCHAR(25)',
+    size: 25,
+    allowNull: true,
+    excludeFromUpdate: false,
+    default: '',
+    trim: true
+  },
+  {
+    fieldName: 'notes',
+    sqlType: 'TEXT',
+    default: ''
+  },
+  {
+    fieldName: 'starred',
+    sqlType: 'BOOLEAN',
+    default: '0',
+    excludeFromUpdate: true,
+    description: 'starred members'
+  },
+  {
+    fieldName: 'frequent',
+    sqlType: 'INT',
+    default: '0',
+    excludeFromUpdate: true,
+    description: 'frequent contacted members'
+  },
+
+  {
+    fieldName: 'member_req_date',
+    sqlType: 'VARCHAR(25)',
+    size: 25,
+    allowNull: true,
+    excludeFromUpdate: false,
+    trim: false,
+    description: 'date member requested'
+  },
+  {
+    fieldName: 'member_block_date',
+    sqlType: 'VARCHAR(25)',
+    size: 25,
+    allowNull: true,
+    excludeFromUpdate: false,
+    trim: false,
+    description: 'date member blocked'
+  },
+  {
+    fieldName: 'member_type',
     sqlType: 'ENUM',
     size: 10,
     enum: ['ADMIN', 'USER', 'GUEST'],
     default: 'USER'
   },
   {
-    fieldName: 'accountGroupMember_status',
+    fieldName: 'member_status',
     sqlType: 'ENUM',
     size: 10,
     enum: ['BLOCKED', 'REQUEST', 'OK'],
@@ -109,7 +222,7 @@ export const accountGroupMembers_schema: schemaIfc[] = [
     index: [
       {
         name: 'user_id_idx',
-        columns: ['site_code', 'user_id', 'accountGroupMember_date'],
+        columns: ['site_code', 'user_id', 'member_date'],
         unique: false
       },
       {
@@ -117,7 +230,7 @@ export const accountGroupMembers_schema: schemaIfc[] = [
         columns: [
           'site_code',
           'account_id',
-          'accountGroupMember_status',
+          'member_status',
           'lastUpdateUsec'
         ],
         unique: false
@@ -127,7 +240,7 @@ export const accountGroupMembers_schema: schemaIfc[] = [
         columns: [
           'site_code',
           'group_id',
-          'accountGroupMember_status',
+          'member_status',
           'lastUpdateUsec'
         ],
         unique: false

@@ -48,7 +48,7 @@ export const activities_schema: schemaIfc[] = [
     description: 'link to friends table - for friend request'
   },
   {
-    fieldName: 'accounts_id',
+    fieldName: 'account_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
@@ -56,7 +56,7 @@ export const activities_schema: schemaIfc[] = [
     description: 'link to accounts table - activity initiator'
   },
   {
-    fieldName: 'groups_id',
+    fieldName: 'group_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
@@ -64,7 +64,7 @@ export const activities_schema: schemaIfc[] = [
     description: 'link to groups table - activity initiator'
   },
   {
-    fieldName: 'members_id',
+    fieldName: 'member_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,
@@ -91,7 +91,7 @@ export const activities_schema: schemaIfc[] = [
     fieldName: 'activity_type',
     sqlType: 'ENUM',
     size: 15,
-    enum: ['LIKES', 'SHARE', 'MESSAGED', 'FOLLOW_REQUEST', 'FRIEND_REQUEST', 'JOIN_REQUEST'],
+    enum: ['LIKES', 'SHARE', 'MESSAGED', 'FOLLOW_REQUEST', 'FRIEND_REQUEST','ACC_MEMBER_REQ', 'GRP_MEMBER_REQ', 'JOIN_REQUEST'],
     default: 'LIKES',
     description: 'types of activities'
   },

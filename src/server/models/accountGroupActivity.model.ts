@@ -9,8 +9,12 @@ import { EntityModel } from './entity.model';
 import dbConnection from '../../modules/DbModule';
 import SysLog from '../../modules/SysLog';
 import SqlStr = require('sqlstring');
+import { ActivityModel } from './activity.model';
 
 export class AccountGroupActivityModel extends EntityModel {
+
+  private userActivityModel = new ActivityModel();
+
   constructor(altTable?: string) {
     super();
 
@@ -199,17 +203,17 @@ export class AccountGroupActivityModel extends EntityModel {
     });
   };
 
+  createMemberRequest(memberRequest: any): Promise<any> {
+    return new Promise ((resolve, reject) => {
+      resolve({});
+    });
+  }
+
+
 
   addAccountMemberRequest(member: any): Promise<void> {
     return new Promise((resolve, reject) => {
-        this.create({
-          timeline_account_id: member.account_id,
-          user_id: member.user_id,
-          friends_id: member.id,
-          activity_type: 'FRIEND_REQUEST',
-          message: 'Want to Add you to their Contact.',
-          activity_date: new Date().toISOString()
-        }).then((activityDTO) => {
+        this.userActivityModel.addAccountMemberRequest(member).then((activityDTO) => {
           resolve(activityDTO);
         })
         .catch((err) => {
@@ -219,22 +223,5 @@ export class AccountGroupActivityModel extends EntityModel {
     });
   }
 
-  addGroupMemberRequest(member: any): Promise<void> {
-    return new Promise((resolve, reject) => {
-        this.create({
-          timeline_group_id: member.group_id,
-          user_id: member.user_id,
-          friends_id: member.id,
-          activity_type: 'FRIEND_REQUEST',
-          message: 'Want to Add you to their Contact.',
-          activity_date: new Date().toISOString()
-        }).then((activityDTO) => {
-          resolve(activityDTO);
-        })
-        .catch((err) => {
-          SysLog.error(JSON.stringify(err));
-          reject(undefined)
-        });
-    });
-  }
+
 }

@@ -152,8 +152,15 @@ export class AccountsController implements Controller{
       if (respAccountDTO) {
         response.send({
           id: respAccountDTO.id,
+          user_name: respAccountDTO.account_name,          
           account_name: respAccountDTO.account_name,
-          avatar: respAccountDTO.avatar
+          avatar: respAccountDTO.avatar,
+          allow_promo: respAccountDTO.allow_promo,
+          allow_friends: respAccountDTO.allow_friends,
+          allow_notification: respAccountDTO.allow_notification,
+          allow_msg: respAccountDTO.allow_msg,
+          allow_follows: respAccountDTO.allow_follows,
+          public: respAccountDTO.public
         });
       } else {
         next(new DataNotFoundException(request.params.accountId))

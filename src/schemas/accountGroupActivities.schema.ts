@@ -40,7 +40,7 @@ export const accountGroupActivities_schema: schemaIfc[] = [
     description: 'link to users table - activity initiator'
   },
   {
-    fieldName: 'friends_id',
+    fieldName: 'friend_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
     uuidProperty: true,

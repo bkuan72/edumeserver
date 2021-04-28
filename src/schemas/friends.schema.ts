@@ -40,6 +40,22 @@ export const friends_schema: schemaIfc[] = [
     description: 'link to users - owner'
   },
   {
+    fieldName: 'account_id',
+    sqlType: 'BINARY(16)',
+    primaryKey: false,
+    uuidProperty: true,
+    excludeFromUpdate: true,
+    description: 'link to accounts - account'
+  },
+  {
+    fieldName: 'group_id',
+    sqlType: 'BINARY(16)',
+    primaryKey: false,
+    uuidProperty: true,
+    excludeFromUpdate: true,
+    description: 'link to groups - group'
+  },
+  {
     fieldName: 'friend_id',
     sqlType: 'BINARY(16)',
     primaryKey: false,
@@ -97,7 +113,7 @@ export const friends_schema: schemaIfc[] = [
     excludeFromUpdate: false,
     trim: false,
     default: '',
-    description: 'date friended'
+    description: 'friend nickname'
   },
   {
     fieldName: 'email',
@@ -151,8 +167,8 @@ export const friends_schema: schemaIfc[] = [
   },
   {
     fieldName: 'birthday',
-    sqlType: 'VARCHAR(20)',
-    size: 20,
+    sqlType: 'VARCHAR(25)',
+    size: 25,
     allowNull: true,
     excludeFromUpdate: false,
     default: '',

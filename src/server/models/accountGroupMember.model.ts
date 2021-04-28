@@ -1,4 +1,3 @@
-import { friends_schema_table } from './../../schemas/friends.schema';
 import { users_schema_table } from './../../schemas/users.schema';
 import { SqlFormatter } from './../../modules/sql.strings';
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -45,7 +44,7 @@ export class AccountGroupMemberModel extends EntityModel {
     return new Promise((resolve) => {
       this.create(dataInEntity)
         .then((newAccountGroupMember) => {
-          if (newAccountGroupMember.accountGroupMember_status === 'REQUEST') {
+          if (newAccountGroupMember.member_status === 'REQUEST') {
             this.activities
               .addAccountMemberRequest(newAccountGroupMember)
               .finally(() => {
@@ -120,6 +119,14 @@ export class AccountGroupMemberModel extends EntityModel {
         '), ';
       sql +=
         'BIN_TO_UUID(' +
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'account_id') +
+        '), ';
+      sql +=
+        'BIN_TO_UUID(' +
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'group_id') +
+        '), ';
+      sql +=
+        'BIN_TO_UUID(' +
         SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') +
         '), ';
       sql +=
@@ -134,7 +141,7 @@ export class AccountGroupMemberModel extends EntityModel {
       sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'avatar') + ',';
       sql += SqlFormatter.fmtTableFieldStr(
         this.tableName,
-        'accountGroupMember_date'
+        'member_date'
       );
       sql += ' FROM ' + this.tableName;
       sql += ' LEFT OUTER JOIN ' + users_schema_table + ' ON ';
@@ -152,11 +159,6 @@ export class AccountGroupMemberModel extends EntityModel {
         ' != ' +
         SqlStr.escape('DELETED') +
         ' AND ';
-      sql +=
-        SqlFormatter.fmtTableFieldStr(
-          this.tableName,
-          'accountGroupMember_status'
-        ) + ' = ' + SqlStr.escape('OK') + ' AND ';
       sql += 'group_id = 0 AND '
       sql +=
         SqlFormatter.fmtTableFieldStr(this.tableName, 'account_id') +
@@ -172,6 +174,8 @@ export class AccountGroupMemberModel extends EntityModel {
               const data = SqlFormatter.transposeColumnResultSet(
                 [
                   'id',
+                  'account_id',
+                  'group_id',
                   'user_id',
                   'name',
                   'avatar',
@@ -378,7 +382,7 @@ export class AccountGroupMemberModel extends EntityModel {
       sql +=
         SqlFormatter.fmtTableFieldStr(
           this.tableName,
-          'accountGroupMember_status'
+          'member_status'
         ) +
         ' = ' +
         SqlStr.escape('OK') +
@@ -419,7 +423,7 @@ export class AccountGroupMemberModel extends EntityModel {
    * @param req - request body { account_id, user_id}
    * @returns
    */
-  isBlockedByAccountMember(req: any): Promise<any> {
+  isBlockedByAccount(req: any): Promise<any> {
     return new Promise((resolve) => {
       let sql = '';
       const resp = {
@@ -427,34 +431,34 @@ export class AccountGroupMemberModel extends EntityModel {
         user_id: req.user_id,
         blocked: false
       };
-      sql += 'SELECT friend_status ';
-      sql += ' FROM ' + friends_schema_table;
+      sql += 'SELECT member_status ';
+      sql += ' FROM ' + accountGroupMembers_schema_table;
       sql += ' WHERE ';
       sql +=
-        SqlFormatter.fmtTableFieldStr(friends_schema_table, 'site_code') +
+        SqlFormatter.fmtTableFieldStr(accountGroupMembers_schema_table, 'site_code') +
         SqlStr.format(' = ?', [this.siteCode]) +
         ' AND ';
       sql +=
-        SqlFormatter.fmtTableFieldStr(friends_schema_table, 'status') +
+        SqlFormatter.fmtTableFieldStr(accountGroupMembers_schema_table, 'status') +
         ' != ' +
         SqlStr.escape('DELETED') +
         ' AND ';
       sql +=
         SqlFormatter.fmtTableFieldStr(
-          friends_schema_table,
+          accountGroupMembers_schema_table,
           'status'
         ) +
         ' = ' +
         SqlStr.escape('BLOCKED') +
         ' AND ';
       sql +=
-        SqlFormatter.fmtTableFieldStr(friends_schema_table, 'account_id') +
+        SqlFormatter.fmtTableFieldStr(accountGroupMembers_schema_table, 'account_id') +
         ' = UUID_TO_BIN(' +
         SqlStr.escape(req.account_id) +
         ') ' +
         ' AND ';
       sql +=
-        SqlFormatter.fmtTableFieldStr(friends_schema_table, 'user_id') +
+        SqlFormatter.fmtTableFieldStr(accountGroupMembers_schema_table, 'user_id') +
         ' = UUID_TO_BIN(' +
         SqlStr.escape(req.user_id) +
         ') ';
@@ -477,4 +481,68 @@ export class AccountGroupMemberModel extends EntityModel {
         });
     });
   }
+
+  /**
+   * Check if user is blocked by accountGroupMember
+   * @param req - request body { account_id, user_id}
+   * @returns
+   */
+  isBlockedByGroup(req: any): Promise<any> {
+      return new Promise((resolve) => {
+        let sql = '';
+        const resp = {
+          group_id: req.group_id,
+          user_id: req.user_id,
+          blocked: false
+        };
+        sql += 'SELECT member_status ';
+        sql += ' FROM ' + accountGroupMembers_schema_table;
+        sql += ' WHERE ';
+        sql +=
+          SqlFormatter.fmtTableFieldStr(accountGroupMembers_schema_table, 'site_code') +
+          SqlStr.format(' = ?', [this.siteCode]) +
+          ' AND ';
+        sql +=
+          SqlFormatter.fmtTableFieldStr(accountGroupMembers_schema_table, 'status') +
+          ' != ' +
+          SqlStr.escape('DELETED') +
+          ' AND ';
+        sql +=
+          SqlFormatter.fmtTableFieldStr(
+            accountGroupMembers_schema_table,
+            'status'
+          ) +
+          ' = ' +
+          SqlStr.escape('BLOCKED') +
+          ' AND ';
+        sql +=
+          SqlFormatter.fmtTableFieldStr(accountGroupMembers_schema_table, 'group_id') +
+          ' = UUID_TO_BIN(' +
+          SqlStr.escape(req.group_id) +
+          ') ' +
+          ' AND ';
+        sql +=
+          SqlFormatter.fmtTableFieldStr(accountGroupMembers_schema_table, 'user_id') +
+          ' = UUID_TO_BIN(' +
+          SqlStr.escape(req.user_id) +
+          ') ';
+        SysLog.info('findById SQL: ' + sql);
+        dbConnection.DB.sql(sql)
+          .execute()
+          .then((result) => {
+            if (result.rows.length) {
+              resp.blocked = true;
+              resolve(resp);
+              return;
+            }
+            // not found Customer with the id
+            resolve(resp);
+          })
+          .catch((err) => {
+            SysLog.error(JSON.stringify(err));
+            resolve(resp);
+            return;
+          });
+      });
+    }
 }

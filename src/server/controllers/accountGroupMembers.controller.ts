@@ -38,7 +38,8 @@ export class AccountGroupMembersController implements Controller{
     this.router.get(this.path+'/contactList/byAccountId/:accountId', authMiddleware, this.getContactListByAccountId);
     this.router.get(this.path+'/byAccountGroupMemberId/:accountGroupMemberId', authMiddleware, this.findById);
     this.router.get(this.path+'/areAccountMembers/:account_id/:user_id', authMiddleware, this.areAccountMembers);
-    this.router.get(this.path+'/isBlockedByAccountGroupMember/:account_id/:user_id', authMiddleware, this.isBlockedByAccountGroupMember);
+    this.router.get(this.path+'/isBlockedByAccount/:account_id/:user_id', authMiddleware, this.isBlockedByAccount);
+    this.router.get(this.path+'/isBlockedByGroup/:group_id/:user_id', authMiddleware, this.isBlockedByGroup);
     this.router.patch(this.path+'/:accountGroupMemberId', authMiddleware, validationUpdateMiddleware(accountGroupMembers_schema), this.update);
     this.router.patch(this.path+'/toggleStar/:id', authMiddleware, this.toggleContactStar);
     this.router.patch(this.path+'/incrFrequency/:accountGroupMemberId', authMiddleware, this.incrementFrequencyById);
@@ -144,7 +145,7 @@ export class AccountGroupMembersController implements Controller{
     this.accountGroupMembers.areAccountMembers(request.params).then((respAccountGroupMember) => {
       if (respAccountGroupMember) {
         if (respAccountGroupMember.accountGroupMembers) {
-          this.accountGroupMembers.isBlockedByAccountMember(request.param).then((blockResp) => {
+          this.accountGroupMembers.isBlockedByAccount(request.param).then((blockResp) => {
             respAccountGroupMember.blocked = blockResp.blocked;
             response.send(respAccountGroupMember);
           })
@@ -160,8 +161,18 @@ export class AccountGroupMembersController implements Controller{
     })
   }
 
-  isBlockedByAccountGroupMember  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-    this.accountGroupMembers.isBlockedByAccountMember(request.params).then((respAccountGroupMember) => {
+  isBlockedByAccount  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.accountGroupMembers.isBlockedByAccount(request.params).then((respAccountGroupMember) => {
+      if (respAccountGroupMember) {
+        response.send(respAccountGroupMember);
+      } else {
+        next(new DataNotFoundException(request.params.accountGroupMemberId))
+      }
+    })
+  }
+
+  isBlockedByGroup  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.accountGroupMembers.isBlockedByGroup(request.params).then((respAccountGroupMember) => {
       if (respAccountGroupMember) {
         response.send(respAccountGroupMember);
       } else {

@@ -77,7 +77,7 @@ export class ActivitiesController implements Controller{
   }
 
   removeById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
-    this.activities.deleteById(request.params.activityId).then((activityIdDTO) => {
+    this.activities.remove(request.params.activityId).then((activityIdDTO) => {
       if (activityIdDTO) {
         response.send(activityIdDTO);
       } else {

@@ -40,6 +40,8 @@ export class FriendsController implements Controller{
     this.router.get(this.path+'/byFriendId/:friendId', authMiddleware, this.findById);
     this.router.get(this.path+'/areFriends/:user_id/:friend_id', authMiddleware, this.areFriends);
     this.router.get(this.path+'/isBlockedByFriend/:user_id/:friend_id', authMiddleware, this.isBlockedByFriend);
+    this.router.get(this.path+'/isAccountBlockedByUser/:user_id/:account_id', authMiddleware, this.isAccountBlockedByUser);
+    this.router.get(this.path+'/isGroupBlockedByUser/:user_id/:group_id', authMiddleware, this.isGroupBlockedByUser);
     this.router.patch(this.path+'/:friendId', authMiddleware, validationUpdateMiddleware(friends_schema), this.update);
     this.router.patch(this.path+'/toggleStar/:id', authMiddleware, this.toggleContactStar);
     this.router.patch(this.path+'/incrFrequency/:friendId', authMiddleware, this.incrementFrequencyById);
@@ -171,4 +173,23 @@ export class FriendsController implements Controller{
     })
   }
 
+  isAccountBlockedByUser  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.friends.isAccountBlockedByUser(request.params).then((respFriend) => {
+      if (respFriend) {
+        response.send(respFriend);
+      } else {
+        next(new DataNotFoundException(request.params.friendId))
+      }
+    })
+  }
+
+  isGroupBlockedByUser  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.friends.isGroupBlockedByUser(request.params).then((respFriend) => {
+      if (respFriend) {
+        response.send(respFriend);
+      } else {
+        next(new DataNotFoundException(request.params.friendId))
+      }
+    })
+  }
 }

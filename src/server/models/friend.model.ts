@@ -177,14 +177,8 @@ export class FriendModel extends EntityModel {
     return new Promise((resolve) => {
       const resContactListDTOArray: ContactListDTO[] = [];
       let sql = 'SELECT ';
-      sql += SqlFormatter.formatTableSelect(this.tableName, this.schema) + ', ';
-      sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'avatar');
+      sql += SqlFormatter.formatTableSelect(this.tableName, this.schema);
       sql += ' FROM ' + this.tableName;
-      sql += ' LEFT OUTER JOIN ' + users_schema_table + ' ON ';
-      sql +=
-        SqlFormatter.fmtTableFieldStr(users_schema_table, 'id') +
-        ' = ' +
-        SqlFormatter.fmtTableFieldStr(this.tableName, 'friend_id');
       sql += ' WHERE ';
       sql +=
         SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') +
@@ -212,12 +206,6 @@ export class FriendModel extends EntityModel {
                 idx,
                 data,
                 this.schema,
-                rowData
-              );
-              idx = SqlFormatter.transposeTableSelectColumnArray(
-                idx,
-                data.user,
-                ['avatar'],
                 rowData
               );
 
@@ -416,6 +404,126 @@ export class FriendModel extends EntityModel {
         SqlFormatter.fmtTableFieldStr(this.tableName, 'friend_id') +
         ' = UUID_TO_BIN(' +
         SqlStr.escape(req.user_id) +
+        ') '
+      SysLog.info('findById SQL: ' + sql);
+      dbConnection.DB.sql(sql)
+        .execute()
+        .then((result) => {
+          if (result.rows.length) {
+            resp.blocked = true;
+            resolve(resp);
+            return;
+          }
+          // not found Customer with the id
+          resolve(resp);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(resp);
+          return;
+        });
+    })
+  }
+
+/**
+ * Check if account is blocked by user
+ * @param req - request body { user_id, friend_id}
+ * @returns 
+ */
+   isAccountBlockedByUser(req: any): Promise<any> {
+    return new Promise((resolve) => {
+      let sql = '';
+      const resp = {
+        user_id: req.user_id,
+        account_id: req.account_id,
+        blocked: false
+      };
+      sql += 'SELECT friend_status ';
+      sql += ' FROM ' + this.tableName;
+      sql += ' WHERE ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') +
+        SqlStr.format(' = ?', [this.siteCode]) +
+        ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'status') +
+        ' != ' +
+        SqlStr.escape('DELETED') +
+        ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'friend_status') +
+        ' = ' +
+        SqlStr.escape('BLOCKED') +
+        ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') +
+        ' = UUID_TO_BIN(' +
+        SqlStr.escape(req.user_id) +
+        ') ' + ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'account_id') +
+        ' = UUID_TO_BIN(' +
+        SqlStr.escape(req.account_id) +
+        ') '
+      SysLog.info('findById SQL: ' + sql);
+      dbConnection.DB.sql(sql)
+        .execute()
+        .then((result) => {
+          if (result.rows.length) {
+            resp.blocked = true;
+            resolve(resp);
+            return;
+          }
+          // not found Customer with the id
+          resolve(resp);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(resp);
+          return;
+        });
+    })
+  }
+
+  /**
+ * Check if account is blocked by user
+ * @param req - request body { user_id, friend_id}
+ * @returns 
+ */
+   isGroupBlockedByUser(req: any): Promise<any> {
+    return new Promise((resolve) => {
+      let sql = '';
+      const resp = {
+        user_id: req.user_id,
+        group_id: req.group_id,
+        blocked: false
+      };
+      sql += 'SELECT friend_status ';
+      sql += ' FROM ' + this.tableName;
+      sql += ' WHERE ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') +
+        SqlStr.format(' = ?', [this.siteCode]) +
+        ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'status') +
+        ' != ' +
+        SqlStr.escape('DELETED') +
+        ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'friend_status') +
+        ' = ' +
+        SqlStr.escape('BLOCKED') +
+        ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') +
+        ' = UUID_TO_BIN(' +
+        SqlStr.escape(req.user_id) +
+        ') ' + ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(this.tableName, 'group_id') +
+        ' = UUID_TO_BIN(' +
+        SqlStr.escape(req.group_id) +
         ') '
       SysLog.info('findById SQL: ' + sql);
       dbConnection.DB.sql(sql)
