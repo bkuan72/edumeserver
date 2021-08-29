@@ -1,3 +1,4 @@
+import { member_security_schema, member_security_schema_table } from './memberSecurities.schema';
 import { adAgeGroups_schema, adAgeGroups_schema_table } from './adAgeGroups.schema';
 import { adActivities_schema, adActivities_schema_table } from './adActivities.schema';
 import { adKeywords_schema, adKeywords_schema_table } from './adKeywords.schema';
@@ -160,4 +161,8 @@ export const sysTables: tableIfc[] = [
     name: accountGroupActivities_schema_table,
     schema: accountGroupActivities_schema
   },
+  {
+    name: member_security_schema_table,
+    schema: member_security_schema
+  }
 ];

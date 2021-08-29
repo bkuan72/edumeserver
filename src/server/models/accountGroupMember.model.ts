@@ -545,4 +545,71 @@ export class AccountGroupMemberModel extends EntityModel {
           });
       });
     }
+
+      /**
+   * Check if user is blocked by accountGroupMember
+   * @param req - request body { account_id, user_id}
+   * @returns
+   */
+  getAccountMemberData(req: any): Promise<any> {
+    return new Promise((resolve) => {
+      const resp = new AccountGroupMemberDTO();
+
+      let sql = 'SELECT ';
+      sql += SqlFormatter.formatTableSelect(this.tableName, this.schema) + ', ';
+      sql += ' FROM ' + accountGroupMembers_schema_table;
+      sql += ' WHERE ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(accountGroupMembers_schema_table, 'site_code') +
+        SqlStr.format(' = ?', [this.siteCode]) +
+        ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(accountGroupMembers_schema_table, 'status') +
+        ' != ' +
+        SqlStr.escape('DELETED') +
+        ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(
+          accountGroupMembers_schema_table,
+          'status'
+        ) +
+        ' = ' +
+        SqlStr.escape('BLOCKED') +
+        ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(accountGroupMembers_schema_table, 'account_id') +
+        ' = UUID_TO_BIN(' +
+        SqlStr.escape(req.account_id) +
+        ') ' +
+        ' AND ';
+      sql +=
+        SqlFormatter.fmtTableFieldStr(accountGroupMembers_schema_table, 'user_id') +
+        ' = UUID_TO_BIN(' +
+        SqlStr.escape(req.user_id) +
+        ') ';
+      SysLog.info('findById SQL: ' + sql);
+      dbConnection.DB.sql(sql)
+        .execute()
+        .then((result) => {
+          if (result.rows.length) {
+            let idx = 0;
+            idx = SqlFormatter.transposeTableSelectColumns(
+              idx,
+              resp,
+              this.schema,
+              result.rows[0]
+            );
+            resolve(resp);
+            return;
+          }
+          // not found Customer with the id
+          resolve(resp);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(resp);
+          return;
+        });
+    });
+  }
 }

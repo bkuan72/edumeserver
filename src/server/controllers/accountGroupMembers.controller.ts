@@ -37,6 +37,7 @@ export class AccountGroupMembersController implements Controller{
     this.router.get(this.path+'/accountGroupMemberList/byAccountId/:accountId', authMiddleware, this.getAccountGroupMemberListByAccountId);
     this.router.get(this.path+'/contactList/byAccountId/:accountId', authMiddleware, this.getContactListByAccountId);
     this.router.get(this.path+'/byAccountGroupMemberId/:accountGroupMemberId', authMiddleware, this.findById);
+    this.router.get(this.path+'/accountMember/:account_id/:user_id', authMiddleware, this.getAccountMemberData);
     this.router.get(this.path+'/areAccountMembers/:account_id/:user_id', authMiddleware, this.areAccountMembers);
     this.router.get(this.path+'/isBlockedByAccount/:account_id/:user_id', authMiddleware, this.isBlockedByAccount);
     this.router.get(this.path+'/isBlockedByGroup/:group_id/:user_id', authMiddleware, this.isBlockedByGroup);
@@ -155,6 +156,16 @@ export class AccountGroupMembersController implements Controller{
         } else {
           response.send(respAccountGroupMember);
         }
+      } else {
+        next(new DataNotFoundException(request.params.accountGroupMemberId))
+      }
+    })
+  }
+
+  getAccountMemberData  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    this.accountGroupMembers.getAccountMemberData(request.params).then((respAccountGroupMember) => {
+      if (respAccountGroupMember) {
+        response.send(respAccountGroupMember);
       } else {
         next(new DataNotFoundException(request.params.accountGroupMemberId))
       }
