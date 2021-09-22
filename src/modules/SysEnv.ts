@@ -3,6 +3,7 @@ export class SystemEnvironment {
     DB_USER: string;
     DB_PASSWORD: string;
     DB_NAME: string;
+    DB_PORT: string;
     PORT: number;
     JWT_SECRET: string;
     DB_BCRYPT_SALT: number;
@@ -28,6 +29,7 @@ export class SystemEnvironment {
         this.DB_USER = 'webservice';            // database user id
         this.DB_PASSWORD = ''                   // database password
         this.DB_NAME = 'testdb';                // database name
+        this.DB_PORT = '33000';                    // database port
         this.PORT = 3000;                       // this server port
         this.JWT_SECRET = '';                   // JWT secret key
         this.DB_BCRYPT_SALT = 10;               // Bcrypt salt number
@@ -59,6 +61,9 @@ export class SystemEnvironment {
         }
         if (process.env.DB_NAME !== undefined) {
             this.DB_NAME = process.env.DB_NAME;
+        }
+        if (process.env.DB_PORT !== undefined) {
+            this.DB_PORT = process.env.DB_PORT;
         }
         if (process.env.PORT !== undefined) {
             this.PORT = parseInt(process.env.PORT);

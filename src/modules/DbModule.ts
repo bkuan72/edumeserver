@@ -1,11 +1,11 @@
+import  mysqlx  from 'mysqlx';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import CommonFn from './CommonFnModule'
 import { sysTables } from '../schemas/SysTables';
 import SysLog from './SysLog';
-import mysqlx from 'mysqlx';
-import Session from 'mysqlx/lib/Session';
 import SqlFormatter from './sql.strings';
+import Session from 'mysqlx/lib/Session';
 export interface indexIfc {
     name: string;
     columns: string[];
@@ -41,7 +41,6 @@ export interface tableIfc {
 }
 
 class Database {
-
     DB!: Session;
 
     serverCfg!: {
@@ -59,7 +58,8 @@ class Database {
                 DB_HOST,
                 DB_USER,
                 DB_PASSWORD,
-                DB_NAME
+                DB_NAME,
+                DB_PORT
               } = process.env;
 
               this.serverCfg = {
@@ -67,13 +67,23 @@ class Database {
                   user: DB_USER,
                   password: DB_PASSWORD
               };
-
+            let dbName = "testdb";
+            if (DB_NAME != undefined) {
+                dbName = DB_NAME;
+            }
+            SysLog.info("host: " + this.serverCfg.host);
+            SysLog.info("user: " + this.serverCfg.user);
+            SysLog.info("password: " + this.serverCfg.password);
+            // SysLog.info("port: " + this.serverCfg.port);
             mysqlx.getSession(this.serverCfg).then((session) => {
               this.DB = session;
               SysLog.info("Connected!");
-              this.DBM_initializeDatabase(DB_NAME).then (() => {
+              this.DBM_initializeDatabase(dbName).then (() => {
                     resolve(this.DB);
               })
+              .catch((err: any) => {
+                throw(err);
+              });
             })
             .catch((err: any) => {
                 throw(err);
@@ -87,7 +97,7 @@ class Database {
      * table does not exist it creates the data tables
      * @param dbName - database name to initialize
      */
-    DBM_initializeDatabase = (dbName: any): Promise<any> => {
+    DBM_initializeDatabase = (dbName: string): Promise<any> => {
         return new Promise ((resolve, reject) => {
             this.DB.sql("SHOW DATABASES LIKE " + CommonFn.strWrapper(dbName))
                 .execute().then((result) => {
@@ -103,6 +113,9 @@ class Database {
                             .catch((err: any) => {
                                 reject(err);
                             });
+                        })
+                        .catch((err) => {
+                          throw(err);
                         });
                     } else {
                         this.DBM_selectDatabase(dbName).then (() => {
