@@ -1,0 +1,51 @@
+version: '20'
+
+services:
+  mysql_application:
+    container_name: mysql_application
+    image: mysql:8.0
+    # command: --default-authentication-plugin=mysql_native_password
+    env_file: ./.env
+    restart: always
+    ports:
+      - 127.0.0.1:${DB_PORT}:3306
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    # volumes: 
+    #   - db-config:/etc/mysql
+    #   - db-data:/var/lib/mysql
+    #   - ./db/backup/files/:/data_backup/data
+      tty: true
+
+  edumeserver_application:
+    container_name: edumeserver_application
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: node:14
+    env_file: ./.env
+    depends_on:
+      - mysql_application
+    volumes:
+    - '${BACKEND_APPLICATION_DIRECTORY}/:/app/edumeserver'
+    stdin_open: true
+    tty: true
+    ports:
+    - 127.0.0.1:3300:3300
+    environment:
+      ENV: dev
+      DB_HOST: 'mysql_application'
+    # command: >
+    #   bash -c "cd /app
+    #   && echo install dep
+    #   && npm i --verbose
+    #   && npm i -g nodemon
+    #   && npm run run-build"
+
+
+
+

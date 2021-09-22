@@ -60,8 +60,9 @@
     "typescript": "^3.9.7"
   },
   "scripts": {
-    "start": "npm run build && node build/index.js",
-    "build": "rimraf ./build && tsc",
+    "run-build": "node --trace-warnings edumeserver/server.js",
+    "start": "npm run build && node build/server.js",
+    "build": "rimraf ./build && tsc && copy package*.json build",
     "start:dev": "nodemon",
     "lint": "eslint . --ext .ts",
     "prettier-format": "prettier --config .prettierrc src/**/*.ts --write",
