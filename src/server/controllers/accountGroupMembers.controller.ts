@@ -72,6 +72,9 @@ export class AccountGroupMembersController implements Controller{
             next(new PostDataFailedException())
           }
       })
+      .catch((err) => {
+        throw(err);
+      });
   };
 
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -82,6 +85,9 @@ export class AccountGroupMembersController implements Controller{
         next(new DataNotFoundException(request.params.accountGroupMemberId))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   removeContact  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -92,6 +98,9 @@ export class AccountGroupMembersController implements Controller{
         next(new DataNotFoundException(request.params.accountGroupMemberId))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   update  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -102,6 +111,9 @@ export class AccountGroupMembersController implements Controller{
         next(new DataNotFoundException(request.params.accountGroupMemberId))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   toggleContactStar  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -112,6 +124,9 @@ export class AccountGroupMembersController implements Controller{
         next(new DataNotFoundException(request.params.accountGroupMemberId))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   incrementFrequencyById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -122,6 +137,9 @@ export class AccountGroupMembersController implements Controller{
         next(new DataNotFoundException(request.params.accountGroupMemberId))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
   getAccountGroupMemberListByAccountId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.accountGroupMembers.getAccountGroupMemberList(request.params.accountId).then((respAccountGroupMemberDTO: AccountGroupMemberDTO[]) => {
@@ -131,6 +149,9 @@ export class AccountGroupMembersController implements Controller{
         next(new NoDataException())
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
   getContactListByAccountId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
     this.accountGroupMembers.getContactList(request.params.accountId).then((respAccountGroupMemberDTO: AccountGroupMemberDTO[]) => {
@@ -140,6 +161,9 @@ export class AccountGroupMembersController implements Controller{
         next(new NoDataException())
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   areAccountMembers  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -160,6 +184,9 @@ export class AccountGroupMembersController implements Controller{
         next(new DataNotFoundException(request.params.accountGroupMemberId))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   getAccountMemberData  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -170,6 +197,9 @@ export class AccountGroupMembersController implements Controller{
         next(new DataNotFoundException(request.params.accountGroupMemberId))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   isBlockedByAccount  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -180,6 +210,9 @@ export class AccountGroupMembersController implements Controller{
         next(new DataNotFoundException(request.params.accountGroupMemberId))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   isBlockedByGroup  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -190,6 +223,9 @@ export class AccountGroupMembersController implements Controller{
         next(new DataNotFoundException(request.params.accountGroupMemberId))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
 }

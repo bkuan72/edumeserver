@@ -26,8 +26,14 @@ function validationUserAccountMiddleware<T>(): express.RequestHandler {
                     next();
                 }
             })
+            .catch((err) => {
+              throw(err);
+            });
         }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 }
 

@@ -63,6 +63,9 @@ export class AccountGroupTimelineCommentsController implements Controller{
             next(new PostDataFailedException())
           }
       })
+      .catch((err) => {
+        throw(err);
+      });
   };
 
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -73,6 +76,9 @@ export class AccountGroupTimelineCommentsController implements Controller{
         next(new DataNotFoundException(request.params.id))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   update  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -83,6 +89,9 @@ export class AccountGroupTimelineCommentsController implements Controller{
         next(new DataNotFoundException(request.params.id))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   getByTimelineId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -93,6 +102,9 @@ export class AccountGroupTimelineCommentsController implements Controller{
         next(new NoDataException())
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
 }

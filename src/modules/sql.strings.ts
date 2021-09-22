@@ -80,6 +80,9 @@ export class SqlFormatter {
                   valueArray.push(SqlStr.escape(secret));
                   }
                   lresolve();
+                })
+                .catch((err) => {
+                  throw(err);
                 });
               } else {
                 cryptoStr(escStrValue).then((secret) => {
@@ -89,6 +92,9 @@ export class SqlFormatter {
                   valueArray.push(SqlStr.escape(secret));
                   }
                   lresolve();
+                })
+                .catch((err) => {
+                  throw(err);
                 });
               }
             } else {
@@ -288,6 +294,9 @@ export class SqlFormatter {
                 sql = setStr + ') ' + valueStr + ');';
                 resolve(sql);
               }
+            })
+            .catch((err) => {
+              throw(err);
             });
         }
       });
@@ -640,6 +649,9 @@ export class SqlFormatter {
                   sql += valueStr;
                   resolve(sql);
                 }
+              })
+              .catch((err) => {
+                throw(err);
               });
             }
           }

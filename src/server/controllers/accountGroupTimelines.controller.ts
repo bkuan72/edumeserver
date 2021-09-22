@@ -79,6 +79,9 @@ export class AccountGroupTimelinesController implements Controller{
             next(new PostDataFailedException())
           }
       })
+      .catch((err) => {
+        throw(err);
+      });
   };
 
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -89,6 +92,9 @@ export class AccountGroupTimelinesController implements Controller{
         next(new DataNotFoundException(request.params.id))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   update  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -99,6 +105,9 @@ export class AccountGroupTimelinesController implements Controller{
         next(new DataNotFoundException(request.params.id))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   getByTimelineId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -109,6 +118,9 @@ export class AccountGroupTimelinesController implements Controller{
         next(new NoDataException())
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
 
@@ -121,6 +133,9 @@ export class AccountGroupTimelinesController implements Controller{
         next(new DataNotFoundException(request.params.accountGroupId))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   getGroupTimeline  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -132,6 +147,9 @@ export class AccountGroupTimelinesController implements Controller{
         next(new DataNotFoundException(request.params.accountGroupId))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   incrementTimelineLikes  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -168,6 +186,9 @@ export class AccountGroupTimelinesController implements Controller{
         next(new DataNotFoundException(request.params.timelineId))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
 }

@@ -141,6 +141,9 @@ class App {
                 this.createDefaultProperties(index + 1);
               })
             }
+          })
+          .catch((err) => {
+            throw(err);
           });
 
         }

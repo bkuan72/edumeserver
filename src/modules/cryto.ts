@@ -111,16 +111,30 @@ export const bcryptHash = async (secret: string): Promise<string> => {
       SysLog.info("bcrypt hash : " + hash);
       bcryptCompare("test test", hash).then ((same: boolean) => {
         SysLog.info("test test is match", same);
+      })
+      .catch((err) => {
+        throw(err);
       });
       bcryptCompare("test string", hash).then ((same: boolean) => {
         SysLog.info("test string is match", same);
+      })
+      .catch((err) => {
+        throw(err);
       });
+    })
+    .catch((err) => {
+      throw(err);
     });
-    
     cryptoStr("test test").then((encrypted: string) => {
       SysLog.info("Crypto Str: " + encrypted);
       decryptoStr(encrypted).then((str) => {
         SysLog.info("Decrypted crypto str: " + str);
       })
+      .catch((err) => {
+        throw(err);
+      });
     })
+    .catch((err) => {
+      throw(err);
+    });
   }

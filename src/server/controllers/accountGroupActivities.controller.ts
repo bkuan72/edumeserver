@@ -73,6 +73,9 @@ export class AccountGroupActivitiesController implements Controller{
             next(new PostDataFailedException())
           }
       })
+      .catch((err) => {
+        throw(err);
+      });
   };
 
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -83,6 +86,9 @@ export class AccountGroupActivitiesController implements Controller{
         next(new DataNotFoundException(request.params.accountGroupActivityId))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   removeById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -93,6 +99,9 @@ export class AccountGroupActivitiesController implements Controller{
         next(new DataNotFoundException(request.params.accountGroupActivityId))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   update  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -103,6 +112,9 @@ export class AccountGroupActivitiesController implements Controller{
         next(new DataNotFoundException(request.params.accountGroupActivityId))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   getActivitiesByTimelineAccountId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -113,6 +125,9 @@ export class AccountGroupActivitiesController implements Controller{
         next(new NoDataException())
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   getActivitiesByTimelineGroupId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -123,6 +138,9 @@ export class AccountGroupActivitiesController implements Controller{
         next(new NoDataException())
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   getLikeAccountGroupActivityByTimelineIdUserId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -136,6 +154,9 @@ export class AccountGroupActivitiesController implements Controller{
         next(new NoDataException())
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   addNewLikeAccountActivity = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -153,6 +174,9 @@ export class AccountGroupActivitiesController implements Controller{
         next(new NoDataException())
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   addNewLikeGroupActivity = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -170,5 +194,8 @@ export class AccountGroupActivitiesController implements Controller{
         next(new NoDataException())
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 }

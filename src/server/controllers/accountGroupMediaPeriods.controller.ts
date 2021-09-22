@@ -70,6 +70,9 @@ export class AccountGroupMediaPeriodsController implements Controller{
             next(new PostDataFailedException())
           }
       })
+      .catch((err) => {
+        throw(err);
+      });
   };
 
   findById  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -80,6 +83,9 @@ export class AccountGroupMediaPeriodsController implements Controller{
         next(new DataNotFoundException(request.params.id))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   getAll  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -90,6 +96,9 @@ export class AccountGroupMediaPeriodsController implements Controller{
         next(new NoDataException())
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   update  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -100,6 +109,9 @@ export class AccountGroupMediaPeriodsController implements Controller{
         next(new DataNotFoundException(request.params.id))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   findByAccountId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -110,6 +122,9 @@ export class AccountGroupMediaPeriodsController implements Controller{
         next(new DataNotFoundException(request.params.userId))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
   findByGroupId  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -120,5 +135,8 @@ export class AccountGroupMediaPeriodsController implements Controller{
         next(new DataNotFoundException(request.params.userId))
       }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 }

@@ -70,6 +70,9 @@ export class AccountsController implements Controller{
             next(new PostDataFailedException())
           }
       })
+      .catch((err) => {
+        throw(err);
+      });
   };
   newNormalAccount  = (request: express.Request, response: express.Response, next: express.NextFunction) => {
       this.accounts.createNormalAccount(request.body).then((respAccountDTO) => {

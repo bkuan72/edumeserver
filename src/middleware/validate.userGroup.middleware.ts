@@ -31,10 +31,16 @@ function validationUserGroupMiddleware<T>(): express.RequestHandler {
                         checkGroupId(group, req, next);
                     }
                 })
+                .catch((err) => {
+                  throw(err);
+                });
             }
 
         }
     })
+    .catch((err) => {
+      throw(err);
+    });
   }
 
     function checkGroupId(group: GroupModel, req: any, next: any) {
@@ -45,6 +51,9 @@ function validationUserGroupMiddleware<T>(): express.RequestHandler {
             } else {
                 next();
             }
+        })
+        .catch((err) => {
+          throw(err);
         });
     }
 }
