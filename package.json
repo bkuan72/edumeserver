@@ -30,7 +30,6 @@
     "node-cron": "^2.0.3",
     "node-fetch": "^2.6.1",
     "nodemailer": "^6.4.17",
-    "normalize-url": "^7.0.1",
     "sqlstring": "^2.3.2",
     "tar": "^6.1.11",
     "toobusy-js": "^0.5.1",
