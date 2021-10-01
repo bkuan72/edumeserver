@@ -79,7 +79,7 @@ export const bcryptHash = async (secret: string): Promise<string> => {
   export const cryptoStr = (secret: string): Promise<string> => {
     return new Promise((resolve) => {
       const cryptoIv = genNewCrytoIv();
-      const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(Buffer.from(serverCfg.crytoKey, 'hex')), Buffer.from(cryptoIv, 'hex') );
+      const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(Buffer.from(SysEnv.JWT_SECRET, 'hex')), Buffer.from(cryptoIv, 'hex') );
       let encrypted = cipher.update(secret);
       encrypted = Buffer.concat([encrypted, cipher.final()]);
       const encryptedStr = { iv: cryptoIv, encryptedData: encrypted.toString('hex') };
@@ -97,7 +97,7 @@ export const bcryptHash = async (secret: string): Promise<string> => {
     //   console.log ("encryptedObj : ", encryptedObj)
       const iv = Buffer.from(encryptedObj.iv, 'hex');
       const encryptedText = Buffer.from(encryptedObj.encryptedData, 'hex');
-      const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(serverCfg.crytoKey, 'hex'), iv);
+      const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(SysEnv.JWT_SECRET, 'hex'), iv);
       let decrypted = decipher.update(encryptedText);
       decrypted = Buffer.concat([decrypted, decipher.final()]);
       resolve(decrypted);
