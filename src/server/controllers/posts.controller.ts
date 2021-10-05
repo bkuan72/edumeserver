@@ -25,10 +25,10 @@ export class PostsController implements Controller{
 
   constructor() {
       this.siteCode = SysEnv.SITE_CODE;
-      this.intializeRoutes();
+      this.initializeRoutes();
   }
 
-  public intializeRoutes() {
+  public initializeRoutes() {
     this.router.post(this.path,
                     authMiddleware,
                     validationMiddleware(posts_schema),

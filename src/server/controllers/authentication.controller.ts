@@ -3,7 +3,6 @@ import { UserModuleRoleDataDTO } from './../../dtos/userModuleRoles.DTO';
 import { UserData } from './../../schemas/users.schema';
 import { CommonFn } from './../../modules/CommonFnModule';
 import { ResponseUserDTO, CreateUserDTO } from '../../dtos/user.DTO';
-import { AccountModel } from './../models/account.model';
 import { UserAccountModel } from './../models/userAccount.model';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
@@ -48,7 +47,6 @@ class AuthenticationController implements Controller {
   private users = new UserModel();
   private userModuleRoles = new UserModuleRoleModel();
   private userAccounts = new UserAccountModel();
-  private accounts = new AccountModel();
   private tokens = new TokenModel(tokens_schema_table);
   private blacklistTokens = new TokenModel(blacklist_tokens_schema_table);
   private siteCode = SysEnv.SITE_CODE;

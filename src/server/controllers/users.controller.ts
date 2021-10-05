@@ -22,10 +22,10 @@ export class UsersController implements Controller{
   private users = new UserModel();
 
   constructor() {
-    this.intializeRoutes();
+    this.initializeRoutes();
   }
 
-  public intializeRoutes() {
+  public initializeRoutes() {
     this.router.get(this.path, authMiddleware, this.getAll);
     this.router.get(this.path+'/basicInfo/byUserId/:userId', this.getBasicUserInfo);
     this.router.get(this.path+'/basicInfo/byKeyword/:keyword', this.getBasicUserInfosByKeyword);

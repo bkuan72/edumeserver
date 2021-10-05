@@ -20,10 +20,10 @@ export class BlacklistController implements Controller{
 
   constructor() {
       this.siteCode = SysEnv.SITE_CODE;
-      this.intializeRoutes();
+      this.initializeRoutes();
   }
 
-  public intializeRoutes() {
+  public initializeRoutes() {
     this.router.get(this.path, adminAuthMiddleware, this.getAll);
     this.router.get(this.path+'/byId/:id', adminAuthMiddleware, this.findById);
     return;

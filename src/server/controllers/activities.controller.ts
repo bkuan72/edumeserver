@@ -24,10 +24,10 @@ export class ActivitiesController implements Controller{
 
   constructor() {
       this.siteCode = SysEnv.SITE_CODE;
-      this.intializeRoutes();
+      this.initializeRoutes();
   }
 
-  public intializeRoutes() {
+  public initializeRoutes() {
 
     this.router.post(this.path+'/likes',
                 authMiddleware,
