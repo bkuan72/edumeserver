@@ -1,8 +1,6 @@
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-
-import { serverCfg } from '../config/db.config';
 import bcrypt = require('bcrypt');
 import crypto = require('crypto');
 import SysLog from './SysLog';
