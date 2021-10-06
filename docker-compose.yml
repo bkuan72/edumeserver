@@ -24,14 +24,14 @@ services:
   edumeserver_application:
     container_name: edumeserver_application
     build:
-      context: .
-      dockerfile: ./Dockerfile
+      context: ../edumeserver/
+      dockerfile: Dockerfile
     image: node:14
-    env_file: ./.env
+    env_file: ../edumeserver/.env
     depends_on:
       - mysql_application
     volumes:
-    - '${BACKEND_APPLICATION_DIRECTORY}/:/app/edumeserver'
+    - '../edumeserver/${BACKEND_APPLICATION_DIRECTORY}/:/app/www'
     stdin_open: true
     tty: true
     ports:
@@ -39,6 +39,26 @@ services:
     environment:
       ENV: dev
       DB_HOST: 'mysql_application'
+
+  edumeapi_gateway:
+    container_name: edumeapi_gateway
+    build:
+      context: ../edumeapi_gateway/
+      dockerfile: Dockerfile
+    image: node:14
+    env_file: ../edumeapi_gateway/.env
+    depends_on:
+      - mysql_application
+    volumes:
+    - '../edumeapi_gateway/${BACKEND_APPLICATION_DIRECTORY}/:/app/www'
+    stdin_open: true
+    tty: true
+    ports:
+    - 3301:3301
+    environment:
+      ENV: dev
+      DB_HOST: 'mysql_application'
+
     # command: >
     #   bash -c "cd /app
     #   && echo install dep
