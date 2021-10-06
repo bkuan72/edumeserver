@@ -61,7 +61,7 @@
     "typescript": "^3.9.7"
   },
   "scripts": {
-    "run-build": "node --trace-warnings edumeserver/server.js",
+    "run-build": "node --trace-warnings www/server.js",
     "start": "npm run build && node build/server.js",
     "build": "rimraf ./build && tsc && copy package*.json build",
     "start:dev": "nodemon",
