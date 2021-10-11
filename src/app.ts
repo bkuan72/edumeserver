@@ -24,7 +24,7 @@ import toobusy_js = require('toobusy-js');
 import ServerTooBusyException from './exceptions/ServerTooBusyException';
 import rateLimit = require('express-rate-limit');
 import SysEnv from './modules/SysEnv';
-import cors = require('cors');
+// import cors = require('cors');
 import { UserData } from './schemas/users.schema';
 import { AccountData } from './schemas/accounts.schema';
 import { ModuleDTO } from './dtos/modules.DTO';
@@ -73,11 +73,11 @@ class App {
 
 
   private initializeMiddlewares() {
-    const corsOptions = {
-      origin: SysEnv.VALID_CORS_ORIGIN,
-      optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-    }
-    this.app.use(cors(corsOptions));
+    // const corsOptions = {
+    //   origin: SysEnv.VALID_CORS_ORIGIN,
+    //   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+    // }
+    // this.app.use(cors(corsOptions));
     this.app.use(express.urlencoded({ limit: "5mb", extended: true }));
     this.app.use(express.json({ limit: "10mb" }));
     // this.app.use(express.multipart({ limit:"10mb" }));
