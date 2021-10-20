@@ -54,7 +54,7 @@ services:
     stdin_open: true
     tty: true
     ports:
-    - 3301:3301
+    - 0.0.0.0:3301:3301
     environment:
       ENV: dev
       DB_HOST: 'mysql_application'
