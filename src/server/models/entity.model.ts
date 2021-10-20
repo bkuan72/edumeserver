@@ -7,7 +7,7 @@ import e = require('express');
 import dbConnection, { schemaIfc } from '../../modules/DbModule';
 import { entities_schema, entities_schema_table } from '../../schemas/entities.schema';
 import { EntityDTO } from '../../dtos/entities.DTO';
-import { uuidIfc } from './uuidIfc';
+import { uuidIfc } from '../../interfaces/uuidIfc';
 import SysLog from '../../modules/SysLog';
 import SysEnv from '../../modules/SysEnv';
 

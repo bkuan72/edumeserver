@@ -8,7 +8,7 @@ import e = require('express');
 import dbConnection from '../../modules/DbModule';
 import { token_schema, tokens_schema_table } from '../../schemas/tokens.schema';
 import { TokenDTO } from '../../dtos/tokens.DTO';
-import { uuidIfc } from './uuidIfc';
+import { uuidIfc } from '../../interfaces/uuidIfc';
 import DataStoredInToken from '../../interfaces/DataStoredInToken';
 import CommonFn, { DateAddIntervalEnum } from '../../modules/CommonFnModule';
 import SysLog from '../../modules/SysLog';

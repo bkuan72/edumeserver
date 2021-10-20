@@ -7,7 +7,7 @@ import e = require('express');
 import dbConnection from '../../modules/DbModule';
 import { logs_schema, logs_schema_table } from '../../schemas/logs.schema';
 import { LogDTO } from '../../dtos/logs.DTO';
-import { uuidIfc } from './uuidIfc';
+import { uuidIfc } from '../../interfaces/uuidIfc';
 import { EntityModel } from './entity.model';
 import SysLog from '../../modules/SysLog';
 

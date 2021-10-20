@@ -8,7 +8,7 @@ import e = require('express');
 import dbConnection from '../../modules/DbModule';
 import { ResponseUserDTO, CreateUserDTO } from '../../dtos/user.DTO';
 import { UserData, users_schema, users_schema_table } from '../../schemas/users.schema';
-import { uuidIfc } from './uuidIfc';
+import { uuidIfc } from '../../interfaces/uuidIfc';
 import SysLog from '../../modules/SysLog';
 import SysEnv from '../../modules/SysEnv';
 import { bcryptHash, cryptoStr } from '../../modules/cryto';

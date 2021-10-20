@@ -12,7 +12,7 @@ import {
   userGroups_schema,
   userGroups_schema_table
 } from '../../schemas/userGroups.schema';
-import { uuidIfc } from './uuidIfc';
+import { uuidIfc } from '../../interfaces/uuidIfc';
 import { UserGroupInfoDTO, UserGroupsDTO } from '../../dtos/userGroups.DTO';
 import SysLog from '../../modules/SysLog';
 import SysEnv from '../../modules/SysEnv';

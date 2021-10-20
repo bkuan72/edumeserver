@@ -6,7 +6,7 @@ import { AccountDTO } from '../../dtos/accounts.DTO';
 import { EntityModel } from './entity.model';
 import SqlFormatter from '../../modules/sql.strings';
 import dbConnection from '../../modules/DbModule';
-import { uuidIfc } from './uuidIfc';
+import { uuidIfc } from '../../interfaces/uuidIfc';
 import SysLog from '../../modules/SysLog';
 import { PropertyModel } from './property.model';
 

@@ -8,7 +8,7 @@ import SqlStr = require('sqlstring');
 import e = require('express');
 import dbConnection from '../../modules/DbModule';
 import { UserAccountsData, userAccounts_schema, userAccounts_schema_table } from '../../schemas/userAccounts.schema';
-import { uuidIfc } from './uuidIfc';
+import { uuidIfc } from '../../interfaces/uuidIfc';
 import { UserAccountDataDTO, UserAccountsDTO } from '../../dtos/userAccounts.DTO';
 import SysLog from '../../modules/SysLog';
 import SysEnv from '../../modules/SysEnv';
