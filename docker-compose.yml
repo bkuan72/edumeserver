@@ -59,6 +59,26 @@ services:
       ENV: dev
       DB_HOST: 'mysql_application'
 
+  edume_entity:
+    container_name: edume_entity
+    build:
+      context: ../edume_entity
+      dockerfile: Dockerfile
+    image: node:14
+    env_file: ../edume_entity/.env
+    depends_on:
+      - mysql_application
+      - edume_router
+    volumes:
+    - '../edume_entity/${BACKEND_APPLICATION_DIRECTORY}/:/app/www'
+    stdin_open: true
+    tty: true
+    ports:
+    - 127.0.0.1:3303:3303
+    environment:
+      ENV: dev
+      DB_HOST: 'mysql_application'
+
   edumeapi_gateway:
     container_name: edumeapi_gateway
     build:
