@@ -22,7 +22,7 @@ services:
       tty: true
 
   edumeserver_application:
-    container_name: edumeserver_application
+    # container_name: edumeserver_application
     build:
       context: ../edumeserver/
       dockerfile: Dockerfile
@@ -41,7 +41,7 @@ services:
       DB_HOST: 'mysql_application'
 
   edume_router:
-    container_name: edume_router
+    # container_name: edume_router
     build:
       context: ../edume_router
       dockerfile: Dockerfile
@@ -60,7 +60,7 @@ services:
       DB_HOST: 'mysql_application'
 
   edume_entity:
-    container_name: edume_entity
+    # container_name: edume_entity
     build:
       context: ../edume_entity
       dockerfile: Dockerfile
@@ -79,8 +79,28 @@ services:
       ENV: dev
       DB_HOST: 'mysql_application'
 
+  edume_property:
+    # container_name: edume_property
+    build:
+      context: ../edume_property_service
+      dockerfile: Dockerfile
+    image: node:14
+    env_file: ../edume_property_service/.env
+    depends_on:
+      - mysql_application
+      - edume_router
+    volumes:
+    - '../edume_property_service/${BACKEND_APPLICATION_DIRECTORY}/:/app/www'
+    stdin_open: true
+    tty: true
+    ports:
+    - 127.0.0.1:3304:3304
+    environment:
+      ENV: dev
+      DB_HOST: 'mysql_application'
+
   edumeapi_gateway:
-    container_name: edumeapi_gateway
+    # container_name: edumeapi_gateway
     build:
       context: ../edumeapi_gateway/
       dockerfile: Dockerfile
