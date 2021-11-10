@@ -26,7 +26,6 @@ services:
     build:
       context: ../edumeserver/
       dockerfile: Dockerfile
-    image: node:14
     env_file: ../edumeserver/.env
     depends_on:
       - mysql_application
@@ -45,7 +44,6 @@ services:
     build:
       context: ../edume_router
       dockerfile: Dockerfile
-    image: node:14
     env_file: ../edume_router/.env
     depends_on:
       - mysql_application
@@ -64,7 +62,6 @@ services:
     build:
       context: ../edume_entity
       dockerfile: Dockerfile
-    image: node:14
     env_file: ../edume_entity/.env
     depends_on:
       - mysql_application
@@ -84,7 +81,6 @@ services:
     build:
       context: ../edume_property_service
       dockerfile: Dockerfile
-    image: node:14
     env_file: ../edume_property_service/.env
     depends_on:
       - mysql_application
@@ -104,7 +100,6 @@ services:
     build:
       context: ../edumeapi_gateway/
       dockerfile: Dockerfile
-    image: node:14
     env_file: ../edumeapi_gateway/.env
     depends_on:
       - mysql_application

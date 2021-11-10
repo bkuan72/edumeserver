@@ -118,6 +118,7 @@ class Logger {
 
   info(message: string, ...meta: any[]) {
     this.logger.info(message, ...meta);
+    console.info(message, ...meta);
   }
 
   error(message: string, ...meta: any[]) {
