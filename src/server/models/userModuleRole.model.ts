@@ -8,7 +8,7 @@ import SqlFormatter from '../../modules/sql.strings';
 import SqlStr = require('sqlstring');
 import { UserModuleRoleData, userModuleRoles_schema, userModuleRoles_schema_table } from '../../schemas/userModuleRoles.schema';
 import { EntityModel } from './entity.model';
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 import SysLog from '../../modules/SysLog';
 import { modules_schema, modules_schema_table } from '../../schemas/modules.schema';
 
@@ -49,7 +49,8 @@ export class UserModuleRoleModel extends EntityModel {
       sql += ' INNER JOIN ' + modules_schema_table + ' ON ' + userModuleRoles_schema_table + '.module_id = ' + modules_schema_table + '.id'
       sql += ' WHERE ' + userModuleRoles_schema_table+ '.site_code = ' + SqlStr.escape(siteCode) + ' AND ';
       sql += SqlStr.format(userModuleRoles_schema_table+ '.user_id = UUID_TO_BIN(?);', [userId]);
-      dbConnection.DB.sql(sql).execute()
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql).execute()
       .then((result) => {
         if (result.rows.length == 0) {
           // not found Customer with the id
@@ -85,6 +86,8 @@ export class UserModuleRoleModel extends EntityModel {
         resolve(userModuleRoles);
         return;
       });
+      });
+
     });
   };
 }

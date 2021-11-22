@@ -5,7 +5,7 @@ import { SqlFormatter } from '../../modules/sql.strings';
 import { EntityModel } from './entity.model';
 import SqlStr = require('sqlstring');
 import SysLog from '../../modules/SysLog';
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 import { accountGroupTimelineComments_schema, accountGroupTimelineComments_schema_table } from '../../schemas/accountGroupTimelineComments.schema';
 import { AccountGroupTimelineCommentDTO, AccountGroupTimelineUserCommentDTO } from '../../dtos/accountGroupTimelineComments.DTO';
 
@@ -34,7 +34,8 @@ export class AccountGroupTimelineCommentModel extends EntityModel {
       sql += SqlStr.format('timeline_id = UUID_TO_BIN(?)', [timelineId])  + ' AND ';
       sql += ' status != ' + SqlStr.escape('DELETED');
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
 
@@ -60,6 +61,8 @@ export class AccountGroupTimelineCommentModel extends EntityModel {
           resolve(resTimelineDTOArray);
           return;
         });
+      });
+
     });
   };
 }

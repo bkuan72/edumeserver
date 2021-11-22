@@ -2,13 +2,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { MemberSecurityDTO } from '../../dtos/memberSecurities.DTO';
-import CommonFn from '../../modules/CommonFnModule';
 import SqlFormatter from '../../modules/sql.strings';
 import { member_security_schema, member_security_schema_table } from '../../schemas/memberSecurities.schema';
 import { EntityModel } from './entity.model';
 import SysLog from '../../modules/SysLog';
 import SqlStr = require('sqlstring');
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 
 export class MemberSecurityModel extends EntityModel {
   constructor (altTable?: string) {
@@ -38,7 +37,8 @@ export class MemberSecurityModel extends EntityModel {
       sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('member_id = UUID_TO_BIN(?)', [memberId]);
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
           if (result.rows.length) {
@@ -62,6 +62,8 @@ export class MemberSecurityModel extends EntityModel {
           resolve(resMemberSecurityDTO);
           return;
         });
+      });
+
     });
   };
 }

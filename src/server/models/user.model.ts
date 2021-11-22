@@ -5,12 +5,10 @@
 import { SqlFormatter } from '../../modules/sql.strings';
 import SqlStr = require('sqlstring');
 import e = require('express');
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 import { ResponseUserDTO, CreateUserDTO } from '../../dtos/user.DTO';
 import { UserData, users_schema, users_schema_table } from '../../schemas/users.schema';
-import { uuidIfc } from '../../interfaces/uuidIfc';
 import SysLog from '../../modules/SysLog';
-import SysEnv from '../../modules/SysEnv';
 import { bcryptHash, cryptoStr } from '../../modules/cryto';
 import { EntityModel } from './entity.model';
 
@@ -35,7 +33,8 @@ export class UserModel extends EntityModel {
       sql += SqlStr.format('email = ?', [email]) + ' AND ';
       sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, users_schema);
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
           if (result.rows.length) {
@@ -57,6 +56,8 @@ export class UserModel extends EntityModel {
           resolve(undefined);
           return;
         });
+      });
+
     });
   };
 
@@ -75,7 +76,8 @@ export class UserModel extends EntityModel {
         users_schema
       ) + ' AND ';
       sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, users_schema);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
           SysLog.info('updated user: ', { email: emailStr, regConfirmKey });
@@ -88,6 +90,8 @@ export class UserModel extends EntityModel {
           resolve(undefined);
           return;
         });
+      });
+
     });
   };
 
@@ -106,7 +110,8 @@ export class UserModel extends EntityModel {
         users_schema
       ) + ' AND ';
       sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, users_schema);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
           SysLog.info('updated user: ', { email: emailStr, pwdResetKey });
@@ -119,6 +124,8 @@ export class UserModel extends EntityModel {
           resolve(undefined);
           return;
         });
+      });
+
     });
   };
 
@@ -139,7 +146,8 @@ export class UserModel extends EntityModel {
           users_schema
         ) + ' AND ';
         sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, users_schema);
-        dbConnection.DB.sql(sql)
+        appDbConnection.connectDB().then((DBSession) => {
+        DBSession.sql(sql)
           .execute()
           .then((result) => {
             SysLog.info('updated user password:  ', { email: emailStr });
@@ -152,6 +160,8 @@ export class UserModel extends EntityModel {
             resolve(undefined);
             return;
           });
+        });
+
       }
 
       let passwdProp: any;
@@ -203,7 +213,8 @@ export class UserModel extends EntityModel {
       sql += SqlFormatter.fmtLIKECondition(SqlFormatter.fmtTableFieldStr(users_schema_table, 'email'), keyword)  + ') ';
       sql += ' LIMIT 10;'
       SysLog.info('searchUserByKeyword SQL: ' + sql);
-      dbConnection.DB.sql(sql).execute()
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql).execute()
       .then((result) => {
 
         if (result.rows.length) {
@@ -236,6 +247,8 @@ export class UserModel extends EntityModel {
         resolve(resUserListDTOArray);
         return;
       })
+      });
+
     });
   }
 }

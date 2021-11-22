@@ -8,7 +8,7 @@ import { UserMediaDTO } from '../../dtos/userMedias.DTO';
 import { EntityModel } from './entity.model';
 import SqlStr = require('sqlstring');
 import SysLog from '../../modules/SysLog';
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 
 export class UserMediaModel extends EntityModel {
   constructor (altTable?: string) {
@@ -35,7 +35,8 @@ export class UserMediaModel extends EntityModel {
       sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('userMediaPeriod_id = UUID_TO_BIN(?)', [userMediaPeriodId]);
       SysLog.info('findByUserId SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
 
@@ -61,6 +62,8 @@ export class UserMediaModel extends EntityModel {
           resolve(resUserMediaDTOArray);
           return;
         });
+      });
+
     });
   };
 
@@ -71,7 +74,8 @@ export class UserMediaModel extends EntityModel {
       sql += ' WHERE ';
       sql += SqlStr.format('id = UUID_TO_BIN(?)', [userMediaId]);
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql).execute()
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql).execute()
       .then((result) => {
         if (result.rows.length) {
           const data = {
@@ -96,6 +100,8 @@ export class UserMediaModel extends EntityModel {
         resolve(undefined);
         return;
       })
+      });
+
     });
   };
 
@@ -111,7 +117,8 @@ export class UserMediaModel extends EntityModel {
       sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('userMediaPeriod_id = UUID_TO_BIN(?)', [userMediaPeriodId]);
       SysLog.info('findByUserId SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
           resolve(resUserMediaDTOArray);
@@ -121,6 +128,8 @@ export class UserMediaModel extends EntityModel {
           resolve(resUserMediaDTOArray);
           return;
         });
+      });
+
     });
   };
 

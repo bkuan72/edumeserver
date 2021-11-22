@@ -15,10 +15,9 @@ import {
   ContactListData
 } from '../../dtos/friends.DTO';
 import { EntityModel } from './entity.model';
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 import SysLog from '../../modules/SysLog';
 import SqlStr = require('sqlstring');
-import { rejects } from 'assert';
 
 export class FriendModel extends EntityModel {
   activities = new ActivityModel();
@@ -72,7 +71,8 @@ export class FriendModel extends EntityModel {
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += SqlStr.format('user_id = UUID_TO_BIN(?)', [userId]);
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
           if (result.rows.length) {
@@ -97,6 +97,8 @@ export class FriendModel extends EntityModel {
           resolve(resFriendDTOArray);
           return;
         });
+      });
+
     });
   };
 
@@ -143,7 +145,8 @@ export class FriendModel extends EntityModel {
         SqlStr.escape(userId) +
         ') ';
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
           if (result.rows.length) {
@@ -165,6 +168,8 @@ export class FriendModel extends EntityModel {
           resolve(resFriendListDTOArray);
           return;
         });
+      });
+
     });
   };
 
@@ -195,7 +200,8 @@ export class FriendModel extends EntityModel {
         SqlStr.escape(userId) +
         ') ';
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
           if (result.rows.length) {
@@ -222,6 +228,8 @@ export class FriendModel extends EntityModel {
           resolve(resContactListDTOArray);
           return;
         });
+      });
+
     });
   };
 
@@ -244,7 +252,8 @@ export class FriendModel extends EntityModel {
             this.tableName,
             this.schema
           );
-          dbConnection.DB.sql(sql)
+          appDbConnection.connectDB().then((DBSession) => {
+          DBSession.sql(sql)
             .execute()
             .then((result) => {
               SysLog.info('updated friends starred: ', { id: id });
@@ -257,6 +266,8 @@ export class FriendModel extends EntityModel {
               resolve(undefined);
               return;
             });
+          });
+
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
@@ -287,7 +298,8 @@ export class FriendModel extends EntityModel {
         this.tableName,
         this.schema
       );
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
           SysLog.info('updated friend frequency: ', { id: friendId });
@@ -300,6 +312,8 @@ export class FriendModel extends EntityModel {
           resolve(undefined);
           return;
         });
+      });
+
     });
   };
 
@@ -345,7 +359,8 @@ export class FriendModel extends EntityModel {
         SqlStr.escape(req.friend_id) +
         ') '
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
           if (result.rows.length) {
@@ -361,6 +376,8 @@ export class FriendModel extends EntityModel {
           resolve(resp);
           return;
         });
+      });
+
     })
   }
 
@@ -406,7 +423,8 @@ export class FriendModel extends EntityModel {
         SqlStr.escape(req.user_id) +
         ') '
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
           if (result.rows.length) {
@@ -422,6 +440,8 @@ export class FriendModel extends EntityModel {
           resolve(resp);
           return;
         });
+      });
+
     })
   }
 
@@ -466,7 +486,8 @@ export class FriendModel extends EntityModel {
         SqlStr.escape(req.account_id) +
         ') '
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
           if (result.rows.length) {
@@ -482,6 +503,8 @@ export class FriendModel extends EntityModel {
           resolve(resp);
           return;
         });
+      });
+
     })
   }
 
@@ -526,7 +549,8 @@ export class FriendModel extends EntityModel {
         SqlStr.escape(req.group_id) +
         ') '
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
           if (result.rows.length) {
@@ -542,6 +566,8 @@ export class FriendModel extends EntityModel {
           resolve(resp);
           return;
         });
+      });
+
     })
   }
 

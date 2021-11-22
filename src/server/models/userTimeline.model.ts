@@ -12,7 +12,7 @@ import { UserTimelineDTO, TimelinePostDTO, UserTimelinePostData } from '../../dt
 import { EntityModel } from './entity.model';
 import SqlStr = require('sqlstring');
 import SysLog from '../../modules/SysLog';
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 import DTOGenerator from '../../modules/ModelGenerator';
 import CommonFn, { DateAddIntervalEnum } from '../../modules/CommonFnModule';
 
@@ -41,7 +41,8 @@ export class UserTimelineModel extends EntityModel {
       sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('timeline_id = UUID_TO_BIN(?)', [timelineId]) ;
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
 
@@ -72,6 +73,8 @@ export class UserTimelineModel extends EntityModel {
           resolve(resUserTimelineDTOArray);
           return;
         });
+      });
+
     });
   };
 
@@ -101,7 +104,8 @@ export class UserTimelineModel extends EntityModel {
       sql += ' ORDER BY ' + SqlFormatter.fmtTableFieldStr(this.tableName, 'lastUpdateUsec') + ' DESC ';
       sql += ';';
       SysLog.info('findByTimelineUserId SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
 
@@ -131,6 +135,8 @@ export class UserTimelineModel extends EntityModel {
           resolve(resPostDTOArray);
           return;
         });
+      });
+
     });
   };
 
@@ -150,7 +156,8 @@ export class UserTimelineModel extends EntityModel {
         this.schema
       );
       SysLog.info("Increment Sql Likes : " + sql)
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
           SysLog.info('likes post : ', { id: timelineId });
@@ -163,6 +170,8 @@ export class UserTimelineModel extends EntityModel {
           resolve(undefined);
           return;
         });
+      });
+
     });
   };
 
@@ -179,7 +188,8 @@ export class UserTimelineModel extends EntityModel {
         this.tableName,
         this.schema
       );
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
           SysLog.info('unlike post: ', { id: timelineId });
@@ -192,6 +202,8 @@ export class UserTimelineModel extends EntityModel {
           resolve(undefined);
           return;
         });
+      });
+
     });
   };
   incrementShareById = (timelineId: string): Promise<any | undefined> => {
@@ -210,7 +222,8 @@ export class UserTimelineModel extends EntityModel {
         this.tableName,
         this.schema
       );
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
           SysLog.info('updated timeline post share: ', { id: timelineId });
@@ -223,6 +236,8 @@ export class UserTimelineModel extends EntityModel {
           resolve(undefined);
           return;
         });
+      });
+
     });
   };
 

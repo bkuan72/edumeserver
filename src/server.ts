@@ -29,14 +29,9 @@ import { UsersController } from './server/controllers/users.controller';
 import AuthenticationController from './server/controllers/authentication.controller';
 import { AccountsController } from './server/controllers/accounts.controller';
 import { UserAccountsController } from './server/controllers/userAccounts.controller';
-// import * as cron from 'node-cron';
-// import { TokenModel } from './server/models/token.model';
-// import { blacklist_tokens_schema_table, tokens_schema_table } from './schemas/tokens.schema';
 import { BlacklistController } from './server/controllers/blacklist.controller';
 import { PostsController } from './server/controllers/posts.controller';
 import { UserGroupsController } from './server/controllers/userGroups.controller';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import SysMailer from './modules/SysEmailerModule';
 import { AdActivitiesController } from './server/controllers/adActivities.controller';
 import { AdAgeGroupsController } from './server/controllers/adAgeGroups.controller';
 import { AccountGroupTimelinesController } from './server/controllers/accountGroupTimelines.controller';
@@ -76,8 +71,8 @@ const app = new App (
     new AdKeywordsController(),
     new AdActivitiesController(),
     new AdAgeGroupsController(),
-    new RolesController(),
     new ModulesController(),
+    new RolesController(),
     new UserModuleRolesController(),
     new UserMediasController(),
     new UserMediaPeriodsController(),
@@ -91,21 +86,6 @@ const app = new App (
   port
 );
 SysLog.info('Cron setup to purge expired blacklistTokens every minute')
-
-// const cronTasks: cron.ScheduledTask[] = [
-//   cron.schedule('* 3 5 * * *', () => {
-//     SysLog.info('cron run at 5.03am to purge expired blacklist token');
-//     blacklistTokens.purgeExpired();
-//   }),
-//   cron.schedule('* */15 * * * * *', () => {
-//     // SysLog.info('cron run every 15 minutes to purge expired tokens');
-//     tokens.purgeExpired();
-//   })
-// ];
-
-// cronTasks.forEach((task) => {
-//   task.start();
-// });
 
 app.listen();
 

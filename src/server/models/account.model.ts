@@ -5,7 +5,7 @@ import { accounts_schema, accounts_schema_table } from '../../schemas/accounts.s
 import { AccountDTO } from '../../dtos/accounts.DTO';
 import { EntityModel } from './entity.model';
 import SqlFormatter from '../../modules/sql.strings';
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 import { uuidIfc } from '../../interfaces/uuidIfc';
 import SysLog from '../../modules/SysLog';
 import { PropertyModel } from './property.model';
@@ -40,16 +40,23 @@ export class AccountModel extends EntityModel {
           this.tableName,
           this.schema
         ).then((sql) => {
-          dbConnection.DB.sql('SET @uuidId=UUID(); ').execute()
-          .then((result) => {
-            dbConnection.DB.sql(sql).execute()
-            .then((result2) => {
-              dbConnection.DB.sql('SELECT @uuidId;').execute()
-              .then((result3) => {
-                SysLog.info('created Entity: ', result3);
-                const newUuid: uuidIfc = { '@uuidId': result3.rows[0][0] }; // TODO
-                newEntity.id = newUuid['@uuidId'];
-                resolve(newEntity);
+          appDbConnection.connectDB().then((DBSession) => {
+            DBSession.sql('SET @uuidId=UUID(); ').execute()
+            .then((result) => {
+              DBSession.sql(sql).execute()
+              .then((result2) => {
+                DBSession.sql('SELECT @uuidId;').execute()
+                .then((result3) => {
+                  SysLog.info('created Entity: ', result3);
+                  const newUuid: uuidIfc = { '@uuidId': result3.rows[0][0] }; // TODO
+                  newEntity.id = newUuid['@uuidId'];
+                  resolve(newEntity);
+                })
+                .catch((err) => {
+                  SysLog.error(JSON.stringify(err));
+                  resolve(undefined);
+                  return;
+                });
               })
               .catch((err) => {
                 SysLog.error(JSON.stringify(err));
@@ -59,16 +66,12 @@ export class AccountModel extends EntityModel {
             })
             .catch((err) => {
               SysLog.error(JSON.stringify(err));
-              resolve(undefined);
+              const respEntityDTO = new this.responseDTO(newEntity);
+              resolve(respEntityDTO);
               return;
             });
-          })
-          .catch((err) => {
-            SysLog.error(JSON.stringify(err));
-            const respEntityDTO = new this.responseDTO(newEntity);
-            resolve(respEntityDTO);
-            return;
           });
+
         });
       }).catch((err)=>{
         SysLog.error(JSON.stringify(err));

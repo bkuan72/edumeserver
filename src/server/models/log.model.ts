@@ -4,10 +4,9 @@
 import { SqlFormatter } from '../../modules/sql.strings';
 import SqlStr = require('sqlstring');
 import e = require('express');
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 import { logs_schema, logs_schema_table } from '../../schemas/logs.schema';
 import { LogDTO } from '../../dtos/logs.DTO';
-import { uuidIfc } from '../../interfaces/uuidIfc';
 import { EntityModel } from './entity.model';
 import SysLog from '../../modules/SysLog';
 
@@ -33,7 +32,8 @@ export class LogModel extends EntityModel {
       sql += SqlStr.format('EntryDate = ?', [logDate])
       SysLog.info('findByLogDate SQL: ' + sql) + ' AND ';
       sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, this.schema);
-      dbConnection.DB.sql(sql).execute()
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql).execute()
       .then((result) => {
  
         if (result.rows.length) {
@@ -56,6 +56,8 @@ export class LogModel extends EntityModel {
         resolve(respEntityDTOArray);
         return;
       })
+      });
+
     });
   };
 }

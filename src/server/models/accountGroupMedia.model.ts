@@ -7,7 +7,7 @@ import { AccountGroupMediaDTO, AccountGroupMediaFullImageDTO, RequestAccountGrou
 import { EntityModel } from './entity.model';
 import SqlStr = require('sqlstring');
 import SysLog from '../../modules/SysLog';
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 
 export class AccountGroupMediaModel extends EntityModel {
   constructor (altTable?: string) {
@@ -34,7 +34,8 @@ export class AccountGroupMediaModel extends EntityModel {
       sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('accountGroupMediaPeriod_id = UUID_TO_BIN(?)', [accountGroupPeriodId]);
       SysLog.info('findByAccountGroupId SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+        DBSession.sql(sql)
         .execute()
         .then((result) => {
 
@@ -60,6 +61,7 @@ export class AccountGroupMediaModel extends EntityModel {
           resolve(resAccountGroupMediaDTOArray);
           return;
         });
+      });
     });
   };
   findFullImageById = (accountGroupMediaId: string): Promise<any | undefined> => {
@@ -69,29 +71,31 @@ export class AccountGroupMediaModel extends EntityModel {
       sql += ' WHERE ';
       sql += SqlStr.format('id = UUID_TO_BIN(?)', [accountGroupMediaId]);
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql).execute()
-      .then((result) => {
-        if (result.rows.length) {
-          const data = {
-            id: '',
-            fullImage: ''
+      appDbConnection.connectDB().then((DBSession) => {
+        DBSession.sql(sql).execute()
+        .then((result) => {
+          if (result.rows.length) {
+            const data = {
+              id: '',
+              fullImage: ''
+            }
+            const rowData1: any = result.rows[0][0];
+            const blob = SqlFormatter.translatePropValue('BLOB', result.rows[0], 1);
+            data.id = rowData1;
+            data.fullImage = blob;
+            const respFullImageDTO = new AccountGroupMediaFullImageDTO(data);
+            resolve(respFullImageDTO);
+            return;
           }
-          const rowData1: any = result.rows[0][0];
-          const blob = SqlFormatter.translatePropValue('BLOB', result.rows[0], 1);
-          data.id = rowData1;
-          data.fullImage = blob;
-          const respFullImageDTO = new AccountGroupMediaFullImageDTO(data);
-          resolve(respFullImageDTO);
+          // not found Customer with the id
+          resolve(undefined);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
+          resolve(undefined);
           return;
-        }
-        // not found Customer with the id
-        resolve(undefined);
-      })
-      .catch((err) => {
-        SysLog.error(JSON.stringify(err));
-        resolve(undefined);
-        return;
-      })
+        })
+      });
     });
   }
 }

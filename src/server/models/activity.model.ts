@@ -6,7 +6,7 @@ import { SqlFormatter } from './../../modules/sql.strings';
 import { activities_schema, activities_schema_table } from '../../schemas/activities.schema';
 import { ActivityDTO } from '../../dtos/activities.DTO';
 import { EntityModel } from './entity.model';
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 import SysLog from '../../modules/SysLog';
 import SqlStr = require('sqlstring');
 
@@ -38,7 +38,8 @@ export class ActivityModel extends EntityModel {
       sql += 'status != '+ SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('lastUpdateUsec >= ?', [fromDate?.valueOf()]);
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
 
@@ -64,6 +65,8 @@ export class ActivityModel extends EntityModel {
           resolve(resActivityDTOArray);
           return;
         });
+      });
+
     });
   };
 
@@ -81,7 +84,8 @@ export class ActivityModel extends EntityModel {
       sql += SqlStr.format('user_id = UUID_TO_BIN(?)', [userId]) + ' AND ';
       sql += SqlStr.format('timeline_id = UUID_TO_BIN(?)', [timelineId]);
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
 
@@ -107,6 +111,8 @@ export class ActivityModel extends EntityModel {
           reject(resActivityDTOArray);
           return;
         });
+      });
+
     });
   };
 

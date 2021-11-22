@@ -10,7 +10,7 @@ import { PostMediaDTO } from '../../dtos/postMedias.DTO';
 import { EntityModel } from './entity.model';
 import SqlStr = require('sqlstring');
 import SysLog from '../../modules/SysLog';
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 
 export class PostMediaModel extends EntityModel {
   constructor(altTable?: string) {
@@ -37,7 +37,8 @@ export class PostMediaModel extends EntityModel {
       sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('post_id = UUID_TO_BIN(?)', [postId]) ;
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
 
@@ -63,6 +64,8 @@ export class PostMediaModel extends EntityModel {
           resolve(resPostDTOArray);
           return;
         });
+      });
+
     });
   };
 }

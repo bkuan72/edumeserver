@@ -14,7 +14,7 @@ import {
   ContactListData
 } from '../../dtos/accountGroupMembers.DTO';
 import { EntityModel } from './entity.model';
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 import SysLog from '../../modules/SysLog';
 import SqlStr = require('sqlstring');
 import { AccountGroupActivityModel } from './accountGroupActivity.model';
@@ -74,7 +74,8 @@ export class AccountGroupMemberModel extends EntityModel {
       sql += 'group_id = 0 AND ';
       sql += SqlStr.format('account_id = UUID_TO_BIN(?)', [accountId]);
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+        DBSession.sql(sql)
         .execute()
         .then((result) => {
           if (result.rows.length) {
@@ -101,6 +102,7 @@ export class AccountGroupMemberModel extends EntityModel {
           resolve(resAccountGroupMemberDTOArray);
           return;
         });
+      });
     });
   };
 
@@ -166,7 +168,8 @@ export class AccountGroupMemberModel extends EntityModel {
         SqlStr.escape(accountId) +
         ') ';
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+        DBSession.sql(sql)
         .execute()
         .then((result) => {
           if (result.rows.length) {
@@ -196,6 +199,8 @@ export class AccountGroupMemberModel extends EntityModel {
           resolve(resAccountGroupMemberListDTOArray);
           return;
         });
+      });
+
     });
   };
 
@@ -233,7 +238,8 @@ export class AccountGroupMemberModel extends EntityModel {
         SqlStr.escape(accountId) +
         ') ';
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+        DBSession.sql(sql)
         .execute()
         .then((result) => {
           if (result.rows.length) {
@@ -266,6 +272,7 @@ export class AccountGroupMemberModel extends EntityModel {
           resolve(resContactListDTOArray);
           return;
         });
+      });
     });
   };
 
@@ -288,7 +295,8 @@ export class AccountGroupMemberModel extends EntityModel {
             this.tableName,
             this.schema
           );
-          dbConnection.DB.sql(sql)
+          appDbConnection.connectDB().then((DBSession) => {
+            DBSession.sql(sql)
             .execute()
             .then((result) => {
               SysLog.info('updated accountGroupMembers starred: ', { id: id });
@@ -301,6 +309,8 @@ export class AccountGroupMemberModel extends EntityModel {
               resolve(undefined);
               return;
             });
+          });
+
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
@@ -333,7 +343,8 @@ export class AccountGroupMemberModel extends EntityModel {
         this.tableName,
         this.schema
       );
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+        DBSession.sql(sql)
         .execute()
         .then((result) => {
           SysLog.info('updated accountGroupMember frequency: ', {
@@ -350,6 +361,7 @@ export class AccountGroupMemberModel extends EntityModel {
           resolve(undefined);
           return;
         });
+      });
     });
   };
 
@@ -399,7 +411,8 @@ export class AccountGroupMemberModel extends EntityModel {
         SqlStr.escape(req.user_id) +
         ') ';
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+        DBSession.sql(sql)
         .execute()
         .then((result) => {
           if (result.rows.length) {
@@ -415,6 +428,7 @@ export class AccountGroupMemberModel extends EntityModel {
           resolve(resp);
           return;
         });
+      });
     });
   }
 
@@ -463,7 +477,8 @@ export class AccountGroupMemberModel extends EntityModel {
         SqlStr.escape(req.user_id) +
         ') ';
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+        DBSession.sql(sql)
         .execute()
         .then((result) => {
           if (result.rows.length) {
@@ -479,6 +494,7 @@ export class AccountGroupMemberModel extends EntityModel {
           resolve(resp);
           return;
         });
+      });
     });
   }
 
@@ -527,7 +543,8 @@ export class AccountGroupMemberModel extends EntityModel {
           SqlStr.escape(req.user_id) +
           ') ';
         SysLog.info('findById SQL: ' + sql);
-        dbConnection.DB.sql(sql)
+        appDbConnection.connectDB().then((DBSession) => {
+          DBSession.sql(sql)
           .execute()
           .then((result) => {
             if (result.rows.length) {
@@ -543,6 +560,7 @@ export class AccountGroupMemberModel extends EntityModel {
             resolve(resp);
             return;
           });
+        });
       });
     }
 
@@ -588,7 +606,8 @@ export class AccountGroupMemberModel extends EntityModel {
         SqlStr.escape(req.user_id) +
         ') ';
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+        DBSession.sql(sql)
         .execute()
         .then((result) => {
           if (result.rows.length) {
@@ -610,6 +629,7 @@ export class AccountGroupMemberModel extends EntityModel {
           resolve(resp);
           return;
         });
+      });
     });
   }
 }

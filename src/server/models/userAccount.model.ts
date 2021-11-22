@@ -6,12 +6,10 @@ import { accounts_schema } from './../../schemas/accounts.schema';
 import { SqlFormatter } from '../../modules/sql.strings';
 import SqlStr = require('sqlstring');
 import e = require('express');
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 import { UserAccountsData, userAccounts_schema, userAccounts_schema_table } from '../../schemas/userAccounts.schema';
-import { uuidIfc } from '../../interfaces/uuidIfc';
 import { UserAccountDataDTO, UserAccountsDTO } from '../../dtos/userAccounts.DTO';
 import SysLog from '../../modules/SysLog';
-import SysEnv from '../../modules/SysEnv';
 import { accounts_schema_table } from '../../schemas/accounts.schema';
 import { EntityModel } from './entity.model';
 
@@ -52,7 +50,8 @@ export class UserAccountModel extends EntityModel {
       sql += ' WHERE ' + userAccounts_schema_table+ '.site_code = ' + SqlStr.escape(siteCode) + ' AND ';
       sql += userAccounts_schema_table+ '.status = ' + SqlStr.escape(status) + ' AND ';
       sql += SqlStr.format(userAccounts_schema_table+ '.user_id = UUID_TO_BIN(?);', [userId]);
-      dbConnection.DB.sql(sql).execute()
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql).execute()
       .then((result) => {
         if (result.rows.length == 0) {
           // not found Customer with the id
@@ -76,6 +75,8 @@ export class UserAccountModel extends EntityModel {
         resolve(userAccountTypes);
         return;
       });
+      });
+
     });
   };
 
@@ -94,7 +95,8 @@ export class UserAccountModel extends EntityModel {
       sql += ' WHERE ' + userAccounts_schema_table+ '.site_code = ' + SqlStr.escape(siteCode) + ' AND ';
       sql += userAccounts_schema_table+ '.status = ' + SqlStr.escape(status) + ' AND ';
       sql += SqlStr.format(userAccounts_schema_table+ '.user_id = UUID_TO_BIN(?);', [userId]);
-      dbConnection.DB.sql(sql).execute()
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql).execute()
       .then((result) => {
         if (result.rows.length == 0) {
           // not found Customer with the id
@@ -129,6 +131,8 @@ export class UserAccountModel extends EntityModel {
         resolve(userAccountTypes);
         return;
       });
+      });
+
     });
   };
 }

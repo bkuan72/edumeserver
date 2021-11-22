@@ -1,4 +1,3 @@
-import { UserGroupData } from './../../schemas/userGroups.schema';
 import { socialGroups_schema_table } from './../../schemas/groups.schema';
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -7,15 +6,13 @@ import { socialGroups_schema_table } from './../../schemas/groups.schema';
 import { SqlFormatter } from '../../modules/sql.strings';
 import SqlStr = require('sqlstring');
 import e = require('express');
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 import {
   userGroups_schema,
   userGroups_schema_table
 } from '../../schemas/userGroups.schema';
-import { uuidIfc } from '../../interfaces/uuidIfc';
 import { UserGroupInfoDTO, UserGroupsDTO } from '../../dtos/userGroups.DTO';
 import SysLog from '../../modules/SysLog';
-import SysEnv from '../../modules/SysEnv';
 import { EntityModel } from './entity.model';
 
 export class UserGroupModel extends EntityModel {
@@ -56,7 +53,8 @@ export class UserGroupModel extends EntityModel {
     SysLog.info('findById SQL: ' + sql);
     SysLog.info('find SQL: ' + sql);
     return new Promise((resolve) => {
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+     DBSession.sql(sql)
         .execute()
         .then((result) => {
 
@@ -87,6 +85,8 @@ export class UserGroupModel extends EntityModel {
           resolve(respUserGroupsDTOArray);
           return;
         });
+      });
+ 
     });
   };
 
@@ -115,7 +115,8 @@ export class UserGroupModel extends EntityModel {
     SysLog.info('find SQL: ' + sql);
     return new Promise((resolve) => {
       const respUserGroupsDTOArray: UserGroupInfoDTO[] = [];
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
 
@@ -146,6 +147,8 @@ export class UserGroupModel extends EntityModel {
           resolve(respUserGroupsDTOArray);
           return;
         });
+      });
+
     });
   };
 
@@ -173,7 +176,8 @@ export class UserGroupModel extends EntityModel {
     SysLog.info('findById SQL: ' + sql);
     SysLog.info('find SQL: ' + sql);
     return new Promise((resolve) => {
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
 
@@ -204,6 +208,8 @@ export class UserGroupModel extends EntityModel {
           resolve(respUserGroupsDTOArray);
           return;
         });
+      });
+
     });
   };
 }

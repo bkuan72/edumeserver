@@ -52,7 +52,7 @@ services:
     stdin_open: true
     tty: true
     ports:
-    - 127.0.0.1:3302:3302
+    - 127.0.0.1:33002:33002
     environment:
       ENV: dev
       DB_HOST: 'mysql_application'
@@ -71,7 +71,7 @@ services:
     stdin_open: true
     tty: true
     ports:
-    - 127.0.0.1:3303:3303
+    - 127.0.0.1:33999:33999
     environment:
       ENV: dev
       DB_HOST: 'mysql_application'
@@ -90,7 +90,7 @@ services:
     stdin_open: true
     tty: true
     ports:
-    - 127.0.0.1:3304:3304
+    - 127.0.0.1:33003:33003
     environment:
       ENV: dev
       DB_HOST: 'mysql_application'
@@ -109,7 +109,7 @@ services:
     stdin_open: true
     tty: true
     ports:
-    - 0.0.0.0:3301:3301
+    - 0.0.0.0:33001:33001
     environment:
       ENV: dev
       DB_HOST: 'mysql_application'

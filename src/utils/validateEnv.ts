@@ -25,6 +25,10 @@ import {
         MAILER_PRODUCT_NAME: str(),
         MAILER_PRODUCT_REGISTRATION_LINK: str(),
         MAILER_PRODUCT_RESET_PWD_LINK: str(),
+        PROPERTY_SERVICE: str(),
+        PROPERTY_SERVICE_PORT: str(),
+        USER_ACC_MOD_ROLE_SERVICE: str(),
+        USER_ACC_MOD_ROLE_SERVICE_PORT: str(),
     });
   }
 

@@ -8,7 +8,7 @@ import { AdvertisementDTO } from '../../dtos/advertisements.DTO';
 import { EntityModel } from './entity.model';
 import SqlFormatter from '../../modules/sql.strings';
 import SysLog from '../../modules/SysLog';
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 import SqlStr = require('sqlstring');
 import e = require('express');
 import DTOGenerator from '../../modules/ModelGenerator';
@@ -98,7 +98,8 @@ export class AdvertisementModel extends EntityModel {
     sql += ');';
     SysLog.info('find SQL: ' + sql);
     return new Promise((resolve) => {
-      dbConnection.DB.sql(sql).execute()
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql).execute()
       .then((result) => {
 
         if (result.rows.length) {
@@ -132,6 +133,8 @@ export class AdvertisementModel extends EntityModel {
         resolve(respEntityDTOArray);
         return;
       });
+      });
+
     });
 
   }

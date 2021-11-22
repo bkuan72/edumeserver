@@ -7,7 +7,7 @@ import { UserMediaPeriodDataDTO, UserMediaPeriodDTO } from '../../dtos/userMedia
 import { EntityModel } from './entity.model';
 import SqlStr = require('sqlstring');
 import SysLog from '../../modules/SysLog';
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 
 export class UserMediaPeriodModel extends EntityModel {
   constructor (altTable?: string) {
@@ -34,7 +34,8 @@ export class UserMediaPeriodModel extends EntityModel {
       sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('user_id = UUID_TO_BIN(?)', [userId]);
       SysLog.info('findByUserId SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
 
@@ -60,6 +61,8 @@ export class UserMediaPeriodModel extends EntityModel {
           resolve(resUserMediaPeriodDTOArray);
           return;
         });
+      });
+
     });
   };
 
@@ -75,7 +78,8 @@ export class UserMediaPeriodModel extends EntityModel {
       sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('user_id = UUID_TO_BIN(?)', [userId]);
       SysLog.info('findByUserId SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
           resolve(resUserMediaDTOArray);
@@ -85,6 +89,8 @@ export class UserMediaPeriodModel extends EntityModel {
           resolve(resUserMediaDTOArray);
           return;
         });
+      });
+
     });
   };
 

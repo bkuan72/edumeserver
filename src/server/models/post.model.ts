@@ -7,7 +7,7 @@ import { SqlFormatter } from '../../modules/sql.strings';
 import { posts_schema, posts_schema_table } from '../../schemas/posts.schema';
 import { PostDTO } from '../../dtos/posts.DTO';
 import { EntityModel } from './entity.model';
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 import SysLog from '../../modules/SysLog';
 import SqlStr = require('sqlstring');
 import DTOGenerator from '../../modules/ModelGenerator';
@@ -47,7 +47,8 @@ export class PostModel extends EntityModel {
       sql += SqlStr.format('user_id = UUID_TO_BIN(?)', [userId]) + ' AND ';
       sql += SqlStr.format('lastUpdateUsec >= ?', [fromDate?.valueOf()]);
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
 
@@ -73,6 +74,8 @@ export class PostModel extends EntityModel {
           resolve(resPostDTOArray);
           return;
         });
+      });
+
     });
   };
 
@@ -102,7 +105,8 @@ export class PostModel extends EntityModel {
         });
         sql += ')';
         SysLog.info('findById SQL: ' + sql);
-        dbConnection.DB.sql(sql)
+        appDbConnection.connectDB().then((DBSession) => {
+        DBSession.sql(sql)
           .execute()
           .then((result) => {
 
@@ -133,6 +137,8 @@ export class PostModel extends EntityModel {
             resolve(resPostDTOArray);
             return;
           });
+        });
+
       });
     });
   };

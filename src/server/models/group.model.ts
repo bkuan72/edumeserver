@@ -1,5 +1,4 @@
 import { GroupData } from './../../schemas/groups.schema';
-import { CommonFn } from './../../modules/CommonFnModule';
 import { SqlFormatter } from './../../modules/sql.strings';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -12,7 +11,7 @@ import { GroupDTO } from '../../dtos/groups.DTO';
 import { EntityModel } from './entity.model';
 import SqlStr = require('sqlstring');
 import SysLog from '../../modules/SysLog';
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 import DTOGenerator from '../../modules/ModelGenerator';
 
 export class GroupModel extends EntityModel {
@@ -39,7 +38,8 @@ export class GroupModel extends EntityModel {
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += SqlStr.format('account_id = UUID_TO_BIN(?)', [postId]) ;
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
 
@@ -70,6 +70,8 @@ export class GroupModel extends EntityModel {
           resolve(resGroupDTOArray);
           return;
         });
+      });
+
     });
   };
 }

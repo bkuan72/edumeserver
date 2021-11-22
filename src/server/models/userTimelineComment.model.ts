@@ -10,7 +10,7 @@ import { UserTimelineCommentDTO, UserTimelineUserCommentDTO } from '../../dtos/u
 import { EntityModel } from './entity.model';
 import SqlStr = require('sqlstring');
 import SysLog from '../../modules/SysLog';
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 
 export class UserTimelineCommentModel extends EntityModel {
   constructor(altTable?: string) {
@@ -37,7 +37,8 @@ export class UserTimelineCommentModel extends EntityModel {
       sql += SqlStr.format('timeline_id = UUID_TO_BIN(?)', [timelineId])  + ' AND ';
       sql += ' status != ' + SqlStr.escape('DELETED');
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql)
         .execute()
         .then((result) => {
 
@@ -63,6 +64,8 @@ export class UserTimelineCommentModel extends EntityModel {
           resolve(resTimelineDTOArray);
           return;
         });
+      });
+
     });
   };
 }

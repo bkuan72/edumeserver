@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { AdCategoryDTO } from '../../dtos/adCategories.DTO';
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 import SqlFormatter from '../../modules/sql.strings';
 import SysLog from '../../modules/SysLog';
 import { adCategories_schema, adCategories_schema_table } from '../../schemas/adCategories.schema';
@@ -28,7 +28,8 @@ export class AdCategoryModel extends EntityModel {
       const adAgeGroupsList:string[] = [];
       let sql = 'SELECT adCategory_code FROM ' + this.tableName;
       sql += SqlFormatter.formatWhereAND('', {site_code: this.siteCode}, this.tableName, this.schema);
-      dbConnection.DB.sql(sql).execute()
+      appDbConnection.connectDB().then((DBSession) => {
+      DBSession.sql(sql).execute()
       .then((result) => {
 
         if (result.rows.length) {
@@ -46,6 +47,8 @@ export class AdCategoryModel extends EntityModel {
         resolve(adAgeGroupsList);
         return;
       });
+      });
+
     });
   }
 }

@@ -6,7 +6,7 @@ import { SqlFormatter } from './../../modules/sql.strings';
 import { accountGroupActivities_schema, accountGroupActivities_schema_table } from '../../schemas/accountGroupActivities.schema';
 import { AccountGroupActivityDTO } from '../../dtos/accountGroupActivities.DTO';
 import { EntityModel } from './entity.model';
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 import SysLog from '../../modules/SysLog';
 import SqlStr = require('sqlstring');
 import { ActivityModel } from './activity.model';
@@ -43,7 +43,8 @@ export class AccountGroupActivityModel extends EntityModel {
       sql += 'status != '+ SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('lastUpdateUsec >= ?', [fromDate?.valueOf()]);
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+        DBSession.sql(sql)
         .execute()
         .then((result) => {
 
@@ -69,6 +70,8 @@ export class AccountGroupActivityModel extends EntityModel {
           resolve(resAccountGroupActivityDTOArray);
           return;
         });
+      });
+
     });
   };
 
@@ -87,7 +90,8 @@ export class AccountGroupActivityModel extends EntityModel {
       sql += 'group_id = 0 AND ';
       sql += SqlStr.format('timeline_id = UUID_TO_BIN(?)', [timelineId]);
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+        DBSession.sql(sql)
         .execute()
         .then((result) => {
 
@@ -113,6 +117,7 @@ export class AccountGroupActivityModel extends EntityModel {
           reject(resAccountGroupActivityDTOArray);
           return;
         });
+      });
     });
   };
 
@@ -131,7 +136,8 @@ export class AccountGroupActivityModel extends EntityModel {
       sql += 'status != '+ SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('lastUpdateUsec >= ?', [fromDate?.valueOf()]);
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+        DBSession.sql(sql)
         .execute()
         .then((result) => {
 
@@ -157,6 +163,7 @@ export class AccountGroupActivityModel extends EntityModel {
           resolve(resAccountGroupActivityDTOArray);
           return;
         });
+      });
     });
   };
 
@@ -174,7 +181,8 @@ export class AccountGroupActivityModel extends EntityModel {
       sql += SqlStr.format('group_id = UUID_TO_BIN(?)', [groupId]) + ' AND ';
       sql += SqlStr.format('timeline_id = UUID_TO_BIN(?)', [timelineId]);
       SysLog.info('findById SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+        DBSession.sql(sql)
         .execute()
         .then((result) => {
 
@@ -200,6 +208,7 @@ export class AccountGroupActivityModel extends EntityModel {
           reject(resAccountGroupActivityDTOArray);
           return;
         });
+      });
     });
   };
 

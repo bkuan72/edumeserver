@@ -6,12 +6,13 @@
 	],
 	"settings": {
 		"cSpell.words": [
-			"MEDIUMBLOB",
-			"Mailgen",
-			"Usec",
 			"builtins",
+			"edumedb",
+			"Mailgen",
+			"MEDIUMBLOB",
 			"mysqlx",
-			"outro"
+			"outro",
+			"Usec"
 		],
 		"sqltools.connections": [
 			{

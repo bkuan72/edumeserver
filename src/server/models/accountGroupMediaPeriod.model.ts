@@ -7,7 +7,7 @@ import { AccountGroupMediaPeriodDTO } from '../../dtos/accountGroupMediaPeriods.
 import { EntityModel } from './entity.model';
 import SqlStr = require('sqlstring');
 import SysLog from '../../modules/SysLog';
-import dbConnection from '../../modules/DbModule';
+import appDbConnection from '../../modules/AppDBModule';
 
 export class AccountGroupMediaPeriodModel extends EntityModel {
   constructor (altTable?: string) {
@@ -35,7 +35,8 @@ export class AccountGroupMediaPeriodModel extends EntityModel {
       sql += SqlStr.format('account_id = UUID_TO_BIN(?)', [accountId]) + ' AND ';
       sql += 'group_id = 0 ';
       SysLog.info('findByAccountGroupId SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+        DBSession.sql(sql)
         .execute()
         .then((result) => {
 
@@ -61,6 +62,7 @@ export class AccountGroupMediaPeriodModel extends EntityModel {
           resolve(resAccountGroupMediaPeriodDTOArray);
           return;
         });
+      });
     });
   };
 
@@ -76,7 +78,8 @@ export class AccountGroupMediaPeriodModel extends EntityModel {
       sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('group_id = UUID_TO_BIN(?)', [groupId]);
       SysLog.info('findByAccountGroupId SQL: ' + sql);
-      dbConnection.DB.sql(sql)
+      appDbConnection.connectDB().then((DBSession) => {
+        DBSession.sql(sql)
         .execute()
         .then((result) => {
 
@@ -102,6 +105,7 @@ export class AccountGroupMediaPeriodModel extends EntityModel {
           resolve(resAccountGroupMediaPeriodDTOArray);
           return;
         });
+      });
     });
   };
 
