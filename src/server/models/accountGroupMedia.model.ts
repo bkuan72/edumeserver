@@ -33,10 +33,7 @@ export class AccountGroupMediaModel extends EntityModel {
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('accountGroupMediaPeriod_id = UUID_TO_BIN(?)', [accountGroupPeriodId]);
-      SysLog.info('findByAccountGroupId SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
 
           if (result.rows.length) {
@@ -62,7 +59,6 @@ export class AccountGroupMediaModel extends EntityModel {
           return;
         });
       });
-    });
   };
   findFullImageById = (accountGroupMediaId: string): Promise<any | undefined> => {
     return new Promise ((resolve) => {
@@ -70,9 +66,7 @@ export class AccountGroupMediaModel extends EntityModel {
       sql += ' FROM ' + this.tableName;
       sql += ' WHERE ';
       sql += SqlStr.format('id = UUID_TO_BIN(?)', [accountGroupMediaId]);
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql(sql).execute()
+      appDbConnection.select(sql)
         .then((result) => {
           if (result.rows.length) {
             const data = {
@@ -96,6 +90,5 @@ export class AccountGroupMediaModel extends EntityModel {
           return;
         })
       });
-    });
   }
 }

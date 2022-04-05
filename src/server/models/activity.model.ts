@@ -36,11 +36,8 @@ export class ActivityModel extends EntityModel {
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += SqlStr.format('timeline_user_id = UUID_TO_BIN(?)', [timelineUserId]) + ' AND ';
       sql += 'status != '+ SqlStr.escape('DELETED') + ' AND ';
-      sql += SqlStr.format('lastUpdateUsec >= ?', [fromDate?.valueOf()]);
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      sql += SqlStr.format('last_update_usec >= ?', [fromDate?.valueOf()]);
+      appDbConnection.select(sql)
         .then((result) => {
 
           if (result.rows.length) {
@@ -66,8 +63,6 @@ export class ActivityModel extends EntityModel {
           return;
         });
       });
-
-    });
   };
 
   findByTypeTimelineIdUserId = (
@@ -83,10 +78,7 @@ export class ActivityModel extends EntityModel {
       sql += 'activity_type = ' + SqlStr.escape(activityType) + ' AND ';
       sql += SqlStr.format('user_id = UUID_TO_BIN(?)', [userId]) + ' AND ';
       sql += SqlStr.format('timeline_id = UUID_TO_BIN(?)', [timelineId]);
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
 
           if (result.rows.length > 0) {
@@ -112,8 +104,6 @@ export class ActivityModel extends EntityModel {
           return;
         });
       });
-
-    });
   };
 
 

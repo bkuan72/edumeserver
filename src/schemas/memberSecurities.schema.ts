@@ -79,7 +79,7 @@ export const member_security_schema: schemaIfc[] = [
     default: '0',
     description: 'allow control access member'
   },
-  {    fieldName: 'lastUpdateUsec',
+  {    fieldName: 'last_update_usec',
   sqlType: 'BIGINT',
   default: '0',
   excludeFromUpdate: true,
@@ -95,7 +95,7 @@ export const member_security_schema: schemaIfc[] = [
       },
       {
         name: 'last_upd_usec_idx',
-        columns: [ 'site_code', 'lastUpdateUsec'],
+        columns: [ 'site_code', 'last_update_usec'],
         unique: false
       }
     ]

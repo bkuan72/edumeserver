@@ -4,7 +4,7 @@ import HttpException from "./HttpException";
 
 class ExpiredTokenException extends HttpException {
     constructor(user: ResponseUserDTO | UserData) {
-      super(440, `User ${user.user_name} Used Expired Authentication Token`);
+      super(440, `User ${user.username} Used Expired Authentication Token`);
     }
   }
 

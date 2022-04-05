@@ -33,10 +33,7 @@ export class AccountGroupTimelineCommentModel extends EntityModel {
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += SqlStr.format('timeline_id = UUID_TO_BIN(?)', [timelineId])  + ' AND ';
       sql += ' status != ' + SqlStr.escape('DELETED');
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
 
           if (result.rows.length) {
@@ -62,7 +59,5 @@ export class AccountGroupTimelineCommentModel extends EntityModel {
           return;
         });
       });
-
-    });
   };
 }

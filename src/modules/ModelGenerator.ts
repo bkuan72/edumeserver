@@ -6,19 +6,26 @@ import CommonFn from "./CommonFnModule";
 
 
 class ModelGenerator {
-    /**
-  * This function adds a new property to obj object
-  * @param obj - target obj
-  * @param fieldName - new property name
-  * @param dflt - default value of property
-  */
-    public defineProperty(obj: any, fieldName: string, dflt: any) {
-        return Object.defineProperty(obj, fieldName, {
-            value: dflt,
-            writable: true,
-            configurable: true,
-            enumerable: true,
-        });
+    systemFields = ['_req_action_user_',
+                    'site_code'];
+
+    public normalSchemaField (fieldName: string): boolean {
+        let normalFld = true;
+        this.systemFields.some((fld) => {
+            if (fld === fieldName) {
+                normalFld = false;
+                return true;
+            }
+        })
+        return normalFld;
+    }
+
+    public systemSchemaField (fieldName: string): boolean {
+        return !this.normalSchemaField(fieldName);
+    }
+
+    public defineProperty (obj: any, fieldName: string, dflt: any) {
+        return CommonFn.defineProperty(obj, fieldName, dflt);
     }
 
     private excludeFromDTO (prop: schemaIfc, excludeProps: string[] | undefined) {
@@ -44,54 +51,61 @@ class ModelGenerator {
      * @return {*} 
      * @memberof ModelGenerator
      */
-    public getInsertDTOFromSchema( obj: any, schema: schemaIfc[], excludeProps?: string[]) {
+    public getInsertDTOFromSchema( obj: any, schema: schemaIfc[], excludeProps?: string[], toCamelCase?: boolean) {
         schema.forEach((prop) => {
             if (prop.fieldName !== 'id' &&
                 prop.fieldName !== 'site_code' &&
-                prop.fieldName !== 'lastUpdateUsec' &&
+                prop.fieldName !== 'last_update_usec' &&
                 prop.fieldName !== "INDEX" && 
                 !this.excludeFromDTO(prop, excludeProps)) {
-                  if (!CommonFn.hasProperty(obj, prop.fieldName)) {
-                    obj = this.defineProperty(obj, prop.fieldName, prop.default);
+                  const fieldName = CommonFn.toCamelCase(prop.fieldName, toCamelCase);
+                  if (!CommonFn.hasProperty(obj, fieldName)) {
+                    obj = CommonFn.defineProperty(obj, fieldName, prop.default);
                   }
             }
         });
         return obj;
     }
 
-    /**
-     * Create new INSERT DTO from schema 
-     * @param schema 
-     * @param excludeProps 
-     */
-    public genCreateSchemaModel(schema: schemaIfc[], excludeProps?: string[]) {
-        let obj = Object.create(null);
-        schema.forEach((prop) => {
-            if (prop.fieldName !== 'id' &&
-                prop.fieldName !== 'site_code' &&
-                prop.fieldName !== 'lastUpdateUsec' &&
-                prop.fieldName !== "INDEX" && 
-                !this.excludeFromDTO(prop, excludeProps)) {
-                obj = this.defineProperty(obj, prop.fieldName, prop.default);
-            }
-        });
-        return obj;
+
+   private fieldValueDsp(prop: schemaIfc) {
+        let fieldVal = (prop.default) ? prop.default : ' ';
+        fieldVal += prop.allowNull ? ' <OPTIONAL>' : ' <REQUIRED>';
+        fieldVal += prop.sqlType + ' ';
+        fieldVal += prop.size ? 'MAX SIZE ' + prop.size : ' ';
+        return fieldVal;
     }
 
 /**
  * Append schema properties to obj - data DTO
- * @param obj 
- * @param schema 
- * @param excludeProps 
+ * @param obj - if null then generate a display object
+ * @param schema - schema
+ * @param excludeProps - schema field names to exclude
  */
-    public genDTOFromSchema(obj: any, schema: schemaIfc[], excludeProps?: string[]) {
-        schema.forEach((prop) => {
-            if (prop.fieldName !== "INDEX" && !this.excludeFromDTO(prop, excludeProps)) {
-                if (!CommonFn.hasProperty(obj, prop.fieldName)) {
-                    obj = this.defineProperty(obj, prop.fieldName, prop.default);
+    public genDTOFromSchema(obj: any, 
+                            schema: schemaIfc[], 
+                            excludeProps?: string[],
+                            dataObj?: any, 
+                            toCamelCase?: boolean) {
+        if (dataObj === null) {
+            schema.forEach((prop) => {
+                if (prop.fieldName !== "INDEX" && !this.excludeFromDTO(prop, excludeProps)) {
+                    const fieldName = CommonFn.toCamelCase(prop.fieldName, toCamelCase);
+                    if (!CommonFn.hasProperty(obj, fieldName)) {
+                        obj = CommonFn.defineProperty(obj, fieldName, this.fieldValueDsp(prop));
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            schema.forEach((prop) => {
+                if (prop.fieldName !== "INDEX" && !this.excludeFromDTO(prop, excludeProps)) {
+                    const fieldName = CommonFn.toCamelCase(prop.fieldName, toCamelCase);
+                    if (!CommonFn.hasProperty(obj, fieldName)) {
+                        obj = CommonFn.defineProperty(obj, fieldName, prop.default);
+                    }
+                }
+            });
+        }
         return obj;
     }
 
@@ -100,32 +114,55 @@ class ModelGenerator {
  * @param schema 
  * @param excludeProps 
  */
-    public genSchemaModel(schema: schemaIfc[], excludeProps?: string[]) {
+    public genSchemaModel(schema: schemaIfc[], excludeProps?: string[], toCamelCase?: boolean) {
         let obj = Object.create(null);
         schema.forEach((prop) => {
             if (prop.fieldName !== "INDEX" && !this.excludeFromDTO(prop, excludeProps)) {
-                obj = this.defineProperty(obj, prop.fieldName, prop.default);
+                const fieldName = CommonFn.toCamelCase(prop.fieldName, toCamelCase);
+                obj = CommonFn.defineProperty(obj, fieldName, prop.default);
             }
         });
         return obj;
     }
+
+
 /**
  * Append schema properties to obj - UPDATE DTO
- * @param obj 
- * @param schema 
- * @param excludeProps 
+ * @param obj - if null then generate a display object
+ * @param schema - schema
+ * @param excludeProps  - schema field names to exclude
  */
-    public genUpdDTOFromSchema( obj: any, schema: schemaIfc[], excludeProps?: string[]) {
-        schema.forEach((prop) => {
-            if (prop.fieldName !== "INDEX" && !this.excludeFromDTO(prop, excludeProps)) {
-                if (prop.excludeFromUpdate === undefined ||
-                    (prop.excludeFromUpdate !== undefined && prop.excludeFromUpdate === false)) {
-                        if (!CommonFn.hasProperty(obj, prop.fieldName)) {
-                            obj = this.defineProperty(obj, prop.fieldName, prop.default);
+    public genUpdDTOFromSchema( obj: any, 
+                                schema: schemaIfc[], 
+                                excludeProps?: string[],
+                                dataObj?: any,
+                                toCamelCase?: boolean) {
+        if (dataObj === null) {
+            schema.forEach((prop) => {
+                if (prop.fieldName !== "INDEX" && !this.excludeFromDTO(prop, excludeProps)) {
+                    if (prop.excludeFromUpdate === undefined ||
+                        (prop.excludeFromUpdate !== undefined && prop.excludeFromUpdate === false)) {
+                        const fieldName = CommonFn.toCamelCase(prop.fieldName, toCamelCase);
+                        if (!CommonFn.hasProperty(obj, fieldName)) {
+                            obj = CommonFn.defineProperty(obj, fieldName, this.fieldValueDsp(prop));
                         }
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            schema.forEach((prop) => {
+                if (prop.fieldName !== "INDEX" && !this.excludeFromDTO(prop, excludeProps)) {
+                    if (prop.excludeFromUpdate === undefined ||
+                        (prop.excludeFromUpdate !== undefined && prop.excludeFromUpdate === false)) {
+                            const fieldName = CommonFn.toCamelCase(prop.fieldName, toCamelCase);
+                            if (!CommonFn.hasProperty(obj, fieldName)) {
+                                obj = CommonFn.defineProperty(obj, fieldName, prop.default);
+                            }
+                    }
+                }
+            });
+        }
+
         return obj;
     }
 
@@ -134,13 +171,15 @@ class ModelGenerator {
  * @param schema 
  * @param excludeProps 
  */
-    public genUpdateSchemaModel(schema: schemaIfc[], excludeProps?: string[]) {
+    public genUpdateSchemaModel(schema: schemaIfc[], excludeProps?: string[], toCamelCase?: boolean) {
         let obj = Object.create(null);
         schema.forEach((prop) => {
             if (prop.fieldName !== "INDEX" && !this.excludeFromDTO(prop, excludeProps)) {
                 if (prop.excludeFromUpdate === undefined ||
                     (prop.excludeFromUpdate !== undefined && prop.excludeFromUpdate === false)) {
-                    obj = this.defineProperty(obj, prop.fieldName, prop.default);
+                    const fieldName = CommonFn.toCamelCase(prop.fieldName, toCamelCase);
+
+                    obj = CommonFn.defineProperty(obj, fieldName, prop.default);
                 }
             }
         });
@@ -158,55 +197,46 @@ class ModelGenerator {
         return colProp;
     }
 
-    public validateDTOSchema({ schema, requestDTO }: { schema: schemaIfc[]; requestDTO: any; }): string | undefined {
+    public validateInsertDTOSchema({ schema, requestDTO }: { schema: schemaIfc[]; requestDTO: any; }, toCamelCase?: boolean): string | undefined {
         let error: string | undefined = '';
         let errorMsg: string | undefined = undefined;
         for (const prop in requestDTO) {
-            const colProp = this.getSchema(schema, prop);
-            if (colProp === undefined) {
-                error += prop + ' not in schema! ';
-            } else {
-                error = this.validateProperty(colProp, error, requestDTO);
-            }
-        }
-        if (error !== undefined && error.length > 0) {
-            errorMsg = "Invalid requestDTO : " + error;
-        }
-
-        return errorMsg;
-    }
-
-    public validateUpdateDTOSchema({ schema, requestDTO }: { schema: schemaIfc[]; requestDTO: any; }): string | undefined {
-        let error: string | undefined = '';
-        let errorMsg: string | undefined = undefined;
-        for (const prop in requestDTO) {
-            const colProp = this.getSchema(schema, prop);
-            if (colProp === undefined) {
-                error += prop + ' not in schema! ';
-            } else {
-                if (colProp.excludeFromUpdate != undefined && colProp.excludeFromUpdate) {
-                    error += prop + ' cannot be updated! ';
+            const fieldName = CommonFn.toSnakeCase(prop, toCamelCase);
+            if (this.normalSchemaField(fieldName)) {
+                const colProp = this.getSchema(schema, fieldName);
+                if (colProp === undefined) {
+                    error += fieldName + ' not in schema! ';
                 } else {
-                    error = this.validateProperty(colProp, error, requestDTO);
+                    error = this.validateProperty(colProp, error, requestDTO, prop);
                 }
             }
         }
+        schema.forEach((colProp) => {
+            const prop = CommonFn.toCamelCase(colProp.fieldName, toCamelCase);
+            if (!CommonFn.hasProperty(requestDTO, prop)) {
+                if (colProp.postRequired) {
+                    error += prop + ' not defined! '
+                }
+            }
+        });
         if (error !== undefined && error.length > 0) {
             errorMsg = "Invalid requestDTO : " + error;
         }
 
         return errorMsg;
     }
-    public validateCreateDTOSchema({ schema, postDTO }: { schema: schemaIfc[]; postDTO: any; }): string | undefined {
+
+    public validateCreateDTOSchema({ schema, postDTO }: { schema: schemaIfc[]; postDTO: any; }, toCamelCase?: boolean): string | undefined {
         let error: string | undefined = '' ;
         let errorMsg: string | undefined = undefined;
 
         schema.forEach((colProp) => {
-            if (postDTO[colProp.fieldName]) {
-                error = this.validateProperty(colProp, error, postDTO);
+            const prop = CommonFn.toCamelCase(colProp.fieldName, toCamelCase);
+            if (postDTO[prop]) {
+                error = this.validateProperty(colProp, error, postDTO, prop);
             } else {
                 if (colProp.postRequired) {
-                    error += colProp.fieldName + ' not defined! '
+                    error += prop + ' not defined! '
                 }
             }
         });
@@ -218,23 +248,55 @@ class ModelGenerator {
         return errorMsg;
     }
 
-    private validateProperty(colProp: schemaIfc, error: string | undefined, postDTO: any) {
+    public validateUpdateDTOSchema({ schema, requestDTO }: { schema: schemaIfc[]; requestDTO: any; }, toCamelCase?: boolean): string | undefined {
+        let error: string | undefined = '';
+        let errorMsg: string | undefined = undefined;
+        for (const prop in requestDTO) {
+            const fieldName = CommonFn.toSnakeCase(prop, toCamelCase);
+            if (this.normalSchemaField(fieldName)) {
+                const colProp = this.getSchema(schema, fieldName);
+                if (colProp === undefined) {
+                    error += fieldName + ' not in schema! ';
+                } else {
+                    if (colProp.excludeFromUpdate != undefined &&
+                        colProp.excludeFromUpdate &&
+                        colProp.fieldName !== 'id') {
+                       // error += fieldName + ' cannot be updated! ';
+                       console.info('ignored non-updatable field :' + fieldName);
+                    } else {
+                        error = this.validateProperty(colProp, error, requestDTO, prop);
+                    }
+                }
+            }
+        }
+        if (error !== undefined && error.length > 0) {
+            errorMsg = "Invalid requestDTO : " + error;
+        }
+
+        return errorMsg;
+    }
+
+
+    private validateProperty(colProp: schemaIfc, 
+                             error: string | undefined, 
+                             postDTO: any, 
+                             prop: string) {
         if (colProp.fieldName === 'INDEX') {
-            error += colProp.fieldName + ' invalid property! ';
+            error += prop + ' invalid property! ';
         }
         else {
-            if (CommonFn.isString(postDTO[colProp.fieldName])) {
-                if (colProp.trim) {
-                    postDTO[colProp.fieldName].trim();
+            if (CommonFn.isString(postDTO[prop]) || postDTO[prop] === null) {
+                if (postDTO[prop] !== null && colProp.trim) {
+                    postDTO[prop].trim();
                 }
                 if (!colProp.allowNull) {
                     if (CommonFn.isUndefined(colProp.default)) {
-                        if (postDTO[colProp.fieldName] === null) {
-                            error += colProp.fieldName + ' must not be null, ';
+                        if (postDTO[prop] === null) {
+                            error += prop + ' must not be null, ';
                         }
                     } else {
-                        if (postDTO[colProp.fieldName] === null) {
-                            postDTO[colProp.fieldName] = colProp.default;
+                        if (postDTO[prop] === null) {
+                            postDTO[prop] = colProp.default;
                         }
                     }
                 }
@@ -242,24 +304,24 @@ class ModelGenerator {
                     let foundEnum = false;
                     if (colProp.enum) {
                         colProp.enum.some((val) => {
-                            if (val === postDTO[colProp.fieldName]) {
+                            if (val === postDTO[prop]) {
                                 foundEnum = true;
                                 return true;
                             }
                         });
                     }
                     if (!foundEnum) {
-                        error += colProp.fieldName + ' undefined enum value, ';
+                        error += prop + ' undefined enum value, ';
                     }
                 }
                 else {
                     if (colProp.sqlType?.includes('VARCHAR')) {
-                        let escStr = SqlStr.escape(postDTO[colProp.fieldName]);
+                        let escStr = SqlStr.escape(postDTO[prop]);
                         escStr = escStr.replace("'","");
                         escStr = escStr.replace("'","");
                         if (colProp.size != undefined && colProp.size > 0) {
                             if (escStr.length > colProp.size) {
-                                error += colProp.fieldName + ' exceed string length of ' + colProp.size + ', ';
+                                error += prop + ' exceed string length of ' + colProp.size + ', ';
                             }
                         }
                     }
@@ -267,7 +329,7 @@ class ModelGenerator {
             }
             else {
                 if (colProp.sqlType?.includes('VARCHAR') || colProp.sqlType?.includes('TEXT') || colProp.sqlType?.includes('BLOB') || colProp.sqlType?.includes('ENUM')) {
-                    error += colProp.fieldName + ' invalid property value, ';
+                    error += prop + ' invalid property value, ';
                 }
             }
         }

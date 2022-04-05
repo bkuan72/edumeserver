@@ -32,44 +32,20 @@ export class AccountModel extends EntityModel {
 
       this.properties.getNextNumber('nextAccountNumber').then((property) => {
         const newEntity = new this.requestDTO(dataInEntity);
-        newEntity.site_code = this.siteCode;
-        newEntity.account_type = accountType;
-        newEntity.account_code = property.nextNumber.toString();
         SqlFormatter.formatInsert(
+          [{ fieldName: 'site_code', value: this.siteCode },
+           { fieldName: 'account_type', value: accountType }, 
+           { fieldName: 'account_code', value: property.nextNumber.toString()}],
           newEntity,
           this.tableName,
           this.schema
         ).then((sql) => {
-          appDbConnection.connectDB().then((DBSession) => {
-            DBSession.sql('SET @uuidId=UUID(); ').execute()
-            .then((result) => {
-              DBSession.sql(sql).execute()
-              .then((result2) => {
-                DBSession.sql('SELECT @uuidId;').execute()
-                .then((result3) => {
-                  SysLog.info('created Entity: ', result3);
-                  const newUuid: uuidIfc = { '@uuidId': result3.rows[0][0] }; // TODO
-                  newEntity.id = newUuid['@uuidId'];
-                  resolve(newEntity);
-                })
-                .catch((err) => {
-                  SysLog.error(JSON.stringify(err));
-                  resolve(undefined);
-                  return;
-                });
-              })
-              .catch((err) => {
-                SysLog.error(JSON.stringify(err));
-                resolve(undefined);
-                return;
-              });
-            })
-            .catch((err) => {
-              SysLog.error(JSON.stringify(err));
-              const respEntityDTO = new this.responseDTO(newEntity);
-              resolve(respEntityDTO);
-              return;
-            });
+          appDbConnection.insert(sql).then((newId) => {
+            newEntity.id = newId;
+          })
+          .catch((err) => {
+            resolve(undefined);
+            return;
           });
 
         });
@@ -78,7 +54,7 @@ export class AccountModel extends EntityModel {
         resolve(undefined);
         return;
       });
-    });
+    })
   };
 
   createDevAccount(dataInEntity: any): Promise<any> {

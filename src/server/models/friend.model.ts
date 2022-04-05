@@ -70,10 +70,7 @@ export class FriendModel extends EntityModel {
         SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += SqlStr.format('user_id = UUID_TO_BIN(?)', [userId]);
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
           if (result.rows.length) {
             result.rows.forEach((rowData) => {
@@ -98,8 +95,6 @@ export class FriendModel extends EntityModel {
           return;
         });
       });
-
-    });
   };
 
   /**
@@ -144,10 +139,7 @@ export class FriendModel extends EntityModel {
         ' = UUID_TO_BIN(' +
         SqlStr.escape(userId) +
         ') ';
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
           if (result.rows.length) {
             result.rows.forEach((rowData) => {
@@ -169,14 +161,12 @@ export class FriendModel extends EntityModel {
           return;
         });
       });
-
-    });
   };
 
   /**
    * Get Contact List for user
    * @param userId - user
-   * @returns 
+   * @returns
    */
   getContactList = (userId: string): Promise<any[]> => {
     return new Promise((resolve) => {
@@ -199,10 +189,7 @@ export class FriendModel extends EntityModel {
         ' = UUID_TO_BIN(' +
         SqlStr.escape(userId) +
         ') ';
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
           if (result.rows.length) {
             result.rows.forEach((rowData) => {
@@ -229,8 +216,6 @@ export class FriendModel extends EntityModel {
           return;
         });
       });
-
-    });
   };
 
 /**
@@ -252,21 +237,28 @@ export class FriendModel extends EntityModel {
             this.tableName,
             this.schema
           );
-          appDbConnection.connectDB().then((DBSession) => {
-          DBSession.sql(sql)
-            .execute()
-            .then((result) => {
+          appDbConnection.getNewDbSession().then((session) => {
+          appDbConnection.update(sql, session)
+            .then((_result) => {
               SysLog.info('updated friends starred: ', { id: id });
-              this.findById(id).then((respFriendDTO) => {
+              this.findById(id, session).then((respFriendDTO) => {
+                appDbConnection.close(session);
                 resolve(respFriendDTO);
+              })
+              .catch((err) => {
+                SysLog.error(JSON.stringify(err));
+                appDbConnection.close(session);
+                resolve(undefined);
+                return;
               });
             })
             .catch((err) => {
               SysLog.error(JSON.stringify(err));
+              appDbConnection.close(session);
               resolve(undefined);
               return;
             });
-          });
+          }).catch(() => resolve(undefined));
 
         })
         .catch((err) => {
@@ -280,7 +272,7 @@ export class FriendModel extends EntityModel {
 /**
  * Increment the frequency of contact
  * @param friendId  point to user(friend_id)
- * @returns 
+ * @returns
  */
   incrementFrequencyById = (friendId: string): Promise<any | undefined> => {
     return new Promise((resolve) => {
@@ -298,21 +290,28 @@ export class FriendModel extends EntityModel {
         this.tableName,
         this.schema
       );
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
-        .then((result) => {
+      appDbConnection.getNewDbSession().then((session) => {
+        appDbConnection.update(sql, session)
+        .then((_result) => {
           SysLog.info('updated friend frequency: ', { id: friendId });
-          this.findById(friendId).then((respFriendDTO) => {
+          this.findById(friendId, session).then((respFriendDTO) => {
+            appDbConnection.close(session);
             resolve(respFriendDTO);
+          })
+          .catch((err) => {
+            SysLog.error(JSON.stringify(err));
+            appDbConnection.close(session);
+            resolve(undefined);
+            return;
           });
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
+          appDbConnection.close(session);
           resolve(undefined);
           return;
         });
-      });
+      }).catch(() => resolve(undefined));
 
     });
   };
@@ -358,10 +357,7 @@ export class FriendModel extends EntityModel {
         ' = UUID_TO_BIN(' +
         SqlStr.escape(req.friend_id) +
         ') '
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
           if (result.rows.length) {
             resp.friends = true;
@@ -377,8 +373,6 @@ export class FriendModel extends EntityModel {
           return;
         });
       });
-
-    })
   }
 
 
@@ -422,10 +416,7 @@ export class FriendModel extends EntityModel {
         ' = UUID_TO_BIN(' +
         SqlStr.escape(req.user_id) +
         ') '
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
           if (result.rows.length) {
             resp.blocked = true;
@@ -441,14 +432,12 @@ export class FriendModel extends EntityModel {
           return;
         });
       });
-
-    })
   }
 
 /**
  * Check if account is blocked by user
  * @param req - request body { user_id, friend_id}
- * @returns 
+ * @returns
  */
    isAccountBlockedByUser(req: any): Promise<any> {
     return new Promise((resolve) => {
@@ -485,10 +474,7 @@ export class FriendModel extends EntityModel {
         ' = UUID_TO_BIN(' +
         SqlStr.escape(req.account_id) +
         ') '
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
           if (result.rows.length) {
             resp.blocked = true;
@@ -504,8 +490,6 @@ export class FriendModel extends EntityModel {
           return;
         });
       });
-
-    })
   }
 
   /**
@@ -548,10 +532,7 @@ export class FriendModel extends EntityModel {
         ' = UUID_TO_BIN(' +
         SqlStr.escape(req.group_id) +
         ') '
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
           if (result.rows.length) {
             resp.blocked = true;
@@ -567,8 +548,6 @@ export class FriendModel extends EntityModel {
           return;
         });
       });
-
-    })
   }
 
 }

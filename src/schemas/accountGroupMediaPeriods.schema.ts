@@ -126,7 +126,7 @@ export const accountGroupMediaPeriods_schema: schemaIfc[] = [
     description: 'video url'
   },
   {
-    fieldName: 'lastUpdateUsec',
+    fieldName: 'last_update_usec',
     sqlType: 'BIGINT',
     default: '0',
     excludeFromUpdate: true,

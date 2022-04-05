@@ -30,11 +30,15 @@ export class UserAccModRoleService {
 
         res.on('data', (d) => {
           body.push(d);
-          const data = Buffer.concat(body).toString();
-          userAccModRoles = JSON.parse(data);
-          console.info(data);
         });
         res.on('end', ()=>{
+          const data = Buffer.concat(body).toString();
+          if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
+            userAccModRoles = JSON.parse(data);
+            console.info(userAccModRoles);
+          } else {
+            console.error(data);
+          }
           resolve(userAccModRoles);
         });
       });

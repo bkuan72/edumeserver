@@ -8,7 +8,7 @@ import { AdAgeGroupData, adAgeGroups_schema } from '../schemas/adAgeGroups.schem
 export class AdAgeGroupDTO {
   data: AdAgeGroupData;
   constructor(propertyData?: any) {
-    DTOGenerator.genDTOFromSchema(this, adAgeGroups_schema);
+    DTOGenerator.genDTOFromSchema(this, adAgeGroups_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -22,7 +22,7 @@ export class AdAgeGroupDTO {
 export class UpdAdAgeGroupDTO {
   data: AdAgeGroupData;
   constructor(propertyData?: any) {
-    DTOGenerator.genUpdDTOFromSchema(this, adAgeGroups_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, adAgeGroups_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {

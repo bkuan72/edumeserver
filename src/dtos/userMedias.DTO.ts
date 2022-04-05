@@ -8,7 +8,7 @@ import { UserMediaData, userMedias_schema } from '../schemas/userMedias.schema';
 export class UserMediaDTO {
   data: UserMediaData;
   constructor(propertyData?: any) {
-    DTOGenerator.genDTOFromSchema(this, userMedias_schema, ['fullImage']);
+    DTOGenerator.genDTOFromSchema(this, userMedias_schema, ['fullImage'], propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -22,7 +22,7 @@ export class UserMediaDTO {
 export class UpdUserMediaDTO {
   data: UserMediaData;
   constructor(propertyData?: any) {
-    DTOGenerator.genUpdDTOFromSchema(this, userMedias_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, userMedias_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -36,7 +36,7 @@ export class UpdUserMediaDTO {
 export class RequestUserMediaDTO {
   data: UserMediaData;
   constructor(propertyData?: any) {
-    DTOGenerator.genDTOFromSchema(this, userMedias_schema);
+    DTOGenerator.genDTOFromSchema(this, userMedias_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {

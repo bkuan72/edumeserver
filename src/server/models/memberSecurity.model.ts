@@ -36,10 +36,7 @@ export class MemberSecurityModel extends EntityModel {
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('member_id = UUID_TO_BIN(?)', [memberId]);
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
           if (result.rows.length) {
             result.rows.forEach((rowData) => {
@@ -63,7 +60,5 @@ export class MemberSecurityModel extends EntityModel {
           return;
         });
       });
-
-    });
   };
 }

@@ -1,8 +1,8 @@
 version: '20'
 
 services:
-  mysql_application:
-    container_name: mysql_application
+  localhost:
+    container_name: localhost
     image: mysql:8.0
     # command: --default-authentication-plugin=mysql_native_password
     env_file: ./.env
@@ -21,98 +21,98 @@ services:
     #   - ./db/backup/files/:/data_backup/data
       tty: true
 
-  edumeserver_application:
-    # container_name: edumeserver_application
+  ls10_net_server_application:
+    # container_name: ls10_net_server_application
     build:
-      context: ../edumeserver/
+      context: ../ls10_net_server/
       dockerfile: Dockerfile
-    env_file: ../edumeserver/.env
+    env_file: ../ls10_net_server/.env
     depends_on:
-      - mysql_application
+      - localhost
     volumes:
-    - '../edumeserver/${BACKEND_APPLICATION_DIRECTORY}/:/app/www'
+    - '../ls10_net_server/${BACKEND_APPLICATION_DIRECTORY}/:/app/www'
     stdin_open: true
     tty: true
     ports:
-    - 127.0.0.1:3300:3300
+    - 127.0.0.1:33010:33010
     environment:
       ENV: dev
-      DB_HOST: 'mysql_application'
+      DB_HOST: 'localhost'
 
-  edume_router:
-    # container_name: edume_router
+  ls10_net_router:
+    # container_name: ls10_net_router
     build:
-      context: ../edume_router
+      context: ../ls10_net_router
       dockerfile: Dockerfile
-    env_file: ../edume_router/.env
+    env_file: ../ls10_net_router/.env
     depends_on:
-      - mysql_application
+      - localhost
     volumes:
-    - '../edume_router/${BACKEND_APPLICATION_DIRECTORY}/:/app/www'
+    - '../ls10_net_router/${BACKEND_APPLICATION_DIRECTORY}/:/app/www'
     stdin_open: true
     tty: true
     ports:
     - 127.0.0.1:33002:33002
     environment:
       ENV: dev
-      DB_HOST: 'mysql_application'
+      DB_HOST: 'localhost'
 
-  edume_entity:
-    # container_name: edume_entity
+  ls10_net_entity:
+    # container_name: ls10_net_entity
     build:
-      context: ../edume_entity
+      context: ../ls10_net_entity
       dockerfile: Dockerfile
-    env_file: ../edume_entity/.env
+    env_file: ../ls10_net_entity/.env
     depends_on:
-      - mysql_application
-      - edume_router
+      - localhost
+      - ls10_net_router
     volumes:
-    - '../edume_entity/${BACKEND_APPLICATION_DIRECTORY}/:/app/www'
+    - '../ls10_net_entity/${BACKEND_APPLICATION_DIRECTORY}/:/app/www'
     stdin_open: true
     tty: true
     ports:
     - 127.0.0.1:33999:33999
     environment:
       ENV: dev
-      DB_HOST: 'mysql_application'
+      DB_HOST: 'localhost'
 
-  edume_property:
-    # container_name: edume_property
+  ls10_net_property:
+    # container_name: ls10_net_property
     build:
-      context: ../edume_property_service
+      context: ../ls10_net_property_service
       dockerfile: Dockerfile
-    env_file: ../edume_property_service/.env
+    env_file: ../ls10_net_property_service/.env
     depends_on:
-      - mysql_application
-      - edume_router
+      - localhost
+      - ls10_net_router
     volumes:
-    - '../edume_property_service/${BACKEND_APPLICATION_DIRECTORY}/:/app/www'
+    - '../ls10_net_property_service/${BACKEND_APPLICATION_DIRECTORY}/:/app/www'
     stdin_open: true
     tty: true
     ports:
     - 127.0.0.1:33003:33003
     environment:
       ENV: dev
-      DB_HOST: 'mysql_application'
+      DB_HOST: 'localhost'
 
-  edumeapi_gateway:
-    # container_name: edumeapi_gateway
+  ls10_net_api_gateway:
+    # container_name: ls10_net_api_gateway
     build:
-      context: ../edumeapi_gateway/
+      context: ../ls10_net_api_gateway/
       dockerfile: Dockerfile
-    env_file: ../edumeapi_gateway/.env
+    env_file: ../ls10_net_api_gateway/.env
     depends_on:
-      - mysql_application
-      - edume_router
+      - localhost
+      - ls10_net_router
     volumes:
-    - '../edumeapi_gateway/${BACKEND_APPLICATION_DIRECTORY}/:/app/www'
+    - '../ls10_net_api_gateway/${BACKEND_APPLICATION_DIRECTORY}/:/app/www'
     stdin_open: true
     tty: true
     ports:
     - 0.0.0.0:33001:33001
     environment:
       ENV: dev
-      DB_HOST: 'mysql_application'
+      DB_HOST: 'localhost'
 
     # command: >
     #   bash -c "cd /app

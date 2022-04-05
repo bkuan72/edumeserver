@@ -155,7 +155,7 @@ export class AccountsController implements Controller{
       if (respAccountDTO) {
         response.send({
           id: respAccountDTO.id,
-          user_name: respAccountDTO.account_name,          
+          username: respAccountDTO.account_name,          
           account_name: respAccountDTO.account_name,
           avatar: respAccountDTO.avatar,
           allow_promo: respAccountDTO.allow_promo,

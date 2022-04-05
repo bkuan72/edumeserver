@@ -8,7 +8,7 @@ import { UserMediaPeriodData, userMediaPeriods_schema } from '../schemas/userMed
 export class UserMediaPeriodDTO {
   data: UserMediaPeriodData;
   constructor(propertyData?: any) {
-    DTOGenerator.genDTOFromSchema(this, userMediaPeriods_schema);
+    DTOGenerator.genDTOFromSchema(this, userMediaPeriods_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -22,7 +22,7 @@ export class UserMediaPeriodDTO {
 export class UpdUserMediaPeriodDTO {
   data: UserMediaPeriodData;
   constructor(propertyData?: any) {
-    DTOGenerator.genUpdDTOFromSchema(this, userMediaPeriods_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, userMediaPeriods_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -36,7 +36,7 @@ export class UpdUserMediaPeriodDTO {
 export class UserMediaPeriodDataDTO {
     data: UserMediaPeriodData;
     constructor(propertyData?: any) {
-      DTOGenerator.genDTOFromSchema(this, userMediaPeriods_schema, ['fullImage']);
+      DTOGenerator.genDTOFromSchema(this, userMediaPeriods_schema, ['fullImage'], propertyData);
       if (!CommonFn.isUndefined(propertyData)) {
         for (const prop in this) {
           if (CommonFn.hasProperty(propertyData, prop)) {

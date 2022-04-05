@@ -102,7 +102,7 @@ export const userMedias_schema: schemaIfc[] = [
     description: 'video url'
   },
   {
-    fieldName: 'lastUpdateUsec',
+    fieldName: 'last_update_usec',
     sqlType: 'BIGINT',
     default: '0',
     excludeFromUpdate: true,
@@ -114,12 +114,12 @@ export const userMedias_schema: schemaIfc[] = [
     index: [
       {
         name: 'user_id_idx',
-        columns: ['site_code', 'user_id', 'lastUpdateUsec'],
+        columns: ['site_code', 'user_id', 'last_update_usec'],
         unique: false
       },
       {
         name: 'userMediaPeriod_id_idx',
-        columns: ['site_code', 'userMediaPeriod_id', 'lastUpdateUsec'],
+        columns: ['site_code', 'userMediaPeriod_id', 'last_update_usec'],
         unique: false
       }
     ]

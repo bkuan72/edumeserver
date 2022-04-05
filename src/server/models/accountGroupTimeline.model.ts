@@ -40,10 +40,7 @@ export class AccountGroupTimelineModel extends EntityModel {
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('timeline_id = UUID_TO_BIN(?)', [timelineId]) ;
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
 
           if (result.rows.length) {
@@ -74,8 +71,6 @@ export class AccountGroupTimelineModel extends EntityModel {
           return;
         });
       });
-
-    });
   };
 
 
@@ -99,15 +94,12 @@ export class AccountGroupTimelineModel extends EntityModel {
       sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'post_id');
       sql += ' WHERE ' + SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') + ' = ' + SqlStr.escape(this.siteCode) + ' AND ';
       sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'status') + ' != ' + SqlStr.escape('DELETED') + ' AND ';
-      sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'lastUpdateUsec') + ' >= ' + fromDate?.valueOf() + ' AND ';
+      sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'last_update_usec') + ' >= ' + fromDate?.valueOf() + ' AND ';
       sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'account_id') + ' = ' + SqlStr.format('UUID_TO_BIN(?)', [accountId]) + ' AND ';
       sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'group_id') + ' = 0';
-      sql += ' ORDER BY ' + SqlFormatter.fmtTableFieldStr(this.tableName, 'lastUpdateUsec') + ' DESC ';
+      sql += ' ORDER BY ' + SqlFormatter.fmtTableFieldStr(this.tableName, 'last_update_usec') + ' DESC ';
       sql += ';';
-      SysLog.info('findByTimelineAccountGroupId SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
 
          if (result.rows.length > 0) {
@@ -137,8 +129,6 @@ export class AccountGroupTimelineModel extends EntityModel {
           return;
         });
       });
-
-    });
   };
 
   findGroupTimeline = (
@@ -161,14 +151,11 @@ export class AccountGroupTimelineModel extends EntityModel {
       sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'post_id');
       sql += ' WHERE ' + SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') + ' = ' + SqlStr.escape(this.siteCode) + ' AND ';
       sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'status') + ' != ' + SqlStr.escape('DELETED') + ' AND ';
-      sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'lastUpdateUsec') + ' >= ' + fromDate?.valueOf() + ' AND ';
+      sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'last_update_usec') + ' >= ' + fromDate?.valueOf() + ' AND ';
       sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'group_id') + ' = ' + SqlStr.format('UUID_TO_BIN(?)', [groupId]);
-      sql += ' ORDER BY ' + SqlFormatter.fmtTableFieldStr(this.tableName, 'lastUpdateUsec') + ' DESC ';
+      sql += ' ORDER BY ' + SqlFormatter.fmtTableFieldStr(this.tableName, 'last_update_usec') + ' DESC ';
       sql += ';';
-      SysLog.info('findByTimelineAccountGroupId SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
 
          if (result.rows.length > 0) {
@@ -198,8 +185,6 @@ export class AccountGroupTimelineModel extends EntityModel {
           return;
         });
       });
-
-    });
   };
 
 
@@ -216,22 +201,27 @@ export class AccountGroupTimelineModel extends EntityModel {
         this.tableName,
         this.schema
       );
-      SysLog.info("Increment Sql Likes : " + sql)
-      appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql(sql)
-        .execute()
+      appDbConnection.getNewDbSession().then((session) => {
+        appDbConnection.update(sql, session)
         .then((result) => {
           SysLog.info('likes post : ', { id: timelineId });
           this.findById(timelineId).then((respPostDTO) => {
+            appDbConnection.close(session);
             resolve(respPostDTO);
+          }).catch((err) => {
+            SysLog.error(JSON.stringify(err));
+            appDbConnection.close(session);
+            resolve(undefined);
+            return;
           });
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
+          appDbConnection.close(session);
           resolve(undefined);
           return;
         });
-      });
+      }).catch(() => resolve(undefined));
 
     });
   };
@@ -249,23 +239,30 @@ export class AccountGroupTimelineModel extends EntityModel {
         this.tableName,
         this.schema
       );
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      appDbConnection.getNewDbSession().then((session) => {
+        appDbConnection.update(sql, session)
         .then((result) => {
           SysLog.info('unlike post: ', { id: timelineId });
-          this.findById(timelineId).then((respPostDTO) => {
+          this.findById(timelineId, session).then((respPostDTO) => {
+            appDbConnection.close(session);
             resolve(respPostDTO);
+          })
+          .catch((err) => {
+            SysLog.error(JSON.stringify(err));
+            appDbConnection.close(session);
+            resolve(undefined);
+            return;
           });
+  
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
+          appDbConnection.close(session);
           resolve(undefined);
           return;
         });
       });
-
-    });
+      });
   };
   incrementShareById = (timelineId: string): Promise<any | undefined> => {
     return new Promise((resolve) => {
@@ -283,22 +280,28 @@ export class AccountGroupTimelineModel extends EntityModel {
         this.tableName,
         this.schema
       );
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      appDbConnection.getNewDbSession().then((session) => {
+      appDbConnection.update(sql, session)
         .then((result) => {
           SysLog.info('updated timeline post share: ', { id: timelineId });
           this.findById(timelineId).then((respPostDTO) => {
+            appDbConnection.close(session);
             resolve(respPostDTO);
+          })
+          .catch((err) => {
+            SysLog.error(JSON.stringify(err));
+            appDbConnection.close(session);
+            resolve(undefined);
+            return;
           });
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
+          appDbConnection.close(session);
           resolve(undefined);
           return;
         });
-      });
-
+      }).catch(() => resolve(undefined));
     });
   };
 

@@ -9,7 +9,7 @@ import { UserTimelineData, userTimelines_schema } from '../schemas/userTimelines
 export class UserTimelineDTO {
   data: UserTimelineData;
   constructor(propertyData?: any) {
-    DTOGenerator.genDTOFromSchema(this, userTimelines_schema);
+    DTOGenerator.genDTOFromSchema(this, userTimelines_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -23,7 +23,7 @@ export class UserTimelineDTO {
 export class UpdUserTimelineDTO {
   data: UserTimelineData;
   constructor(propertyData?: any) {
-    DTOGenerator.genUpdDTOFromSchema(this, userTimelines_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, userTimelines_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -60,7 +60,7 @@ export class TimelinePostDTO {
       'user',
       {
         id: '',
-        user_name: '',
+        username: '',
         avatar: ''
       }
     );
@@ -100,7 +100,7 @@ DTOGenerator.defineProperty(
   'user',
   {
     id: '',
-    user_name: '',
+    username: '',
     avatar: ''
   }
 );

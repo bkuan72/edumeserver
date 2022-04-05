@@ -1,13 +1,13 @@
 export const serverCfg =
 {
-  defaultAdminEmail: "edume_admin@gmail.com",
-  defaultAdminUserId: "admin_edume",
+  defaultAdminEmail: "ls10_net_admin@gmail.com",
+  defaultAdminUserId: "admin_ls10_net",
   defaultAdminUserName: "administrator",
   defaultAdminPassword: "Admin123",
-  defaultAdminPhoneNo: "0211353221",
-  defaultDevEmail: "edume_dev@gmail.com",
-  defaultDevUserId: "dev_edume",
+  defaultAdminPhoneNo: "021177353221",
+  defaultDevEmail: "brian.kuan@logisticsoftware.co.nz",
+  defaultDevUserId: "dev_ls10_net",
   defaultDevUserName: "developer",
   defaultDevPassword: "Dev123",
-  defaultDevPhoneNo: "0211353221"
+  defaultDevPhoneNo: "021137753221"
 }

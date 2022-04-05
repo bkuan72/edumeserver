@@ -45,11 +45,8 @@ export class PostModel extends EntityModel {
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('user_id = UUID_TO_BIN(?)', [userId]) + ' AND ';
-      sql += SqlStr.format('lastUpdateUsec >= ?', [fromDate?.valueOf()]);
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      sql += SqlStr.format('last_update_usec >= ?', [fromDate?.valueOf()]);
+      appDbConnection.select(sql)
         .then((result) => {
 
           if (result.rows.length) {
@@ -75,8 +72,6 @@ export class PostModel extends EntityModel {
           return;
         });
       });
-
-    });
   };
 
   findForUserNFriends = (
@@ -96,7 +91,7 @@ export class PostModel extends EntityModel {
         sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
         sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
         sql +=
-          SqlStr.format('lastUpdateUsec >= ?', [fromDate?.valueOf()]) + ' AND ';
+          SqlStr.format('last_update_usec >= ?', [fromDate?.valueOf()]) + ' AND ';
         sql += 'user_id IN (';
         sql += SqlStr.format('UUID_TO_BIN(?)', [userId]);
         friends.forEach((friend) => {
@@ -104,10 +99,7 @@ export class PostModel extends EntityModel {
           sql += SqlStr.format('UUID_TO_BIN(?)', [friend.friend_id]);
         });
         sql += ')';
-        SysLog.info('findById SQL: ' + sql);
-        appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql(sql)
-          .execute()
+        appDbConnection.select(sql)
           .then((result) => {
 
             if (result.rows.length) {
@@ -140,7 +132,6 @@ export class PostModel extends EntityModel {
         });
 
       });
-    });
   };
 
 }

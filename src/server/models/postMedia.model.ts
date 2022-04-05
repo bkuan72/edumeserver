@@ -36,10 +36,7 @@ export class PostMediaModel extends EntityModel {
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('post_id = UUID_TO_BIN(?)', [postId]) ;
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
 
           if (result.rows.length) {
@@ -65,7 +62,5 @@ export class PostMediaModel extends EntityModel {
           return;
         });
       });
-
-    });
   };
 }

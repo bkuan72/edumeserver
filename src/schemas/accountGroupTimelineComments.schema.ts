@@ -77,7 +77,7 @@ export const accountGroupTimelineComments_schema: schemaIfc[] = [
     description: 'comment message'
   },
   {
-    fieldName: 'lastUpdateUsec',
+    fieldName: 'last_update_usec',
     sqlType: 'BIGINT',
     default: '0',
     excludeFromUpdate: true,

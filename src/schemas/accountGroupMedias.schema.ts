@@ -117,7 +117,7 @@ export const accountGroupMedias_schema: schemaIfc[] = [
     description: 'video url'
   },
   {
-    fieldName: 'lastUpdateUsec',
+    fieldName: 'last_update_usec',
     sqlType: 'BIGINT',
     default: '0',
     excludeFromUpdate: true,
@@ -129,7 +129,7 @@ export const accountGroupMedias_schema: schemaIfc[] = [
     index: [
       {
         name: 'accountGroupPeriod_id_idx',
-        columns: ['site_code', 'accountGroupMediaPeriod_id', 'account_id', 'group_id', 'lastUpdateUsec'],
+        columns: ['site_code', 'accountGroupMediaPeriod_id', 'account_id', 'group_id', 'last_update_usec'],
         unique: false
       }
     ]

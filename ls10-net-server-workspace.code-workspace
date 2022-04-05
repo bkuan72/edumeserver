@@ -7,7 +7,7 @@
 	"settings": {
 		"cSpell.words": [
 			"builtins",
-			"edumedb",
+			"ls10_netdb",
 			"Mailgen",
 			"MEDIUMBLOB",
 			"mysqlx",
@@ -23,8 +23,8 @@
 				"server": "localhost",
 				"port": 3306,
 				"driver": "MySQL",
-				"name": "edumedb",
-				"database": "testdb",
+				"name": "ls10_netdb",
+				"database": "ls10_net",
 				"username": "admin",
 				"password": "BK72.admin"
 			}

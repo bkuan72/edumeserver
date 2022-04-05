@@ -26,8 +26,8 @@ export class PropertyModel extends EntityModel {
   getNextNumber(propName: string): Promise<any | string> {
     return new Promise((resolve, reject) => {
       const sitePropName = SysEnv.SITE_CODE+'.'+propName;
-      
-      appDbConnection.connectDB().then((DBSession) => {
+
+      appDbConnection.getNewDbSession().then((DBSession) => {
         DBSession.sql('BEGIN; ').execute()
         .then((result0) => {
           DBSession.sql('SELECT numValue + 1 INTO @nextNumber FROM '+ this.tableName
@@ -37,7 +37,7 @@ export class PropertyModel extends EntityModel {
           .then((result1) => {
             DBSession.sql('UPDATE '+ this.tableName + ' SET numValue = @nextNumber'
             + ' WHERE name = ' + SqlStr.escape(sitePropName) + ' AND '
-            + ' site_code = ' + SqlStr.escape(SysEnv.SITE_CODE)
+            + ' site_code = ' + SqlStr.escape(SysEnv.SITE_CODE) + ';'
             ).execute()
             .then((result2) => {
               DBSession.sql('SELECT @nextNumber;').execute()
@@ -46,6 +46,7 @@ export class PropertyModel extends EntityModel {
                 .then((result4) => {
                 SysLog.info(sitePropName +' Next Number: ', result3);
                 const nextNumber: any = { 'nextNumber': result3.rows[0][0] }; // TODO
+                DBSession.getXSession().close();
                 resolve(nextNumber);
                 }).catch(() => reject('Error Getting Next Number'));
               }).catch(() => reject('Error Getting Next Number'));
@@ -53,9 +54,10 @@ export class PropertyModel extends EntityModel {
           }).catch(() => reject('Error Getting Next Number'));
         })
         .catch(() => {
+          DBSession.getXSession().close();
           reject ('Error Getting Next Number');
         })
-      });
+      }).catch(() => reject('Cannot Get SQL session'));
 
     });
   }

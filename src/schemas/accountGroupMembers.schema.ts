@@ -210,7 +210,7 @@ export const accountGroupMembers_schema: schemaIfc[] = [
     default: 'REQUEST'
   },
   {
-    fieldName: 'lastUpdateUsec',
+    fieldName: 'last_update_usec',
     sqlType: 'BIGINT',
     default: '0',
     excludeFromUpdate: true,
@@ -231,7 +231,7 @@ export const accountGroupMembers_schema: schemaIfc[] = [
           'site_code',
           'account_id',
           'member_status',
-          'lastUpdateUsec'
+          'last_update_usec'
         ],
         unique: false
       },
@@ -241,7 +241,7 @@ export const accountGroupMembers_schema: schemaIfc[] = [
           'site_code',
           'group_id',
           'member_status',
-          'lastUpdateUsec'
+          'last_update_usec'
         ],
         unique: false
       }

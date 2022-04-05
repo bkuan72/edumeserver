@@ -114,7 +114,7 @@ export const activities_schema: schemaIfc[] = [
     description: 'record status'
   },
   {
-    fieldName: 'lastUpdateUsec',
+    fieldName: 'last_update_usec',
     sqlType: 'BIGINT',
     default: '0',
     excludeFromUpdate: true,
@@ -126,7 +126,7 @@ export const activities_schema: schemaIfc[] = [
     index: [
       {
         name: 'last_upd_usec_idx',
-        columns: ['site_code', 'timeline_id', 'lastUpdateUsec'],
+        columns: ['site_code', 'timeline_id', 'last_update_usec'],
         unique: false
       },
       {

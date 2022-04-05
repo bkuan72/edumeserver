@@ -43,19 +43,15 @@ export class UserGroupModel extends EntityModel {
     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'join_date') + ', ';
     sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'group_name') + ', ';
     sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'category') + ', ';
-    sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'lastUpdateUsec');
+    sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'last_update_usec');
     sql += ' FROM ' + this.tableName + ', ' + socialGroups_schema_table;
     sql += ' WHERE ';
     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') + SqlStr.format(' = ?', [this.siteCode]) + ' AND ';
     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'user_id') + SqlStr.format(' = UUID_TO_BIN(?)', [userId]) + ' AND ';
     sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'id') + ' = ' + SqlFormatter.fmtTableFieldStr(this.tableName, 'group_id');
 
-    SysLog.info('findById SQL: ' + sql);
-    SysLog.info('find SQL: ' + sql);
     return new Promise((resolve) => {
-      appDbConnection.connectDB().then((DBSession) => {
-     DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
 
           if (result.rows.length) {
@@ -69,7 +65,7 @@ export class UserGroupModel extends EntityModel {
                 'join_date',
                 'name',
                 'category',
-                'lastUpdateUsec'
+                'last_update_usec'
             ],
             rowData) as UserGroupInfoDTO;
               respUserGroupsDTOArray.push(data);
@@ -86,9 +82,7 @@ export class UserGroupModel extends EntityModel {
           return;
         });
       });
- 
-    });
-  };
+   };
 
 
   findByAccountId = (
@@ -104,20 +98,16 @@ export class UserGroupModel extends EntityModel {
     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'join_date') + ', ';
     sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'group_name') + ', ';
     sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'category') + ', ';
-    sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'lastUpdateUsec');
+    sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'last_update_usec');
     sql += ' FROM ' + this.tableName + ', ' + socialGroups_schema_table;
     sql += ' WHERE ';
     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') + SqlStr.format(' = ?', [this.siteCode]) + ' AND ';
     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'account_id') + SqlStr.format(' = UUID_TO_BIN(?)', [accountId]) + ' AND ';
     sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'id') + ' = ' + SqlFormatter.fmtTableFieldStr(this.tableName, 'group_id');
 
-    SysLog.info('findById SQL: ' + sql);
-    SysLog.info('find SQL: ' + sql);
     return new Promise((resolve) => {
       const respUserGroupsDTOArray: UserGroupInfoDTO[] = [];
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
 
           if (result.rows.length) {
@@ -131,7 +121,7 @@ export class UserGroupModel extends EntityModel {
                 'join_date',
                 'name',
                 'category',
-                'lastUpdateUsec'
+                'last_update_usec'
             ],
             rowData) as UserGroupInfoDTO;
               respUserGroupsDTOArray.push(data);
@@ -148,8 +138,6 @@ export class UserGroupModel extends EntityModel {
           return;
         });
       });
-
-    });
   };
 
   findByGroupId = (
@@ -166,19 +154,15 @@ export class UserGroupModel extends EntityModel {
     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'join_date') + ', ';
     sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'group_name') + ', ';
     sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'category') + ', ';
-    sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'lastUpdateUsec');
+    sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'last_update_usec');
     sql += ' FROM ' + this.tableName + ', ' + socialGroups_schema_table;
     sql += ' WHERE ';
     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'site_code') + SqlStr.format(' = ?', [this.siteCode]) + ' AND ';
     sql += SqlFormatter.fmtTableFieldStr(this.tableName, 'group_id') + SqlStr.format(' = UUID_TO_BIN(?)', [groupId]) + ' AND ';
     sql += SqlFormatter.fmtTableFieldStr(socialGroups_schema_table, 'id') + ' = ' + SqlFormatter.fmtTableFieldStr(this.tableName, 'group_id');
 
-    SysLog.info('findById SQL: ' + sql);
-    SysLog.info('find SQL: ' + sql);
     return new Promise((resolve) => {
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
 
           if (result.rows.length) {
@@ -192,7 +176,7 @@ export class UserGroupModel extends EntityModel {
                 'join_date',
                 'name',
                 'category',
-                'lastUpdateUsec'
+                'last_update_usec'
             ],
             rowData) as UserGroupInfoDTO;
               respUserGroupsDTOArray.push(data);
@@ -209,8 +193,6 @@ export class UserGroupModel extends EntityModel {
           return;
         });
       });
-
-    });
   };
 }
 

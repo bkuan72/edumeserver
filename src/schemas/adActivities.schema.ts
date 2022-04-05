@@ -62,7 +62,7 @@ export const adActivities_schema: schemaIfc[] = [
     trim: false,
     description: ' date of last activity'
   },
-  {    fieldName: 'lastUpdateUsec',
+  {    fieldName: 'last_update_usec',
   sqlType: 'BIGINT',
   default: '0',
   excludeFromUpdate: true,
@@ -78,7 +78,7 @@ export const adActivities_schema: schemaIfc[] = [
       },
       {
         name: 'last_upd_usec_idx',
-        columns: [ 'site_code', 'lastUpdateUsec'],
+        columns: [ 'site_code', 'last_update_usec'],
         unique: false
       }
     ]

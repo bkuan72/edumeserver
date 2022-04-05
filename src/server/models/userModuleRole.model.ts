@@ -30,7 +30,7 @@ export class UserModuleRoleModel extends EntityModel {
     return new Promise((resolve) => {
       const excludeColumns = [
         'id',
-        'lastUpdateUsec',
+        'last_update_usec',
         'status',
         'site_code'
       ];
@@ -49,8 +49,7 @@ export class UserModuleRoleModel extends EntityModel {
       sql += ' INNER JOIN ' + modules_schema_table + ' ON ' + userModuleRoles_schema_table + '.module_id = ' + modules_schema_table + '.id'
       sql += ' WHERE ' + userModuleRoles_schema_table+ '.site_code = ' + SqlStr.escape(siteCode) + ' AND ';
       sql += SqlStr.format(userModuleRoles_schema_table+ '.user_id = UUID_TO_BIN(?);', [userId]);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql).execute()
+      appDbConnection.select(sql)
       .then((result) => {
         if (result.rows.length == 0) {
           // not found Customer with the id
@@ -87,7 +86,5 @@ export class UserModuleRoleModel extends EntityModel {
         return;
       });
       });
-
-    });
   };
 }

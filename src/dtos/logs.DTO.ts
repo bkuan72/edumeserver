@@ -8,7 +8,7 @@ import { LogData, logs_schema } from '../schemas/logs.schema';
 export class LogDTO {
   data: LogData;
   constructor(logData?: any) {
-    DTOGenerator.genDTOFromSchema(this, logs_schema);
+    DTOGenerator.genDTOFromSchema(this, logs_schema, undefined, logData);
     if (!CommonFn.isUndefined(logData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(logData, prop)) {

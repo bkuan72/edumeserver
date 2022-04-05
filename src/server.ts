@@ -37,6 +37,7 @@ import { AdAgeGroupsController } from './server/controllers/adAgeGroups.controll
 import { AccountGroupTimelinesController } from './server/controllers/accountGroupTimelines.controller';
 import { AccountGroupTimelineCommentsController } from './server/controllers/accountGroupTimelineComments.controller';
 import { AccountGroupMembersController } from './server/controllers/accountGroupMembers.controller';
+import appDbConnection from './modules/AppDBModule';
 
 // validate that all required environment variable is present
 SysEnv.init();
@@ -46,18 +47,16 @@ validateEnv();
 // const tokens = new TokenModel(tokens_schema_table);
 
 const port = SysEnv.PORT;
-
-
 const app = new App (
   [
-    new AuthenticationController(),
-    new UsersController(),
-    new AccountsController(),
-    new UserAccountsController(),
+    // new AuthenticationController(),
+    // new UsersController(),
+    // new AccountsController(),
+    // new UserAccountsController(),
     new LogsController(),
-    new TokensController(),
-    new BlacklistController(),
-    new PropertiesController(),
+    // new TokensController(),
+    // new BlacklistController(),
+    // new PropertiesController(),
     new AdvertisementsController(),
     new UserTimelineCommentsController(),
     new PostsController(),
@@ -71,9 +70,9 @@ const app = new App (
     new AdKeywordsController(),
     new AdActivitiesController(),
     new AdAgeGroupsController(),
-    new ModulesController(),
-    new RolesController(),
-    new UserModuleRolesController(),
+    // new ModulesController(),
+    // new RolesController(),
+    // new UserModuleRolesController(),
     new UserMediasController(),
     new UserMediaPeriodsController(),
     new AccountGroupMediasController(),
@@ -87,7 +86,9 @@ const app = new App (
 );
 SysLog.info('Cron setup to purge expired blacklistTokens every minute')
 
-app.listen();
+appDbConnection.initializeModuleDB().finally(() => {
+  app.listen();
+})
 
 process.on('SIGINT', function() {
   // app.close();

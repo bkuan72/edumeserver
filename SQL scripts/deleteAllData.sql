@@ -1,4 +1,4 @@
-use testdb;
+use ls10_net;
 
 delete from tokens;
 delete from users;

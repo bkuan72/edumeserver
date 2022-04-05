@@ -77,7 +77,7 @@ export const userTimelines_schema: schemaIfc[] = [
     excludeFromUpdate: true,
     description: 'number of shares'
   },
-  {    fieldName: 'lastUpdateUsec',
+  {    fieldName: 'last_update_usec',
   sqlType: 'BIGINT',
   default: '0',
   excludeFromUpdate: true,
@@ -93,7 +93,7 @@ export const userTimelines_schema: schemaIfc[] = [
       },
       {
         name: 'last_upd_usec_idx',
-        columns: [ 'site_code', 'timeline_user_id', 'lastUpdateUsec'],
+        columns: [ 'site_code', 'timeline_user_id', 'last_update_usec'],
         unique: false
       }
     ]

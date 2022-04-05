@@ -39,6 +39,13 @@ export const roles_schema: schemaIfc[] = [
   trim: true,
   description: 'role identifier code'
   },
+  {    fieldName: 'module_id',
+  sqlType: 'BINARY(16)',
+  primaryKey: false,
+  uuidProperty: true,
+  excludeFromUpdate: true,
+  description: 'link to modules table'
+},
   {    fieldName: 'description',
   sqlType: 'VARCHAR(40)',
   size: 40,
@@ -83,7 +90,7 @@ export const roles_schema: schemaIfc[] = [
     excludeFromUpdate: true,
     description: 'develop website - see DTOs ok'
   },
-  {    fieldName: 'lastUpdateUsec',
+  {    fieldName: 'last_update_usec',
   sqlType: 'BIGINT',
   default: '0',
   excludeFromUpdate: true,
@@ -94,12 +101,12 @@ export const roles_schema: schemaIfc[] = [
     index: [
       {
         name: 'role_code_idx',
-        columns: ['site_code', 'role_code'],
+        columns: ['site_code', 'module_id', 'role_code'],
         unique: true
       },
       {
         name: 'last_upd_usec_idx',
-        columns: [ 'site_code', 'lastUpdateUsec'],
+        columns: [ 'site_code', 'last_update_usec'],
         unique: false
       }
     ]

@@ -8,7 +8,7 @@ import { UserGroupData, userGroups_schema } from '../schemas/userGroups.schema';
 export class UserGroupsDTO {
   data: UserGroupData;
   constructor(userGroupData?: any) {
-    DTOGenerator.genDTOFromSchema(this, userGroups_schema);
+    DTOGenerator.genDTOFromSchema(this, userGroups_schema, undefined, userGroupData);
     if (!CommonFn.isUndefined(userGroupData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(userGroupData, prop)) {
@@ -27,14 +27,14 @@ export class UserGroupInfoDTO {
     join_date: string;
     name: string;
     category: string;
-    lastUpdateUsec: number;
+    last_update_usec: number;
   constructor () {
     this.id = '';
     this.status = 'OK';
     this.group_id = '';
     this.user_id = '';
     this.join_date = '';
-    this.lastUpdateUsec = 0;
+    this.last_update_usec = 0;
     this.name = '';
     this.category = '';
   }
@@ -43,7 +43,7 @@ export class UserGroupInfoDTO {
 export class UpdUserGroupsDTO {
   data: UserGroupData;
   constructor(userGroupData?: any) {
-    DTOGenerator.genUpdDTOFromSchema(this, userGroups_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, userGroups_schema, undefined, userGroupData);
     if (!CommonFn.isUndefined(userGroupData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(userGroupData, prop)) {

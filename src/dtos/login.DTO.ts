@@ -8,7 +8,7 @@ import CommonFn from '../modules/CommonFnModule';
 export class LoginDTO {
   data: LoginData;
   constructor(loginData?: any) {
-    DTOGenerator.genDTOFromSchema(this, loginDTO_schema);
+    DTOGenerator.genDTOFromSchema(this, loginDTO_schema, undefined, loginData);
     if (loginData !== undefined) {
       for (const prop in this) {
         if (CommonFn.hasProperty(loginData, prop)) {

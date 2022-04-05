@@ -51,7 +51,7 @@ export const userModuleRoles_schema: schemaIfc[] = [
     excludeFromUpdate: true,
     description: 'link to modules table'
   },
-  {    fieldName: 'lastUpdateUsec',
+  {    fieldName: 'last_update_usec',
   sqlType: 'BIGINT',
   default: '0',
   excludeFromUpdate: true,
@@ -67,7 +67,7 @@ export const userModuleRoles_schema: schemaIfc[] = [
       },
       {
         name: 'last_upd_usec_idx',
-        columns: [ 'site_code', 'lastUpdateUsec'],
+        columns: [ 'site_code', 'last_update_usec'],
         unique: false
       }
     ]

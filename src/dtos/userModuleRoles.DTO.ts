@@ -10,7 +10,7 @@ import { UserModuleRoleData, userModuleRoles_schema } from '../schemas/userModul
 export class UserModuleRoleDTO {
   data: UserModuleRoleData;
   constructor(propertyData?: any) {
-    DTOGenerator.genDTOFromSchema(this, userModuleRoles_schema);
+    DTOGenerator.genDTOFromSchema(this, userModuleRoles_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -24,7 +24,7 @@ export class UserModuleRoleDTO {
 export class UpdUserModuleRoleDTO {
   data: UserModuleRoleData;
   constructor(propertyData?: any) {
-    DTOGenerator.genUpdDTOFromSchema(this, userModuleRoles_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, userModuleRoles_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -37,7 +37,7 @@ export class UpdUserModuleRoleDTO {
 
 export class UserModuleRoleDataDTO {
     constructor(propertyData?: any) {
-      DTOGenerator.genDTOFromSchema(this, userModuleRoles_schema);
+      DTOGenerator.genDTOFromSchema(this, userModuleRoles_schema, undefined, propertyData);
       if (!CommonFn.isUndefined(propertyData)) {
         for (const prop in this) {
           if (CommonFn.hasProperty(propertyData, prop)) {

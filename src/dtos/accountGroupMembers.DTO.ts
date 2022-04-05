@@ -9,7 +9,7 @@ import { AccountGroupMemberData, accountGroupMembers_schema } from '../schemas/a
 export class AccountGroupMemberDTO {
   data: AccountGroupMemberData;
   constructor(propertyData?: any) {
-    DTOGenerator.genDTOFromSchema(this, accountGroupMembers_schema);
+    DTOGenerator.genDTOFromSchema(this, accountGroupMembers_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -23,7 +23,7 @@ export class AccountGroupMemberDTO {
 export class UpdAccountGroupMemberDTO {
   data: AccountGroupMemberData;
   constructor(propertyData?: any) {
-    DTOGenerator.genUpdDTOFromSchema(this, accountGroupMembers_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, accountGroupMembers_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -52,7 +52,7 @@ export class AccountGroupMemberListDTO {
 export class ContactListDTO {
   data: AccountGroupMemberData;
   constructor(propertyData?: any) {
-    DTOGenerator.genDTOFromSchema(this, accountGroupMembers_schema);
+    DTOGenerator.genDTOFromSchema(this, accountGroupMembers_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -63,7 +63,7 @@ export class ContactListDTO {
     DTOGenerator.defineProperty(
       this,
       'user',
-      DTOGenerator.genDTOFromSchema({}, users_schema)
+      DTOGenerator.genDTOFromSchema({}, users_schema, undefined, propertyData)
     );
   }
 

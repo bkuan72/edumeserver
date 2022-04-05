@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable no-prototype-builtins */
+
+import SysEnv from "./SysEnv";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export enum DateAddIntervalEnum {
   YEAR,
@@ -13,6 +16,23 @@ export enum DateAddIntervalEnum {
   MILLISECOND,
 }
 export class CommonFn {
+
+  /**
+  * This function adds a new property to obj object
+  * @param obj - target obj
+  * @param fieldName - new property name
+  * @param dflt - default value of property
+  */
+  static defineProperty(obj: any, fieldName: string, dflt: any) {
+      return Object.defineProperty(obj, fieldName, {
+          value: dflt,
+          writable: true,
+          configurable: true,
+          enumerable: true,
+      });
+  }
+
+
   static strWrapper = (val: string): string => {
     return "'" + val + "'";
   };
@@ -28,15 +48,20 @@ export class CommonFn {
 
   static isEmpty = (val: string): boolean => {
     let isEmpty = false;
-    if (val === undefined) {
+    if (CommonFn.isString(val)) {
+      if (val === undefined) {
+        isEmpty = true;
+      }
+      if (!isEmpty && val === null) {
+        isEmpty = true;
+      }
+      if (!isEmpty && val.trim() === '') {
+        isEmpty = true;
+      }
+    } else {
       isEmpty = true;
     }
-    if (!isEmpty && val === null) {
-      isEmpty = true;
-    }
-    if (!isEmpty && val.trim() === '') {
-      isEmpty = true;
-    }
+
     return isEmpty;
   };
 
@@ -57,6 +82,14 @@ export class CommonFn {
 
   static isString(obj: any) {
     return typeof(obj) === 'string';
+  }
+/**
+ * Convert date to mySQL formatted date
+ * @param dt date object
+ * @returns mySql date format '2021-11-29 05:00:000'
+ */
+  static toMySqlDate(dt: Date) {
+    return dt.toISOString().slice(0, 19).replace('T', ' ');
   }
 
     /**
@@ -142,6 +175,74 @@ export class CommonFn {
     return CommonFn._dateAdd(date, interval, units * -1);
   }
 
+  /**
+   * Check if char is a upper case
+   * @param str input string
+   * @returns true if case is upper
+   */
+  static isUpper(str: string): boolean {
+    return !/[a-z]/.test(str) && /[A-Z]/.test(str);
+  }
+
+
+    /**
+   *
+   * Convert camel case string to snake case string eg camelCase, CamelCase to camel_case
+   * @static
+   * @param {string} str input string
+   * @param {boolean} [useCamelCase] - use to override the environment variable
+   * @return {*}  {string} - snake case string eg camel_case
+   * @memberof CommonFn
+   */
+     static toSnakeCase(str: string, useCamelCase?: boolean): string  {
+      // convert string to snake case if CAMEL_CASE_DTO environment is Y
+        if (useCamelCase === undefined) {
+          if (SysEnv.CAMEL_CASE_DTO !== 'Y') {
+            return str;
+          }
+        } else {
+          if (useCamelCase === false) {
+            return str;
+          }
+        }
+        return str.split(/(?=[A-Z0-9])/).join('_').toLowerCase();
+    }
+
+    /**
+     * convert snake case string to camel case string camel_case  to camelCase
+     *
+     * @static
+     * @param {string} str input string
+     * @param {boolean} [useCamelCase] - use to override the environment variable
+     * @return {*} camel case string eg camelCase
+     * @memberof CommonFn
+     */
+    static toCamelCase(str: string, useCamelCase?: boolean): string
+    {
+      // convert string to camel case if CAMEL_CASE_DTO environment is Y
+      if (useCamelCase === undefined) {
+        if (SysEnv.CAMEL_CASE_DTO !== 'Y') {
+          return str;
+        }
+      } else {
+        if (useCamelCase === false) {
+          return str;
+        }
+      }
+      return str.replace(/([-_ ][a-z0-9])/ig, ($1) => {
+        return $1.toUpperCase()
+          .replace('-', '')
+          .replace('_', '')
+          .replace(' ', '');
+      });
+    }
+
+    static getMySqlDateTime(date: Date | undefined) {
+      if (date === undefined) {
+        date = new Date;
+      }
+      return date.toISOString().split('T')[0] + ' ' + date.toTimeString().split(' ')[0];
+    }
 
 }
 

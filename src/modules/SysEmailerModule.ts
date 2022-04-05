@@ -30,7 +30,7 @@ class Emailer {
 
       const email = {
         body: {
-          name: newUser.user_name,
+          name: newUser.username,
           intro: "Welcome to Edu Me! We're very excited to have you on board.",
           action: {
             instructions: 'To get started with Edu Me, please click here:',
@@ -38,6 +38,7 @@ class Emailer {
               color: '#22BC66', // Optional action button color
               text: 'Confirm my email',
               link:
+                SysEnv.MAILER_LINK_HOST + '#' +
                 SysEnv.MAILER_PRODUCT_REGISTRATION_LINK +
                 ';email=' +
                 newUser.email +
@@ -97,7 +98,7 @@ class Emailer {
 
       const email = {
         body: {
-          name: newUser.user_name,
+          name: newUser.username,
           intro: "You have requested to reset your password.",
           action: {
             instructions: 'To reset password, please click here:',
@@ -105,6 +106,7 @@ class Emailer {
               color: '#22BC66', // Optional action button color
               text: 'Reset My Password',
               link:
+                SysEnv.MAILER_LINK_HOST + '#' +
                 SysEnv.MAILER_PRODUCT_RESET_PWD_LINK +
                 ';email=' +
                 newUser.email +
@@ -122,7 +124,7 @@ class Emailer {
       const message = {
         from: SysEnv.EMAIL,
         to: newUser.email,
-        subject: 'Reset Edume Password',
+        subject: 'Reset ls10_net Password',
         html: mailBody
       };
 

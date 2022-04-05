@@ -9,7 +9,7 @@ import {UserTimelineCommentData, userTimelineComments_schema } from '../schemas/
 export class UserTimelineCommentDTO {
   data: UserTimelineCommentData;
   constructor(propertyData?: any) {
-    DTOGenerator.genDTOFromSchema(this, userTimelineComments_schema);
+    DTOGenerator.genDTOFromSchema(this, userTimelineComments_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -23,7 +23,7 @@ export class UserTimelineCommentDTO {
 export class UpdUserTimelineCommentDTO {
   data: UserTimelineCommentData;
   constructor(propertyData?: any) {
-    DTOGenerator.genUpdDTOFromSchema(this, userTimelineComments_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, userTimelineComments_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -37,7 +37,7 @@ export class UpdUserTimelineCommentDTO {
 export class UserTimelineUserCommentDTO {
   data: UserTimelineCommentData;
   constructor(propertyData?: any) {
-    DTOGenerator.genDTOFromSchema(this, userTimelineComments_schema);
+    DTOGenerator.genDTOFromSchema(this, userTimelineComments_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {

@@ -55,7 +55,7 @@ export const userAccounts_schema: schemaIfc[] = [
     default: 'OK',
     description: 'record status'
   },
-  {    fieldName: 'lastUpdateUsec',
+  {    fieldName: 'last_update_usec',
   sqlType: 'BIGINT',
   default: '0',
   excludeFromUpdate: true,

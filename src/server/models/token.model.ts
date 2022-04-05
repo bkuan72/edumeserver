@@ -13,6 +13,7 @@ import DataStoredInToken from '../../interfaces/DataStoredInToken';
 import CommonFn, { DateAddIntervalEnum } from '../../modules/CommonFnModule';
 import SysLog from '../../modules/SysLog';
 import { EntityModel } from './entity.model';
+import Session from 'mysqlx/lib/Session';
 
 export class TokenModel extends EntityModel{
 
@@ -41,45 +42,21 @@ export class TokenModel extends EntityModel{
       const len = jwtSignToken.length;
       newToken.token = jwtSignToken;
       SqlFormatter.formatInsert(
+        [{ fieldName: 'site_code', value: this.siteCode },
+         { fieldName: 'token', value: jwtSignToken }],
         newToken,
         this.tableName,
         token_schema
       ).then((sql) => {
-        appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql('SET @uuidId=UUID(); ')
-          .execute()
-          .then((result1) => {
-            DBSession.sql(sql)
-              .execute()
-              .then((result2) => {
-                DBSession.sql('SELECT @uuidId;')
-                  .execute()
-                  .then((result3) => {
-                    SysLog.info('created Token');
-                    const newUuid: uuidIfc = { '@uuidId': result3.rows[0][0] }; // TODO
-                    newToken.id = newUuid['@uuidId'];
-                    resolve(newToken);
-                  })
-                  .catch((err) => {
-                    SysLog.error(JSON.stringify(err));
-                    resolve(undefined);
-                    return;
-                  });
-              })
-              .catch((err) => {
-                SysLog.error(JSON.stringify(err));
-                resolve(undefined);
-                return;
-              });
-          })
-          .catch((err) => {
-            SysLog.error(JSON.stringify(err));
-            const respTokenDTO = new TokenDTO(newToken);
-            resolve(respTokenDTO);
-            return;
-          });
-        });
+        appDbConnection.insert(sql).then((newId) => {
+          newToken.id = newId;
+          resolve(newToken);
+        })
+        .catch((err) => {
+          SysLog.error(JSON.stringify(err));
 
+          resolve(undefined);
+        });
       });
     });
   };
@@ -90,19 +67,21 @@ export class TokenModel extends EntityModel{
       sql += `site_code = '${this.siteCode}' AND `;
       sql += SqlStr.format('uuid = UUID_TO_BIN(?)', [uuid]);
       sql += ';';
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
+      appDbConnection.getNewDbSession().then((DBSession) => {
+      DBSession.sql(sql + ';')
         .execute()
         .then((result) => {
           SysLog.info('deleted ' + this.tableName + ' with uuid: ', uuid);
+          DBSession.getXSession().close();
           resolve(uuid);
         })
         .catch((err) => {
           SysLog.error('error: ', err);
+          DBSession.getXSession().close();
           resolve(undefined);
           return;
         });
-      });
+      }).catch(() => resolve(undefined));
 
     });
   };
@@ -125,30 +104,34 @@ export class TokenModel extends EntityModel{
       // SysLog.info('purging expired tokens..');
       let sql = SqlFormatter.formatSelect(this.tableName, token_schema);
       sql += SqlFormatter.formatWhereAND('', {site_code: this.siteCode}, this.tableName, token_schema);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      appDbConnection.getNewDbSession().then((DBSession) => {
+      appDbConnection.select(sql, DBSession)
         .then((result) => {
-          if (result.rows.length > 0) {
-            result.rows.forEach((rowData: any) => {
-              const token = SqlFormatter.transposeResultSet(
-                token_schema,
-                undefined,
-                undefined,
-                rowData
-              );
-              if (this.tokenExpired(token.expiryInSec, token.createTimeStamp)) {
-                this.remove(token.id).then(() => {
-                  SysLog.info('Purged remove token');
-                });
-              }
+          const deleteToken = (idx: number, session: Session) => {
+            if(idx >= result.rows.length) {
+              DBSession.getXSession().close();
+              return;
+            }
+            const rowData = result.rows[idx];
+            const token = SqlFormatter.transposeResultSet(
+              token_schema,
+              undefined,
+              undefined,
+              rowData
+            );
+            this.remove(token.id, session).then(() => {
+              SysLog.info('Purged remove token');
+              deleteToken(idx + 1, session)
             });
           }
+
+          deleteToken(0, DBSession);
         })
         .catch((err) => {
+          DBSession.getXSession().close();
           SysLog.error(JSON.stringify(err));
           return;
         });
-      });
+      }).catch(() => {return;});
   };
 }

@@ -11,6 +11,7 @@ import { UserData, users_schema, users_schema_table } from '../../schemas/users.
 import SysLog from '../../modules/SysLog';
 import { bcryptHash, cryptoStr } from '../../modules/cryto';
 import { EntityModel } from './entity.model';
+import Session from 'mysqlx/lib/Session';
 
 export class UserModel extends EntityModel {
   constructor (altTable?: string) {
@@ -26,16 +27,13 @@ export class UserModel extends EntityModel {
     this.schema = users_schema;
   }
 
-  findByEmail = (email: string): Promise<ResponseUserDTO | UserData | undefined> => {
+  findByEmail = (email: string, session?: Session): Promise<ResponseUserDTO | UserData | undefined> => {
     return new Promise((resolve) => {
       let sql =
         SqlFormatter.formatSelect(this.tableName, users_schema) + ' WHERE ';
       sql += SqlStr.format('email = ?', [email]) + ' AND ';
       sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, users_schema);
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql, session)
         .then((result) => {
           if (result.rows.length) {
             const data = SqlFormatter.transposeResultSet(
@@ -58,7 +56,6 @@ export class UserModel extends EntityModel {
         });
       });
 
-    });
   };
 
   updateRegConfirmKeyByEmail = async (
@@ -76,21 +73,22 @@ export class UserModel extends EntityModel {
         users_schema
       ) + ' AND ';
       sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, users_schema);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      appDbConnection.getNewDbSession().then((DBSession) => {
+      appDbConnection.update(sql, DBSession)
         .then((result) => {
           SysLog.info('updated user: ', { email: emailStr, regConfirmKey });
-          this.findByEmail(emailStr).then((respUserDTO) => {
+          this.findByEmail(emailStr, DBSession).then((respUserDTO) => {
+            DBSession.getXSession().close();
             resolve(respUserDTO);
           });
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
+          DBSession.getXSession().close();
           resolve(undefined);
           return;
         });
-      });
+      }).catch(() => resolve(undefined));
 
     });
   };
@@ -110,21 +108,22 @@ export class UserModel extends EntityModel {
         users_schema
       ) + ' AND ';
       sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, users_schema);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      appDbConnection.getNewDbSession().then((DBSession) => {
+      appDbConnection.update(sql, DBSession)
         .then((result) => {
           SysLog.info('updated user: ', { email: emailStr, pwdResetKey });
-          this.findByEmail(emailStr).then((respUserDTO) => {
+          this.findByEmail(emailStr, DBSession).then((respUserDTO) => {
+            DBSession.getXSession().close();
             resolve(respUserDTO);
           });
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
+          DBSession.getXSession().close();
           resolve(undefined);
           return;
         });
-      });
+      }).catch(() => resolve(undefined));
 
     });
   };
@@ -146,21 +145,22 @@ export class UserModel extends EntityModel {
           users_schema
         ) + ' AND ';
         sql = SqlFormatter.formatWhereAND(sql, {site_code: this.siteCode}, this.tableName, users_schema);
-        appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql(sql)
-          .execute()
+        appDbConnection.getNewDbSession().then((DBSession) => {
+        appDbConnection.update(sql, DBSession)
           .then((result) => {
             SysLog.info('updated user password:  ', { email: emailStr });
-            this.findByEmail(emailStr).then((respUserDTO) => {
+            this.findByEmail(emailStr, DBSession).then((respUserDTO) => {
+              DBSession.getXSession().close();
               resolve(respUserDTO);
             });
           })
           .catch((err) => {
             SysLog.error(JSON.stringify(err));
+            DBSession.getXSession().close();
             resolve(undefined);
             return;
           });
-        });
+        }).catch(() => resolve(undefined));
 
       }
 
@@ -209,12 +209,10 @@ export class UserModel extends EntityModel {
       sql += SqlFormatter.fmtTableFieldStr(users_schema_table, 'allow_friends') + ' = true AND ';
       sql += '(' + SqlFormatter.fmtLIKECondition(SqlFormatter.fmtTableFieldStr(users_schema_table, 'first_name'), keyword)  + '  OR  ';
       sql += SqlFormatter.fmtLIKECondition(SqlFormatter.fmtTableFieldStr(users_schema_table, 'last_name'), keyword)  + '  OR  '
-      sql += SqlFormatter.fmtLIKECondition(SqlFormatter.fmtTableFieldStr(users_schema_table, 'user_name'), keyword)  + '  OR  '
+      sql += SqlFormatter.fmtLIKECondition(SqlFormatter.fmtTableFieldStr(users_schema_table, 'username'), keyword)  + '  OR  '
       sql += SqlFormatter.fmtLIKECondition(SqlFormatter.fmtTableFieldStr(users_schema_table, 'email'), keyword)  + ') ';
       sql += ' LIMIT 10;'
-      SysLog.info('searchUserByKeyword SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql).execute()
+      appDbConnection.select(sql)
       .then((result) => {
 
         if (result.rows.length) {
@@ -249,7 +247,6 @@ export class UserModel extends EntityModel {
       })
       });
 
-    });
   }
 }
 

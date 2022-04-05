@@ -50,8 +50,7 @@ export class UserAccountModel extends EntityModel {
       sql += ' WHERE ' + userAccounts_schema_table+ '.site_code = ' + SqlStr.escape(siteCode) + ' AND ';
       sql += userAccounts_schema_table+ '.status = ' + SqlStr.escape(status) + ' AND ';
       sql += SqlStr.format(userAccounts_schema_table+ '.user_id = UUID_TO_BIN(?);', [userId]);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql).execute()
+      appDbConnection.select(sql)
       .then((result) => {
         if (result.rows.length == 0) {
           // not found Customer with the id
@@ -76,8 +75,6 @@ export class UserAccountModel extends EntityModel {
         return;
       });
       });
-
-    });
   };
 
 
@@ -95,8 +92,7 @@ export class UserAccountModel extends EntityModel {
       sql += ' WHERE ' + userAccounts_schema_table+ '.site_code = ' + SqlStr.escape(siteCode) + ' AND ';
       sql += userAccounts_schema_table+ '.status = ' + SqlStr.escape(status) + ' AND ';
       sql += SqlStr.format(userAccounts_schema_table+ '.user_id = UUID_TO_BIN(?);', [userId]);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql).execute()
+      appDbConnection.select(sql)
       .then((result) => {
         if (result.rows.length == 0) {
           // not found Customer with the id
@@ -131,8 +127,6 @@ export class UserAccountModel extends EntityModel {
         resolve(userAccountTypes);
         return;
       });
-      });
-
     });
   };
 }

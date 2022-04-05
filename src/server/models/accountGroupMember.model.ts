@@ -73,10 +73,7 @@ export class AccountGroupMemberModel extends EntityModel {
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += 'group_id = 0 AND ';
       sql += SqlStr.format('account_id = UUID_TO_BIN(?)', [accountId]);
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
           if (result.rows.length) {
             result.rows.forEach((rowData) => {
@@ -103,7 +100,6 @@ export class AccountGroupMemberModel extends EntityModel {
           return;
         });
       });
-    });
   };
 
   /**
@@ -167,10 +163,7 @@ export class AccountGroupMemberModel extends EntityModel {
         ' = UUID_TO_BIN(' +
         SqlStr.escape(accountId) +
         ') ';
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
           if (result.rows.length) {
             result.rows.forEach((rowData) => {
@@ -200,8 +193,6 @@ export class AccountGroupMemberModel extends EntityModel {
           return;
         });
       });
-
-    });
   };
 
   /**
@@ -237,10 +228,7 @@ export class AccountGroupMemberModel extends EntityModel {
         ' = UUID_TO_BIN(' +
         SqlStr.escape(accountId) +
         ') ';
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
           if (result.rows.length) {
             result.rows.forEach((rowData) => {
@@ -273,7 +261,6 @@ export class AccountGroupMemberModel extends EntityModel {
           return;
         });
       });
-    });
   };
 
   /**
@@ -295,9 +282,7 @@ export class AccountGroupMemberModel extends EntityModel {
             this.tableName,
             this.schema
           );
-          appDbConnection.connectDB().then((DBSession) => {
-            DBSession.sql(sql)
-            .execute()
+          appDbConnection.update(sql)
             .then((result) => {
               SysLog.info('updated accountGroupMembers starred: ', { id: id });
               this.findById(id).then((respAccountGroupMemberDTO) => {
@@ -309,8 +294,6 @@ export class AccountGroupMemberModel extends EntityModel {
               resolve(undefined);
               return;
             });
-          });
-
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
@@ -343,26 +326,33 @@ export class AccountGroupMemberModel extends EntityModel {
         this.tableName,
         this.schema
       );
-      appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql(sql)
-        .execute()
-        .then((result) => {
+      appDbConnection.getNewDbSession().then((session) => {
+        appDbConnection.update(sql, session)
+        .then((_result) => {
           SysLog.info('updated accountGroupMember frequency: ', {
             id: accountGroupMemberId
           });
-          this.findById(accountGroupMemberId).then(
+          this.findById(accountGroupMemberId, session).then(
             (respAccountGroupMemberDTO) => {
+              appDbConnection.close(session);
               resolve(respAccountGroupMemberDTO);
             }
-          );
+          ).catch((err) => {
+            SysLog.error(JSON.stringify(err));
+            appDbConnection.close(session);
+            resolve(undefined);
+            return;
+          });
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
+          appDbConnection.close(session);
           resolve(undefined);
           return;
         });
       });
-    });
+      })
+
   };
 
   /**
@@ -410,10 +400,7 @@ export class AccountGroupMemberModel extends EntityModel {
         ' = UUID_TO_BIN(' +
         SqlStr.escape(req.user_id) +
         ') ';
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
           if (result.rows.length) {
             resp.accountGroupMembers = true;
@@ -429,7 +416,6 @@ export class AccountGroupMemberModel extends EntityModel {
           return;
         });
       });
-    });
   }
 
   /**
@@ -476,10 +462,7 @@ export class AccountGroupMemberModel extends EntityModel {
         ' = UUID_TO_BIN(' +
         SqlStr.escape(req.user_id) +
         ') ';
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
           if (result.rows.length) {
             resp.blocked = true;
@@ -495,7 +478,6 @@ export class AccountGroupMemberModel extends EntityModel {
           return;
         });
       });
-    });
   }
 
   /**
@@ -542,10 +524,7 @@ export class AccountGroupMemberModel extends EntityModel {
           ' = UUID_TO_BIN(' +
           SqlStr.escape(req.user_id) +
           ') ';
-        SysLog.info('findById SQL: ' + sql);
-        appDbConnection.connectDB().then((DBSession) => {
-          DBSession.sql(sql)
-          .execute()
+        appDbConnection.select(sql)
           .then((result) => {
             if (result.rows.length) {
               resp.blocked = true;
@@ -561,7 +540,6 @@ export class AccountGroupMemberModel extends EntityModel {
             return;
           });
         });
-      });
     }
 
       /**
@@ -605,10 +583,7 @@ export class AccountGroupMemberModel extends EntityModel {
         ' = UUID_TO_BIN(' +
         SqlStr.escape(req.user_id) +
         ') ';
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
           if (result.rows.length) {
             let idx = 0;
@@ -630,6 +605,5 @@ export class AccountGroupMemberModel extends EntityModel {
           return;
         });
       });
-    });
   }
 }

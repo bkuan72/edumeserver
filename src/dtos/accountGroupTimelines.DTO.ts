@@ -9,7 +9,7 @@ import { AccountGroupTimelineData, accountGroupTimelines_schema } from '../schem
 export class AccountGroupTimelineDTO {
   data: AccountGroupTimelineData;
   constructor(propertyData?: any) {
-    DTOGenerator.genDTOFromSchema(this, accountGroupTimelines_schema);
+    DTOGenerator.genDTOFromSchema(this, accountGroupTimelines_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -23,7 +23,7 @@ export class AccountGroupTimelineDTO {
 export class UpdAccountGroupTimelineDTO {
   data: AccountGroupTimelineData;
   constructor(propertyData?: any) {
-    DTOGenerator.genUpdDTOFromSchema(this, accountGroupTimelines_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, accountGroupTimelines_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -37,7 +37,7 @@ export class UpdAccountGroupTimelineDTO {
 export class TimelinePostDTO {
   data: AccountGroupTimelinePostData;
   constructor(accountGroupTimelineData?: any) {
-    DTOGenerator.genDTOFromSchema(this, accountGroupTimelines_schema);
+    DTOGenerator.genDTOFromSchema(this, accountGroupTimelines_schema, undefined, accountGroupTimelineData);
     if (!CommonFn.isUndefined(accountGroupTimelineData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(accountGroupTimelineData, prop)) {
@@ -60,7 +60,7 @@ export class TimelinePostDTO {
       'user',
       {
         id: '',
-        user_name: '',
+        username: '',
         avatar: ''
       }
     );

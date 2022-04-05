@@ -71,7 +71,7 @@ export const posts_schema: schemaIfc[] = [
   },
 
   {
-    fieldName: 'lastUpdateUsec',
+    fieldName: 'last_update_usec',
     sqlType: 'BIGINT',
     default: '0',
     excludeFromUpdate: true
@@ -82,7 +82,7 @@ export const posts_schema: schemaIfc[] = [
     index: [
       {
         name: 'last_upd_usec_idx',
-        columns: ['site_code', 'user_id', 'lastUpdateUsec'],
+        columns: ['site_code', 'user_id', 'last_update_usec'],
         unique: false
       }
     ]

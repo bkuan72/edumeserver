@@ -12,18 +12,9 @@ import { userTimelineComments_schema, userTimelineComments_schema_table } from '
 import { friends_schema, friends_schema_table } from './friends.schema';
 import { postMedias_schema, postMedias_schema_table } from './postMedias.schema';
 import { posts_schema, posts_schema_table } from './posts.schema';
-import { properties_schema, properties_schema_table } from './properties.schema';
-import { logs_schema, logs_schema_table } from './logs.schema';
 import { tableIfc } from '../modules/DbModule';
-import { users_schema, users_schema_table } from './users.schema';
-import { token_schema, tokens_schema_table, blacklist_tokens_schema_table } from './tokens.schema';
-import { accounts_schema, accounts_schema_table } from './accounts.schema';
-import { userAccounts_schema, userAccounts_schema_table } from './userAccounts.schema';
 import { advertisements_schema, advertisements_schema_table } from './advertisements.schema';
 import { userTimelines_schema, userTimelines_schema_table } from './userTimelines.schema';
-import { roles_schema, roles_schema_table } from './roles.schema';
-import { modules_schema, modules_schema_table } from './modules.schema';
-import { userModuleRoles_schema, userModuleRoles_schema_table } from './userModuleRoles.schema';
 import { accountGroupTimelines_schema, accountGroupTimelines_schema_table } from './accountGroupTimelines.schema';
 import { accountGroupTimelineComments_schema, accountGroupTimelineComments_schema_table } from './accountGroupTimelineComments.schema';
 import { accountGroupMedias_schema, accountGroupMedias_schema_table } from './accountGroupMedias.schema';
@@ -33,34 +24,6 @@ import { accountGroupMembers_schema, accountGroupMembers_schema_table } from './
 import { accountGroupActivities_schema, accountGroupActivities_schema_table } from './accountGroupActivities.schema';
 
 export const sysTables: tableIfc[] = [
-  {
-    name: users_schema_table,
-    schema: users_schema
-  },
-  {
-    name: tokens_schema_table,
-    schema: token_schema
-  },
-  {
-    name: blacklist_tokens_schema_table,
-    schema: token_schema
-  },
-  {
-    name: accounts_schema_table,
-    schema: accounts_schema
-  },
-  {
-    name: userAccounts_schema_table,
-    schema: userAccounts_schema
-  },
-  {
-    name: logs_schema_table,
-    schema: logs_schema
-  },
-  {
-    name: properties_schema_table,
-    schema: properties_schema
-  },
   {
     name: advertisements_schema_table,
     schema: advertisements_schema
@@ -125,18 +88,18 @@ export const sysTables: tableIfc[] = [
     name: adAgeGroups_schema_table,
     schema: adAgeGroups_schema
   },
-  {
-    name: roles_schema_table,
-    schema: roles_schema
-  },
-  {
-    name: modules_schema_table,
-    schema: modules_schema
-  },
-  {
-    name: userModuleRoles_schema_table,
-    schema: userModuleRoles_schema
-  },
+  // {
+  //   name: roles_schema_table,
+  //   schema: roles_schema
+  // },
+  // {
+  //   name: modules_schema_table,
+  //   schema: modules_schema
+  // },
+  // {
+  //   name: userModuleRoles_schema_table,
+  //   schema: userModuleRoles_schema
+  // },
   {
     name: accountGroupTimelines_schema_table,
     schema: accountGroupTimelines_schema

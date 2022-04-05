@@ -4,7 +4,7 @@ import HttpException from "./HttpException";
 
 class InvalidUserStatusException extends HttpException {
   constructor(user: ResponseUserDTO | UserData) {
-    super(401, `User ${user.user_name} Not Authorized : ${user.status}`);
+    super(401, `User ${user.username} Not Authorized : ${user.status}`);
   }
 }
 

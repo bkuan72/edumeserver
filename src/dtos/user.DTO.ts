@@ -8,7 +8,7 @@ export class ResponseUserDTO {
   data: UserData;
   constructor(user?: any,
               showPassword?: boolean) {
-    DTOGenerator.genDTOFromSchema(this, users_schema);
+    DTOGenerator.genDTOFromSchema(this, users_schema, undefined, user);
     if (!CommonFn.isUndefined(user)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(user, prop)) {
@@ -29,7 +29,7 @@ export class ResponseUserDTO {
 export class CreateUserDTO {
   data: UserData;
   constructor(user?: any) {
-    DTOGenerator.genDTOFromSchema(this, users_schema);
+    DTOGenerator.genDTOFromSchema(this, users_schema, undefined, user);
     if (!CommonFn.isUndefined(user)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(user, prop)) {
@@ -43,7 +43,7 @@ export class CreateUserDTO {
 export class UpdUserDTO {
   data: UserData;
   constructor(user?: any) {
-    DTOGenerator.genUpdDTOFromSchema(this, users_schema, ['password']);
+    DTOGenerator.genUpdDTOFromSchema(this, users_schema, ['password'], user);
     if (!CommonFn.isUndefined(user)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(user, prop)) {

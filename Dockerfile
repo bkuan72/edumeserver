@@ -9,11 +9,11 @@ COPY . /app/src
 RUN npm run build
 
 FROM node:14
-RUN mkdir -p /app/edumeserver
-WORKDIR /app/edumeserver
-COPY --from=build-step /app/src/build /app/edumeserver
-COPY package*.json /app/edumeserver
+RUN mkdir -p /app/ls10_net_server
+WORKDIR /app/ls10_net_server
+COPY --from=build-step /app/src/build /app/ls10_net_server
+COPY package*.json /app/ls10_net_server
 RUN npm install && npm i -g nodemon 
 
 CMD [ "npm", "run", "run-build" ]
-EXPOSE 3300
+EXPOSE 33010

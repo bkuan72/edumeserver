@@ -27,8 +27,7 @@ export class AdKeywordModel extends EntityModel {
       const adAgeGroupsList:string[] = [];
       let sql = 'SELECT adKeyword_code FROM ' + this.tableName;
       sql += SqlFormatter.formatWhereAND('', {site_code: this.siteCode}, this.tableName, this.schema);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql).execute()
+      appDbConnection.select(sql)
       .then((result) => {
 
         if (result.rows.length) {
@@ -47,7 +46,5 @@ export class AdKeywordModel extends EntityModel {
         return;
       });
       });
-
-    });
   }
 }

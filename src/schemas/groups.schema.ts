@@ -120,7 +120,7 @@ export const socialGroups_schema: schemaIfc[] = [
     description: 'allow group profile to be discoverable'
   },
   {
-    fieldName: 'lastUpdateUsec',
+    fieldName: 'last_update_usec',
     sqlType: 'BIGINT',
     default: '0',
     excludeFromUpdate: true
@@ -136,7 +136,7 @@ export const socialGroups_schema: schemaIfc[] = [
       },
       {
         name: 'last_upd_usec_idx',
-        columns: ['site_code','group_type', 'owner_id', 'lastUpdateUsec'],
+        columns: ['site_code','group_type', 'owner_id', 'last_update_usec'],
         unique: false
       }
     ]

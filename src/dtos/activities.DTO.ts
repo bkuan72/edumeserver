@@ -8,7 +8,7 @@ import { ActivityData, activities_schema } from '../schemas/activities.schema';
 export class ActivityDTO {
   data: ActivityData;
   constructor(activityData?: any) {
-    DTOGenerator.genDTOFromSchema(this, activities_schema);
+    DTOGenerator.genDTOFromSchema(this, activities_schema, undefined, activityData);
     if (!CommonFn.isUndefined(activityData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(activityData, prop)) {
@@ -33,7 +33,7 @@ export class ActivityDTO {
 export class UpdActivityDTO {
   data: ActivityData;
   constructor(activityData?: any) {
-    DTOGenerator.genUpdDTOFromSchema(this, activities_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, activities_schema, undefined, activityData);
     if (!CommonFn.isUndefined(activityData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(activityData, prop)) {

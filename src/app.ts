@@ -34,7 +34,7 @@ class App {
   }
 
   loggerMiddleware = (request: express.Request, response: express.Response, next: any) => {
-    SysLog.http('Request Header:' + JSON.stringify(request.headers));
+    SysLog.http('Request Header:' + request.url);
     SysLog.http('Request Body :' + JSON.stringify(request.body));
     SysLog.http('Request Parameters :' + JSON.stringify(request.params))
     next();

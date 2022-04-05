@@ -37,10 +37,7 @@ export class GroupModel extends EntityModel {
         SqlFormatter.formatSelect(this.tableName, this.schema) + ' WHERE ';
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += SqlStr.format('account_id = UUID_TO_BIN(?)', [postId]) ;
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+       appDbConnection.select(sql)
         .then((result) => {
 
           if (result.rows.length) {
@@ -71,7 +68,5 @@ export class GroupModel extends EntityModel {
           return;
         });
       });
-
-    });
   };
 }

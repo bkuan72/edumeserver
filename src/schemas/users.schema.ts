@@ -33,7 +33,7 @@ export const users_schema: schemaIfc[] = [
     description: 'User preferred title'
   },
   {
-    fieldName: 'user_name',
+    fieldName: 'username',
     sqlType: 'VARCHAR(60)',
     size: 60,
     allowNull: false,
@@ -287,7 +287,7 @@ export const users_schema: schemaIfc[] = [
     description: 'keys set for password reset'
   },
   {
-    fieldName: 'lastUpdateUsec',
+    fieldName: 'last_update_usec',
     sqlType: 'BIGINT',
     default: '0',
     excludeFromUpdate: true,
@@ -309,7 +309,7 @@ export const users_schema: schemaIfc[] = [
       },
       {
         name: 'last_upd_usec_idx',
-        columns: ['site_code', 'lastUpdateUsec'],
+        columns: ['site_code', 'last_update_usec'],
         unique: false
       }
     ]

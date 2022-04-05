@@ -145,7 +145,7 @@ export class UsersController implements Controller{
       if (respUserDTO) {
         response.send({
           id: respUserDTO.id,
-          user_name: respUserDTO.user_name,
+          username: respUserDTO.username,
           first_name: respUserDTO.first_name,
           last_name: respUserDTO.last_name,
           avatar: respUserDTO.avatar,

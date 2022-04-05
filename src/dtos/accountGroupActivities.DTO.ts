@@ -8,7 +8,7 @@ import { AccountGroupActivityData, accountGroupActivities_schema } from '../sche
 export class AccountGroupActivityDTO {
   data: AccountGroupActivityData;
   constructor(activityData?: any) {
-    DTOGenerator.genDTOFromSchema(this, accountGroupActivities_schema);
+    DTOGenerator.genDTOFromSchema(this, accountGroupActivities_schema, undefined, activityData);
     if (!CommonFn.isUndefined(activityData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(activityData, prop)) {
@@ -33,7 +33,7 @@ export class AccountGroupActivityDTO {
 export class UpdAccountGroupActivityDTO {
   data: AccountGroupActivityData;
   constructor(activityData?: any) {
-    DTOGenerator.genUpdDTOFromSchema(this, accountGroupActivities_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, accountGroupActivities_schema, undefined, activityData);
     if (!CommonFn.isUndefined(activityData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(activityData, prop)) {

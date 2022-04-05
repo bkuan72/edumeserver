@@ -34,10 +34,7 @@ export class AccountGroupMediaPeriodModel extends EntityModel {
       sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('account_id = UUID_TO_BIN(?)', [accountId]) + ' AND ';
       sql += 'group_id = 0 ';
-      SysLog.info('findByAccountGroupId SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
 
           if (result.rows.length) {
@@ -63,7 +60,6 @@ export class AccountGroupMediaPeriodModel extends EntityModel {
           return;
         });
       });
-    });
   };
 
 
@@ -77,10 +73,7 @@ export class AccountGroupMediaPeriodModel extends EntityModel {
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('group_id = UUID_TO_BIN(?)', [groupId]);
-      SysLog.info('findByAccountGroupId SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
 
           if (result.rows.length) {
@@ -106,7 +99,6 @@ export class AccountGroupMediaPeriodModel extends EntityModel {
           return;
         });
       });
-    });
   };
 
 }

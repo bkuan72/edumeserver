@@ -4,7 +4,7 @@ import HttpException from "./HttpException";
 
 class NonAdminUserException extends HttpException {
   constructor(user: ResponseUserDTO| UserData) {
-    super(401, `User ${user.user_name} Not An Admin User`);
+    super(401, `User ${user.username} Not An Admin User`);
   }
 }
 

@@ -8,7 +8,7 @@ import { AccountGroupMediaPeriodData, accountGroupMediaPeriods_schema } from '..
 export class AccountGroupMediaPeriodDTO {
   data: AccountGroupMediaPeriodData;
   constructor(propertyData?: any) {
-    DTOGenerator.genDTOFromSchema(this, accountGroupMediaPeriods_schema, ['fullImage']);
+    DTOGenerator.genDTOFromSchema(this, accountGroupMediaPeriods_schema, ['fullImage'], propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -22,7 +22,7 @@ export class AccountGroupMediaPeriodDTO {
 export class UpdAccountGroupMediaPeriodDTO {
   data: AccountGroupMediaPeriodData;
   constructor(propertyData?: any) {
-    DTOGenerator.genUpdDTOFromSchema(this, accountGroupMediaPeriods_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, accountGroupMediaPeriods_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -36,7 +36,7 @@ export class UpdAccountGroupMediaPeriodDTO {
 export class AccountGroupMediaPeriodDataDTO {
     data: AccountGroupMediaPeriodData;
     constructor(propertyData?: any) {
-      DTOGenerator.genDTOFromSchema(this, accountGroupMediaPeriods_schema, ['fullImage']);
+      DTOGenerator.genDTOFromSchema(this, accountGroupMediaPeriods_schema, ['fullImage'], propertyData);
       if (!CommonFn.isUndefined(propertyData)) {
         for (const prop in this) {
           if (CommonFn.hasProperty(propertyData, prop)) {

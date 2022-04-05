@@ -41,11 +41,8 @@ export class AccountGroupActivityModel extends EntityModel {
       sql += SqlStr.format('timeline_account_id = UUID_TO_BIN(?)', [timelineAccountId]) + ' AND ';
       sql += 'timeline_group_id = 0 AND ';
       sql += 'status != '+ SqlStr.escape('DELETED') + ' AND ';
-      sql += SqlStr.format('lastUpdateUsec >= ?', [fromDate?.valueOf()]);
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql(sql)
-        .execute()
+      sql += SqlStr.format('last_update_usec >= ?', [fromDate?.valueOf()]);
+      appDbConnection.select(sql)
         .then((result) => {
 
           if (result.rows.length) {
@@ -71,8 +68,6 @@ export class AccountGroupActivityModel extends EntityModel {
           return;
         });
       });
-
-    });
   };
 
   findByTypeTimelineIdUserId = (
@@ -89,10 +84,7 @@ export class AccountGroupActivityModel extends EntityModel {
       sql += SqlStr.format('user_id = UUID_TO_BIN(?)', [userId]) + ' AND ';
       sql += 'group_id = 0 AND ';
       sql += SqlStr.format('timeline_id = UUID_TO_BIN(?)', [timelineId]);
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
 
           if (result.rows.length > 0) {
@@ -118,7 +110,6 @@ export class AccountGroupActivityModel extends EntityModel {
           return;
         });
       });
-    });
   };
 
 
@@ -134,11 +125,8 @@ export class AccountGroupActivityModel extends EntityModel {
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += SqlStr.format('timeline_group_id = UUID_TO_BIN(?)', [timelineGroupId]) + ' AND ';
       sql += 'status != '+ SqlStr.escape('DELETED') + ' AND ';
-      sql += SqlStr.format('lastUpdateUsec >= ?', [fromDate?.valueOf()]);
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql(sql)
-        .execute()
+      sql += SqlStr.format('last_update_usec >= ?', [fromDate?.valueOf()]);
+      appDbConnection.select(sql)
         .then((result) => {
 
           if (result.rows.length) {
@@ -164,7 +152,6 @@ export class AccountGroupActivityModel extends EntityModel {
           return;
         });
       });
-    });
   };
 
   findByTypeTimelineIdGroupId = (
@@ -180,10 +167,7 @@ export class AccountGroupActivityModel extends EntityModel {
       sql += 'activity_type = ' + SqlStr.escape(activityType) + ' AND ';
       sql += SqlStr.format('group_id = UUID_TO_BIN(?)', [groupId]) + ' AND ';
       sql += SqlStr.format('timeline_id = UUID_TO_BIN(?)', [timelineId]);
-      SysLog.info('findById SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-        DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
 
           if (result.rows.length > 0) {
@@ -209,7 +193,6 @@ export class AccountGroupActivityModel extends EntityModel {
           return;
         });
       });
-    });
   };
 
   createMemberRequest(memberRequest: any): Promise<any> {

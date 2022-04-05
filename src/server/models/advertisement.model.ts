@@ -96,10 +96,8 @@ export class AdvertisementModel extends EntityModel {
     sql += ' (start_date <= ' + nowDateStr + ' AND ';
     sql += ' end_date >= ' + nowDateStr + ')';
     sql += ');';
-    SysLog.info('find SQL: ' + sql);
     return new Promise((resolve) => {
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql).execute()
+      appDbConnection.select(sql)
       .then((result) => {
 
         if (result.rows.length) {
@@ -134,9 +132,6 @@ export class AdvertisementModel extends EntityModel {
         return;
       });
       });
-
-    });
-
   }
 
   }

@@ -12,16 +12,16 @@ interface PropertyIfc  {
 }
 
 export const ServerDefaultProperties: PropertyIfc[] = [
-    {
-        name: 'nextAccountNumber',
-        type:  ServerPropertyTypeEnum.INT,
-        numValue: 100000
-    },
-    {
-        name: 'nextGroupNumber',
-        type:  ServerPropertyTypeEnum.INT,
-        numValue: 100000
-    },
+    // {
+    //     name: 'nextAccountNumber',
+    //     type:  ServerPropertyTypeEnum.INT,
+    //     numValue: 100000
+    // },
+    // {
+    //     name: 'nextGroupNumber',
+    //     type:  ServerPropertyTypeEnum.INT,
+    //     numValue: 100000
+    // },
     ];
 
 

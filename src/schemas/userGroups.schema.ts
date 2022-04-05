@@ -85,7 +85,7 @@ export const userGroups_schema: schemaIfc[] = [
     trim: false,
     description: 'date user request to join group'
   },
-  {    fieldName: 'lastUpdateUsec',
+  {    fieldName: 'last_update_usec',
   sqlType: 'BIGINT',
   default: '0',
   excludeFromUpdate: true,
@@ -96,17 +96,17 @@ export const userGroups_schema: schemaIfc[] = [
     index: [
       {
         name: 'user_id_idx',
-        columns: ['site_code', 'user_id', 'lastUpdateUsec'],
+        columns: ['site_code', 'user_id', 'last_update_usec'],
         unique: false
       },
       {
         name: 'group_id_idx',
-        columns: ['site_code', 'group_id', 'lastUpdateUsec'],
+        columns: ['site_code', 'group_id', 'last_update_usec'],
         unique: false
       },
       {
         name: 'account_id_idx',
-        columns: ['site_code', 'account_id', 'lastUpdateUsec'],
+        columns: ['site_code', 'account_id', 'last_update_usec'],
         unique: false
       }
     ]

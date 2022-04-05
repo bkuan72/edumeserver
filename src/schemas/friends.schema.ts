@@ -219,7 +219,7 @@ export const friends_schema: schemaIfc[] = [
     default: 'REQUEST'
   },
   {
-    fieldName: 'lastUpdateUsec',
+    fieldName: 'last_update_usec',
     sqlType: 'BIGINT',
     default: '0',
     excludeFromUpdate: true,
@@ -236,7 +236,7 @@ export const friends_schema: schemaIfc[] = [
       },
       {
         name: 'friend_status_idx',
-        columns: ['site_code', 'first_name', 'friend_status', 'lastUpdateUsec'],
+        columns: ['site_code', 'first_name', 'friend_status', 'last_update_usec'],
         unique: false
       }
     ]

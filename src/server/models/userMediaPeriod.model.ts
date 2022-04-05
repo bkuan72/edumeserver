@@ -33,10 +33,7 @@ export class UserMediaPeriodModel extends EntityModel {
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('user_id = UUID_TO_BIN(?)', [userId]);
-      SysLog.info('findByUserId SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      appDbConnection.select(sql)
         .then((result) => {
 
           if (result.rows.length) {
@@ -62,8 +59,6 @@ export class UserMediaPeriodModel extends EntityModel {
           return;
         });
       });
-
-    });
   };
 
   deleteByUserId = (
@@ -77,10 +72,7 @@ export class UserMediaPeriodModel extends EntityModel {
       sql += SqlStr.format('site_code = ?', [this.siteCode]) + ' AND ';
       sql += ' status != ' + SqlStr.escape('DELETED') + ' AND ';
       sql += SqlStr.format('user_id = UUID_TO_BIN(?)', [userId]);
-      SysLog.info('findByUserId SQL: ' + sql);
-      appDbConnection.connectDB().then((DBSession) => {
-      DBSession.sql(sql)
-        .execute()
+      appDbConnection.update(sql)
         .then((result) => {
           resolve(resUserMediaDTOArray);
         })
@@ -89,9 +81,7 @@ export class UserMediaPeriodModel extends EntityModel {
           resolve(resUserMediaDTOArray);
           return;
         });
-      });
-
-    });
+      })
   };
 
 }

@@ -8,7 +8,7 @@ import { AccountGroupMediaData, accountGroupMedias_schema } from '../schemas/acc
 export class AccountGroupMediaDTO {
   data: AccountGroupMediaData;
   constructor(propertyData?: any) {
-    DTOGenerator.genDTOFromSchema(this, accountGroupMedias_schema, ['fullImage']);
+    DTOGenerator.genDTOFromSchema(this, accountGroupMedias_schema, ['fullImage'], propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -22,7 +22,7 @@ export class AccountGroupMediaDTO {
 export class UpdAccountGroupMediaDTO {
   data: AccountGroupMediaData;
   constructor(propertyData?: any) {
-    DTOGenerator.genUpdDTOFromSchema(this, accountGroupMedias_schema);
+    DTOGenerator.genUpdDTOFromSchema(this, accountGroupMedias_schema, undefined,  propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
@@ -52,7 +52,7 @@ export class AccountGroupMediaFullImageDTO {
 export class RequestAccountGroupMediaDTO {
   data: AccountGroupMediaData;
   constructor(propertyData?: any) {
-    DTOGenerator.genDTOFromSchema(this, accountGroupMedias_schema);
+    DTOGenerator.genDTOFromSchema(this, accountGroupMedias_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
       for (const prop in this) {
         if (CommonFn.hasProperty(propertyData, prop)) {
