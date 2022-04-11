@@ -35,7 +35,8 @@ export class AccountModel extends EntityModel {
         SqlFormatter.formatInsert(
           [{ fieldName: 'site_code', value: this.siteCode },
            { fieldName: 'account_type', value: accountType }, 
-           { fieldName: 'account_code', value: property.nextNumber.toString()}],
+           { fieldName: 'account_code', value: property.nextNumber.toString()},
+           { fieldName: 'created_by', value: dataInEntity._req_action_user_}],
           newEntity,
           this.tableName,
           this.schema
