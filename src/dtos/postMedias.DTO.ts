@@ -6,7 +6,7 @@ import { PostMediaData, postMedias_schema } from '../schemas/postMedias.schema';
 
 
 export class PostMediaDTO {
-  data: PostMediaData;
+   // data: PostMediaData;
   constructor(postMediaData?: any) {
     DTOGenerator.genDTOFromSchema(this, postMedias_schema, undefined, postMediaData);
     if (!CommonFn.isUndefined(postMediaData)) {
@@ -20,7 +20,7 @@ export class PostMediaDTO {
 }
 
 export class UpdPostMediaDTO {
-  data: PostMediaData;
+   // data: PostMediaData;
   constructor(postMediaData?: any) {
     DTOGenerator.genUpdDTOFromSchema(this, postMedias_schema, undefined, postMediaData);
     if (!CommonFn.isUndefined(postMediaData)) {

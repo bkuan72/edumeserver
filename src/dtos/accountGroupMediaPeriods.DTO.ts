@@ -6,7 +6,7 @@ import { AccountGroupMediaPeriodData, accountGroupMediaPeriods_schema } from '..
 
 
 export class AccountGroupMediaPeriodDTO {
-  data: AccountGroupMediaPeriodData;
+   // data: AccountGroupMediaPeriodData;
   constructor(propertyData?: any) {
     DTOGenerator.genDTOFromSchema(this, accountGroupMediaPeriods_schema, ['fullImage'], propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
@@ -20,7 +20,7 @@ export class AccountGroupMediaPeriodDTO {
 }
 
 export class UpdAccountGroupMediaPeriodDTO {
-  data: AccountGroupMediaPeriodData;
+   // data: AccountGroupMediaPeriodData;
   constructor(propertyData?: any) {
     DTOGenerator.genUpdDTOFromSchema(this, accountGroupMediaPeriods_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
@@ -34,7 +34,7 @@ export class UpdAccountGroupMediaPeriodDTO {
 }
 
 export class AccountGroupMediaPeriodDataDTO {
-    data: AccountGroupMediaPeriodData;
+     // data: AccountGroupMediaPeriodData;
     constructor(propertyData?: any) {
       DTOGenerator.genDTOFromSchema(this, accountGroupMediaPeriods_schema, ['fullImage'], propertyData);
       if (!CommonFn.isUndefined(propertyData)) {

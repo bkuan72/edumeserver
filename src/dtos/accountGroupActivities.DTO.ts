@@ -6,7 +6,7 @@ import { AccountGroupActivityData, accountGroupActivities_schema } from '../sche
 
 
 export class AccountGroupActivityDTO {
-  data: AccountGroupActivityData;
+   // data: AccountGroupActivityData;
   constructor(activityData?: any) {
     DTOGenerator.genDTOFromSchema(this, accountGroupActivities_schema, undefined, activityData);
     if (!CommonFn.isUndefined(activityData)) {
@@ -31,7 +31,7 @@ export class AccountGroupActivityDTO {
 }
 
 export class UpdAccountGroupActivityDTO {
-  data: AccountGroupActivityData;
+   // data: AccountGroupActivityData;
   constructor(activityData?: any) {
     DTOGenerator.genUpdDTOFromSchema(this, accountGroupActivities_schema, undefined, activityData);
     if (!CommonFn.isUndefined(activityData)) {

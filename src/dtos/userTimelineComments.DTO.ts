@@ -7,7 +7,7 @@ import {UserTimelineCommentData, userTimelineComments_schema } from '../schemas/
 
 
 export class UserTimelineCommentDTO {
-  data: UserTimelineCommentData;
+   // data: UserTimelineCommentData;
   constructor(propertyData?: any) {
     DTOGenerator.genDTOFromSchema(this, userTimelineComments_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
@@ -21,7 +21,7 @@ export class UserTimelineCommentDTO {
 }
 
 export class UpdUserTimelineCommentDTO {
-  data: UserTimelineCommentData;
+   // data: UserTimelineCommentData;
   constructor(propertyData?: any) {
     DTOGenerator.genUpdDTOFromSchema(this, userTimelineComments_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
@@ -35,7 +35,7 @@ export class UpdUserTimelineCommentDTO {
 }
 
 export class UserTimelineUserCommentDTO {
-  data: UserTimelineCommentData;
+   // data: UserTimelineCommentData;
   constructor(propertyData?: any) {
     DTOGenerator.genDTOFromSchema(this, userTimelineComments_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {

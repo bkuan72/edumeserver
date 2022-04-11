@@ -6,7 +6,7 @@ import CommonFn from '../modules/CommonFnModule';
 
 
 export class LoginDTO {
-  data: LoginData;
+   // data: LoginData;
   constructor(loginData?: any) {
     DTOGenerator.genDTOFromSchema(this, loginDTO_schema, undefined, loginData);
     if (loginData !== undefined) {

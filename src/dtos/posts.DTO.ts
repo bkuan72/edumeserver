@@ -6,7 +6,7 @@ import { PostData, posts_schema } from '../schemas/posts.schema';
 
 
 export class PostDTO {
-  data: PostData;
+   // data: PostData;
   constructor(postData?: any) {
     DTOGenerator.genDTOFromSchema(this, posts_schema, undefined, postData);
     if (!CommonFn.isUndefined(postData)) {
@@ -21,7 +21,7 @@ export class PostDTO {
 
 
 export class UpdPostDTO {
-  data: PostData;
+   // data: PostData;
   constructor(postData?: any) {
     DTOGenerator.genUpdDTOFromSchema(this, posts_schema, undefined, postData);
     if (!CommonFn.isUndefined(postData)) {

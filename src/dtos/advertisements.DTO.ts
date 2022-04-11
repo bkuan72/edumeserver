@@ -6,7 +6,7 @@ import { AdvertisementData, advertisements_schema } from '../schemas/advertiseme
 
 
 export class AdvertisementDTO {
-  data: AdvertisementData;
+   // data: AdvertisementData;
   constructor(advertisementData?: any) {
     DTOGenerator.genDTOFromSchema(this, advertisements_schema, undefined, advertisementData);
     if (!CommonFn.isUndefined(advertisementData)) {
@@ -21,7 +21,7 @@ export class AdvertisementDTO {
 
 
 export class UpdAdvertisementDTO {
-  data: AdvertisementData;
+   // data: AdvertisementData;
   constructor(advertisementData?: any) {
     DTOGenerator.genUpdDTOFromSchema(this, advertisements_schema, undefined, advertisementData);
     if (!CommonFn.isUndefined(advertisementData)) {

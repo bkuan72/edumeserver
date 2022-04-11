@@ -6,7 +6,7 @@ import { RoleData, roles_schema } from '../schemas/roles.schema';
 
 
 export class RoleDTO {
-  data: RoleData;
+   // data: RoleData;
   constructor(propertyData?: any) {
     DTOGenerator.genDTOFromSchema(this, roles_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
@@ -20,7 +20,7 @@ export class RoleDTO {
 }
 
 export class UpdRoleDTO {
-  data: RoleData;
+   // data: RoleData;
   constructor(propertyData?: any) {
     DTOGenerator.genUpdDTOFromSchema(this, roles_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {

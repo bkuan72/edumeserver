@@ -6,7 +6,7 @@ import { MemberSecurityData, member_security_schema } from '../schemas/memberSec
 
 
 export class MemberSecurityDTO {
-  data: MemberSecurityData;
+   // data: MemberSecurityData;
   constructor(propertyData?: any) {
     DTOGenerator.genDTOFromSchema(this, member_security_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
@@ -20,7 +20,7 @@ export class MemberSecurityDTO {
 }
 
 export class UpdMemberSecurityDTO {
-  data: MemberSecurityData;
+   // data: MemberSecurityData;
   constructor(propertyData?: any) {
     DTOGenerator.genUpdDTOFromSchema(this, member_security_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {

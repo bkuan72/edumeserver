@@ -7,7 +7,7 @@ import { AccountGroupTimelineCommentData, accountGroupTimelineComments_schema } 
 
 
 export class AccountGroupTimelineCommentDTO {
-  data: AccountGroupTimelineCommentData;
+   // data: AccountGroupTimelineCommentData;
   constructor(propertyData?: any) {
     DTOGenerator.genDTOFromSchema(this, accountGroupTimelineComments_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
@@ -21,7 +21,7 @@ export class AccountGroupTimelineCommentDTO {
 }
 
 export class UpdAccountGroupTimelineCommentDTO {
-  data: AccountGroupTimelineCommentData;
+   // data: AccountGroupTimelineCommentData;
   constructor(propertyData?: any) {
     DTOGenerator.genUpdDTOFromSchema(this, accountGroupTimelineComments_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
@@ -35,7 +35,7 @@ export class UpdAccountGroupTimelineCommentDTO {
 }
 
 export class AccountGroupTimelineUserCommentDTO {
-  data: AccountGroupTimelineCommentData;
+   // data: AccountGroupTimelineCommentData;
   constructor(propertyData?: any) {
     DTOGenerator.genDTOFromSchema(this, accountGroupTimelineComments_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {

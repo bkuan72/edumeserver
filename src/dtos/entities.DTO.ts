@@ -6,7 +6,7 @@ import { EntityData, entities_schema } from '../schemas/entities.schema';
 
 
 export class EntityDTO {
-  data: EntityData;
+   
   constructor(propertyData?: any, toCamelCase?: boolean) {
     DTOGenerator.genDTOFromSchema(this, entities_schema, undefined, propertyData, toCamelCase);
     if (!CommonFn.isUndefined(propertyData)) {
@@ -20,7 +20,7 @@ export class EntityDTO {
 }
 
 export class UpdEntityDTO {
-  data: EntityData;
+   
   constructor(propertyData?: any, toCamelCase?: boolean) {
     DTOGenerator.genUpdDTOFromSchema(this, entities_schema, undefined, propertyData, toCamelCase);
     if (!CommonFn.isUndefined(propertyData)) {

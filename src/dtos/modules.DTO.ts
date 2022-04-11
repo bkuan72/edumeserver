@@ -6,7 +6,7 @@ import { ModuleData, modules_schema } from '../schemas/modules.schema';
 
 
 export class ModuleDTO {
-  data: ModuleData;
+   // data: ModuleData;
   constructor(propertyData?: any) {
     DTOGenerator.genDTOFromSchema(this, modules_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
@@ -20,7 +20,7 @@ export class ModuleDTO {
 }
 
 export class UpdModuleDTO {
-  data: ModuleData;
+   // data: ModuleData;
   constructor(propertyData?: any) {
     DTOGenerator.genUpdDTOFromSchema(this, modules_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {

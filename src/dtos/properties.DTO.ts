@@ -6,7 +6,7 @@ import { PropertyData, properties_schema } from '../schemas/properties.schema';
 
 
 export class PropertyDTO {
-  data: PropertyData;
+   // data: PropertyData;
   constructor(propertyData?: any) {
     DTOGenerator.genDTOFromSchema(this, properties_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
@@ -20,7 +20,7 @@ export class PropertyDTO {
 }
 
 export class UpdPropertyDTO {
-  data: PropertyData;
+   // data: PropertyData;
   constructor(propertyData?: any) {
     DTOGenerator.genUpdDTOFromSchema(this, properties_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {

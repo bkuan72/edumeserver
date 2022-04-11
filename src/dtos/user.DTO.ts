@@ -5,7 +5,7 @@ import DTOGenerator from '../modules/ModelGenerator';
 import { UserData, users_schema } from "../schemas/users.schema";
 
 export class ResponseUserDTO {
-  data: UserData;
+   // data: UserData;
   constructor(user?: any,
               showPassword?: boolean) {
     DTOGenerator.genDTOFromSchema(this, users_schema, undefined, user);
@@ -27,7 +27,7 @@ export class ResponseUserDTO {
 }
 
 export class CreateUserDTO {
-  data: UserData;
+   // data: UserData;
   constructor(user?: any) {
     DTOGenerator.genDTOFromSchema(this, users_schema, undefined, user);
     if (!CommonFn.isUndefined(user)) {
@@ -41,7 +41,7 @@ export class CreateUserDTO {
 }
 
 export class UpdUserDTO {
-  data: UserData;
+   // data: UserData;
   constructor(user?: any) {
     DTOGenerator.genUpdDTOFromSchema(this, users_schema, ['password'], user);
     if (!CommonFn.isUndefined(user)) {
@@ -55,7 +55,7 @@ export class UpdUserDTO {
 }
 
 export class InsertUserDTO {
-  data: UserData;
+   // data: UserData;
   constructor(user?: any) {
     DTOGenerator.getInsertDTOFromSchema (this, users_schema);
     if (!CommonFn.isUndefined(user)) {

@@ -6,7 +6,7 @@ import { TokenData, token_schema } from '../schemas/tokens.schema';
 
 
 export class TokenDTO {
-  data: TokenData;
+   // data: TokenData;
   constructor(tokenData?: any) {
     DTOGenerator.genDTOFromSchema(this, token_schema, undefined, tokenData);
     if (!CommonFn.isUndefined(tokenData)) {

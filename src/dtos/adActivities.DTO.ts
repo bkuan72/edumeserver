@@ -6,7 +6,7 @@ import { AdActivityData, adActivities_schema } from '../schemas/adActivities.sch
 
 
 export class AdActivityDTO {
-  data: AdActivityData;
+   // data: AdActivityData;
   constructor(propertyData?: any) {
   DTOGenerator.genDTOFromSchema(this, adActivities_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
@@ -20,7 +20,7 @@ export class AdActivityDTO {
 }
 
 export class UpdAdActivityDTO {
-  data: AdActivityData;
+   // data: AdActivityData;
   constructor(propertyData?: any) {
     DTOGenerator.genDTOFromSchema(this, adActivities_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {

@@ -7,7 +7,7 @@ import { AccountGroupTimelineData, accountGroupTimelines_schema } from '../schem
 
 
 export class AccountGroupTimelineDTO {
-  data: AccountGroupTimelineData;
+   // data: AccountGroupTimelineData;
   constructor(propertyData?: any) {
     DTOGenerator.genDTOFromSchema(this, accountGroupTimelines_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
@@ -21,7 +21,7 @@ export class AccountGroupTimelineDTO {
 }
 
 export class UpdAccountGroupTimelineDTO {
-  data: AccountGroupTimelineData;
+   // data: AccountGroupTimelineData;
   constructor(propertyData?: any) {
     DTOGenerator.genUpdDTOFromSchema(this, accountGroupTimelines_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
@@ -35,7 +35,7 @@ export class UpdAccountGroupTimelineDTO {
 }
 
 export class TimelinePostDTO {
-  data: AccountGroupTimelinePostData;
+   // data: AccountGroupTimelinePostData;
   constructor(accountGroupTimelineData?: any) {
     DTOGenerator.genDTOFromSchema(this, accountGroupTimelines_schema, undefined, accountGroupTimelineData);
     if (!CommonFn.isUndefined(accountGroupTimelineData)) {

@@ -6,7 +6,7 @@ import { UserGroupData, userGroups_schema } from '../schemas/userGroups.schema';
 
 
 export class UserGroupsDTO {
-  data: UserGroupData;
+   // data: UserGroupData;
   constructor(userGroupData?: any) {
     DTOGenerator.genDTOFromSchema(this, userGroups_schema, undefined, userGroupData);
     if (!CommonFn.isUndefined(userGroupData)) {
@@ -41,7 +41,7 @@ export class UserGroupInfoDTO {
 }
 
 export class UpdUserGroupsDTO {
-  data: UserGroupData;
+   // data: UserGroupData;
   constructor(userGroupData?: any) {
     DTOGenerator.genUpdDTOFromSchema(this, userGroups_schema, undefined, userGroupData);
     if (!CommonFn.isUndefined(userGroupData)) {
@@ -55,7 +55,7 @@ export class UpdUserGroupsDTO {
 }
 
 export class InsertUserGroupsDTO {
-  data: UserGroupData;
+   // data: UserGroupData;
   constructor(userGroupData?: any) {
     DTOGenerator.getInsertDTOFromSchema (this, userGroups_schema);
     if (!CommonFn.isUndefined(userGroupData)) {

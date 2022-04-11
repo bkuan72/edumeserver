@@ -6,7 +6,7 @@ import { AdKeywordData, adKeywords_schema } from '../schemas/adKeywords.schema';
 
 
 export class AdKeywordDTO {
-  data: AdKeywordData;
+   // data: AdKeywordData;
   constructor(propertyData?: any) {
     DTOGenerator.genDTOFromSchema(this, adKeywords_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
@@ -20,7 +20,7 @@ export class AdKeywordDTO {
 }
 
 export class UpdAdKeywordDTO {
-  data: AdKeywordData;
+   // data: AdKeywordData;
   constructor(propertyData?: any) {
     DTOGenerator.genUpdDTOFromSchema(this, adKeywords_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {

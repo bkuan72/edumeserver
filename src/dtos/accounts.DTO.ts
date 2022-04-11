@@ -6,7 +6,7 @@ import { AccountData, accounts_schema } from '../schemas/accounts.schema';
 
 
 export class AccountDTO {
-  data: AccountData;
+   // data: AccountData;
   constructor(accountData?: any) {
     DTOGenerator.genDTOFromSchema(this, accounts_schema, undefined, accountData);
     if (!CommonFn.isUndefined(accountData)) {
@@ -20,7 +20,7 @@ export class AccountDTO {
 }
 
 export class UpdAccountDTO {
-  data: AccountData;
+   // data: AccountData;
   constructor(accountData?: any) {
     DTOGenerator.genUpdDTOFromSchema(this, accounts_schema, undefined, accountData);
     if (!CommonFn.isUndefined(accountData)) {

@@ -6,7 +6,7 @@ import { AdCategoryData, adCategories_schema } from '../schemas/adCategories.sch
 
 
 export class AdCategoryDTO {
-  data: AdCategoryData;
+   // data: AdCategoryData;
   constructor(propertyData?: any) {
   DTOGenerator.genDTOFromSchema(this, adCategories_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
@@ -20,7 +20,7 @@ export class AdCategoryDTO {
 }
 
 export class UpdAdCategoryDTO {
-  data: AdCategoryData;
+   // data: AdCategoryData;
   constructor(propertyData?: any) {
     DTOGenerator.genDTOFromSchema(this, adCategories_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {

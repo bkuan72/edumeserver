@@ -6,7 +6,7 @@ import { LogData, logs_schema } from '../schemas/logs.schema';
 
 
 export class LogDTO {
-  data: LogData;
+   // data: LogData;
   constructor(logData?: any) {
     DTOGenerator.genDTOFromSchema(this, logs_schema, undefined, logData);
     if (!CommonFn.isUndefined(logData)) {

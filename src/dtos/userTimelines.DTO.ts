@@ -7,7 +7,7 @@ import { UserTimelineData, userTimelines_schema } from '../schemas/userTimelines
 
 
 export class UserTimelineDTO {
-  data: UserTimelineData;
+   // data: UserTimelineData;
   constructor(propertyData?: any) {
     DTOGenerator.genDTOFromSchema(this, userTimelines_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
@@ -21,7 +21,7 @@ export class UserTimelineDTO {
 }
 
 export class UpdUserTimelineDTO {
-  data: UserTimelineData;
+   // data: UserTimelineData;
   constructor(propertyData?: any) {
     DTOGenerator.genUpdDTOFromSchema(this, userTimelines_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
@@ -35,7 +35,7 @@ export class UpdUserTimelineDTO {
 }
 
 export class TimelinePostDTO {
-  data: UserTimelinePostData;
+   // data: UserTimelinePostData;
   constructor(userTimelineData?: any) {
     DTOGenerator.genDTOFromSchema(this, userTimelines_schema);
     if (!CommonFn.isUndefined(userTimelineData)) {

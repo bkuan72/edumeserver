@@ -7,7 +7,7 @@ import { FriendData, friends_schema } from '../schemas/friends.schema';
 
 
 export class FriendDTO {
-  data: FriendData;
+   // data: FriendData;
   constructor(propertyData?: any) {
     DTOGenerator.genDTOFromSchema(this, friends_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
@@ -21,7 +21,7 @@ export class FriendDTO {
 }
 
 export class UpdFriendDTO {
-  data: FriendData;
+   // data: FriendData;
   constructor(propertyData?: any) {
     DTOGenerator.genUpdDTOFromSchema(this, friends_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {
@@ -50,7 +50,7 @@ export class FriendListDTO {
 }
 
 export class ContactListDTO {
-  data: FriendData;
+   // data: FriendData;
   constructor(propertyData?: any) {
     DTOGenerator.genDTOFromSchema(this, friends_schema, undefined, propertyData);
     if (!CommonFn.isUndefined(propertyData)) {

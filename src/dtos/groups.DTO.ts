@@ -6,7 +6,7 @@ import { GroupData, socialGroups_schema } from '../schemas/groups.schema';
 
 
 export class GroupDTO {
-  data: GroupData;
+   // data: GroupData;
   constructor(groupData?: any) {
     DTOGenerator.genDTOFromSchema(this, socialGroups_schema, undefined, groupData);
     if (!CommonFn.isUndefined(groupData)) {
@@ -20,7 +20,7 @@ export class GroupDTO {
 }
 
 export class UpdGroupDTO {
-  data: GroupData;
+   // data: GroupData;
   constructor(groupData?: any) {
     DTOGenerator.genUpdDTOFromSchema(this, socialGroups_schema, undefined, groupData);
     if (!CommonFn.isUndefined(groupData)) {
