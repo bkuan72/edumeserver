@@ -104,8 +104,11 @@ export class AdvertisementModel extends EntityModel {
           result.rows.forEach((rowData: any) => {
             const data = SqlFormatter.transposeResultSet(this.schema,
               ignoreExclSelect,
-              excludeSelectProp,
-              rowData);
+              undefined,
+              rowData,
+              undefined,
+              excludeSelectProp
+              );
             let respEntityDTO = new this.responseDTO(data) as AdvertisementData;
             if (CommonFn.isEmpty(searchStr) ||
                 respEntityDTO.header.contain(searchStr) ||
