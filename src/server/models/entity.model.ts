@@ -38,7 +38,8 @@ export class EntityModel {
       const newEntity = new this.requestDTO(dataInEntity, toCamelCase);
 
       SqlFormatter.formatInsert(
-        [{ fieldName: 'site_code', value: this.siteCode }],
+        [{ fieldName: 'site_code', value: this.siteCode },
+        { fieldName: 'created_by', value: dataInEntity._req_action_user_}],
         newEntity,
         this.tableName,
         this.schema,
@@ -191,9 +192,10 @@ export class EntityModel {
               const data = SqlFormatter.transposeResultSet(
                 this.schema,
                 ignoreExclSelect,
-                excludeSelectProp,
+                undefined,
                 rowData,
-                toCamelCase
+                toCamelCase,
+                excludeSelectProp
               );
               const respEntityDTO = new this.responseDTO(data, toCamelCase, showPassword);
               respEntityDTOArray.push(respEntityDTO);
