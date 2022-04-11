@@ -53,7 +53,7 @@ export class SqlFormatter {
         if (CommonFn.hasProperty(obj, '_req_action_user_')) {
           valueArray.push('last_modified_by = ' + SqlStr.escape(obj._req_action_user_));
         } else {
-          valueArray.push('last_modified_by = ' + SqlStr.escape('unknown'));
+          valueArray.push('last_modified_by = ' + SqlStr.escape('system'));
         }
         lresolve();
       } else {
@@ -174,12 +174,7 @@ export class SqlFormatter {
         lresolve();
       } else
       if (prop.fieldName === 'created_by') {
-
-        if (CommonFn.hasProperty(obj, '_req_action_user_')) {
-          obj[objProp] = obj._req_action_user_;
-        } else {
-          obj[objProp] =  'unknown';
-        }
+        obj[objProp] =  'system';
         valueArray.push(SqlStr.escape(obj[objProp]));
         lresolve();
       } else
@@ -715,34 +710,41 @@ export class SqlFormatter {
     ignoreExclFromSelect: boolean | undefined,
     fmtPropArr: string[] | undefined,
     dataRow: any[],
-    toCamelCase?: boolean
+    toCamelCase?: boolean,
+    exclColumnArray?: string[] | undefined
   ): any => {
     let idx = 0;
     let data = Object.create(null);
     schema.forEach((prop) => {
       if (prop.fieldName !== 'INDEX') {
         if (
-          CommonFn.isUndefined(prop.excludeFromSelect) ||
-          ignoreExclFromSelect ||
-          !prop.excludeFromSelect
+          exclColumnArray === undefined ||
+          !SqlFormatter.excludeFromSql(prop, exclColumnArray)
         ) {
           if (
+            CommonFn.isUndefined(prop.excludeFromSelect) ||
             ignoreExclFromSelect ||
-            SqlFormatter.includeInSql(prop, fmtPropArr)
+            !prop.excludeFromSelect
           ) {
-            const propValue = SqlFormatter.translatePropValue(
-              prop.sqlType,
-              dataRow,
-              idx
-            );
-            data = DTOGenerator.defineProperty(
-              data,
-              CommonFn.toCamelCase(prop.fieldName, toCamelCase),
-              propValue
-            );
-            idx++;
+            if (
+              ignoreExclFromSelect ||
+              SqlFormatter.includeInSql(prop, fmtPropArr)
+            ) {
+              const propValue = SqlFormatter.translatePropValue(
+                prop.sqlType,
+                dataRow,
+                idx
+              );
+              data = DTOGenerator.defineProperty(
+                data,
+                CommonFn.toCamelCase(prop.fieldName, toCamelCase),
+                propValue
+              );
+              idx++;
+            }
           }
         }
+
       }
     });
 
