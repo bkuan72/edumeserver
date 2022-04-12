@@ -377,44 +377,73 @@ export class SqlFormatter {
     toCamelCase?: boolean
   ): Promise<string> => {
     return new Promise((resolve) => {
-      let setStr = 'INSERT INTO ' + table + ' (';
-      let valueStr = 'VALUES(';
       let sql = '';
-      let first = true;
-      const valueArray: string[] = [];
-
       let fldCnt = 0;
-      schema.forEach(async (prop: schemaIfc) => {
-        const objProp = CommonFn.toCamelCase(prop.fieldName, toCamelCase);
-        if (CommonFn.hasProperty(obj, objProp) ||
-            prop.fieldName === 'created_date' ||
-            prop.fieldName === 'created_by' ||
-            prop.fieldName === 'when_updated_usec' ||
-            prop.fieldName === 'last_update_usec'
-        ) {
-          appendFieldProp(prop.fieldName);
-        }
 
-        function appendFieldProp(fldName: string) {
-          if (first) {
-            first = false;
-          } else {
-            setStr += ', ';
-          }
-          setStr += fldName;
-          fldCnt++;
-        }
+      ({ sql, fldCnt } = SqlFormatter.formatInsertFields(table, schema, toCamelCase, obj, sql));
+
+
+      SqlFormatter.formatInsertRecord(schema, toCamelCase, obj, fieldValues, fldCnt, sql).then ((sql) => {
+        resolve(sql);
       });
 
+    });
+  };
+
+  /**
+   * This function formats the SQL INSERT for Multiple Records syntax
+   * @param obj - data object
+   * @param table - table name
+   * @param schema - table schema
+   */
+     static formatInsertRecords = (
+      fieldValues: fieldValueIfc[],
+      objs: any[],
+      table: string,
+      schema: schemaIfc[],
+      toCamelCase?: boolean
+    ): Promise<string> => {
+      return new Promise((resolve) => {
+        let sql = '';
+        let fldCnt = 0;
+
+        const appendInsertRecord = (idx: number) => {
+          if (idx >= objs.length) {
+            resolve(sql);
+          }
+          const obj = objs[idx];
+          if (idx === 0) {
+            ({ sql, fldCnt } = SqlFormatter.formatInsertFields(table, schema, toCamelCase, obj, sql));
+          }
+
+          SqlFormatter.formatInsertRecord(schema, toCamelCase, obj, fieldValues, fldCnt, sql).then((sql) => {
+            appendInsertRecord(idx + 1);
+          })
+        }
+
+        appendInsertRecord(0);
+
+      });
+    };
+
+  private static formatInsertRecord(schema: schemaIfc[],
+                                    toCamelCase: boolean | undefined,
+                                    obj: any, fieldValues: fieldValueIfc[],
+                                    fldCnt: number,
+                                    sql: string): Promise<string>  {
+    return new Promise((resolve) => {
+      const valueArray: string[] = [];
+      let valueStr = 'VALUES (';
+      let first = true;
       let cnt = 0;
       let promiseChain: Promise<any> = Promise.resolve();
       schema.forEach(async (prop: schemaIfc) => {
         let objProp = CommonFn.toCamelCase(prop.fieldName, toCamelCase);
         if (CommonFn.hasProperty(obj, objProp) ||
-            prop.fieldName === 'created_date' ||
-            prop.fieldName === 'created_by' ||
-            prop.fieldName === 'when_updated_usec' ||
-            prop.fieldName === 'last_update_usec') {
+          prop.fieldName === 'created_date' ||
+          prop.fieldName === 'created_by' ||
+          prop.fieldName === 'when_updated_usec' ||
+          prop.fieldName === 'last_update_usec') {
           promiseChain = promiseChain
             .then(async () => {
               return await SqlFormatter.formatInsertArray(
@@ -441,7 +470,7 @@ export class SqlFormatter {
                     valueStr += valueArray[idx++];
                   }
                 });
-                sql = setStr + ') ' + valueStr + ');';
+                sql += valueStr + ') ';
                 resolve(sql);
               }
             })
@@ -450,8 +479,37 @@ export class SqlFormatter {
             });
         }
       });
+    })
+
+  }
+
+  private static formatInsertFields(table: string, schema: schemaIfc[], toCamelCase: boolean | undefined, obj: any, sql: string) {
+    let first = true;
+    let fldCnt = 0;
+    sql += 'INSERT INTO ' + table + ' ('
+    schema.forEach(async (prop: schemaIfc) => {
+      const objProp = CommonFn.toCamelCase(prop.fieldName, toCamelCase);
+      if (CommonFn.hasProperty(obj, objProp) ||
+        prop.fieldName === 'created_date' ||
+        prop.fieldName === 'created_by' ||
+        prop.fieldName === 'when_updated_usec' ||
+        prop.fieldName === 'last_update_usec') {
+        appendFieldProp(prop.fieldName);
+      }
+
+      function appendFieldProp(fldName: string) {
+        if (first) {
+          first = false;
+        } else {
+          sql += ', ';
+        }
+        sql += fldName;
+        fldCnt++;
+      }
     });
-  };
+    sql += ') '
+    return { sql, fldCnt };
+  }
 
   /**
    * This function determines if properties are included in SQL statement based on fmtPropArr, function will return true
