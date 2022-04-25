@@ -85,9 +85,9 @@ export class FriendModel extends EntityModel {
             });
             resolve(resFriendDTOArray);
             return;
+          } else {
+            resolve(resFriendDTOArray);
           }
-          // not found Customer with the id
-          resolve(resFriendDTOArray);
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
@@ -151,9 +151,9 @@ export class FriendModel extends EntityModel {
             });
             resolve(resFriendListDTOArray);
             return;
+          } else {
+            resolve(resFriendListDTOArray);
           }
-          // not found Customer with the id
-          resolve(resFriendListDTOArray);
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
@@ -206,9 +206,9 @@ export class FriendModel extends EntityModel {
             });
             resolve(resContactListDTOArray);
             return;
+          } else {
+            resolve(resContactListDTOArray);
           }
-          // not found Customer with the id
-          resolve(resContactListDTOArray);
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));

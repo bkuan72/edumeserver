@@ -4,10 +4,10 @@ import { SqlFormatter } from '../../modules/sql.strings';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { accountGroupMedias_schema, accountGroupMedias_schema_table } from '../../schemas/accountGroupMedias.schema';
 import { AccountGroupMediaDTO, AccountGroupMediaFullImageDTO, RequestAccountGroupMediaDTO } from '../../dtos/accountGroupMedias.DTO';
-import { EntityModel } from './entity.model';
 import SqlStr = require('sqlstring');
 import SysLog from '../../modules/SysLog';
 import appDbConnection from '../../modules/AppDBModule';
+import { EntityModel } from './entity.model';
 
 export class AccountGroupMediaModel extends EntityModel {
   constructor (altTable?: string) {
@@ -49,9 +49,10 @@ export class AccountGroupMediaModel extends EntityModel {
             });
             resolve(resAccountGroupMediaDTOArray);
             return;
-          }
-          // not found Customer with the id
+          } else {
           resolve(resAccountGroupMediaDTOArray);
+          }
+
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));

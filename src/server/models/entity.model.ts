@@ -202,9 +202,11 @@ export class EntityModel {
             });
             resolve(respEntityDTOArray);
             return;
+          } else {
+            // not found with the id
+            resolve(respEntityDTOArray);
           }
-          // not found with the id
-          resolve(respEntityDTOArray);
+
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
@@ -245,9 +247,10 @@ export class EntityModel {
             });
             resolve(respEntityDTOArray);
             return;
-          }
+          } else {
           // not found
           resolve(respEntityDTOArray);
+          }
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
@@ -364,9 +367,11 @@ export class EntityModel {
 
               resolve(respDTOs);
               return;
-            }
+            } else {
             // not found vehicle since
             resolve(respDTOs);
+            }
+
           })
           .catch((err) => {
             SysLog.error(JSON.stringify(err));

@@ -44,9 +44,9 @@ export class LogModel extends EntityModel {
           });
             resolve(respEntityDTOArray);
             return;
+          } else {
+            resolve(respEntityDTOArray);
           }
-          // not found Customer with the id
-          resolve(respEntityDTOArray);
       })
       .catch((err) => {
         SysLog.error(JSON.stringify(err));

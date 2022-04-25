@@ -35,9 +35,11 @@ export class AdAgeGroupModel extends EntityModel {
           });
           resolve (adAgeGroupsList);
           return;
-        }
+        } else {
         // not found
         resolve(adAgeGroupsList);
+        }
+
       })
       .catch((err) => {
         SysLog.error(JSON.stringify(err));

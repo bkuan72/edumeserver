@@ -125,9 +125,11 @@ export class AdvertisementModel extends EntityModel {
           });
           resolve(respEntityDTOArray);
           return;
-        }
+        } else {
         // not found with the id
         resolve(respEntityDTOArray);
+        }
+
       })
       .catch((err) => {
         SysLog.error(JSON.stringify(err));

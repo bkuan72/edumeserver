@@ -5,11 +5,12 @@ import { SqlFormatter } from './../../modules/sql.strings';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { accountGroupActivities_schema, accountGroupActivities_schema_table } from '../../schemas/accountGroupActivities.schema';
 import { AccountGroupActivityDTO } from '../../dtos/accountGroupActivities.DTO';
-import { EntityModel } from './entity.model';
 import appDbConnection from '../../modules/AppDBModule';
 import SysLog from '../../modules/SysLog';
 import SqlStr = require('sqlstring');
 import { ActivityModel } from './activity.model';
+import { EntityModel } from './entity.model';
+import e = require('express');
 
 export class AccountGroupActivityModel extends EntityModel {
 
@@ -58,9 +59,11 @@ export class AccountGroupActivityModel extends EntityModel {
             });
             resolve(resAccountGroupActivityDTOArray);
             return;
-          }
+          } else {
           // not found Customer with the id
           resolve(resAccountGroupActivityDTOArray);
+          }
+
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
@@ -100,9 +103,11 @@ export class AccountGroupActivityModel extends EntityModel {
             });
             resolve(resAccountGroupActivityDTOArray);
             return;
-          }
+          } else {
           // not found
           resolve(resAccountGroupActivityDTOArray);
+          }
+
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
@@ -142,9 +147,10 @@ export class AccountGroupActivityModel extends EntityModel {
             });
             resolve(resAccountGroupActivityDTOArray);
             return;
-          }
-          // not found Customer with the id
+          } else {
           resolve(resAccountGroupActivityDTOArray);
+          }
+
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
@@ -183,9 +189,11 @@ export class AccountGroupActivityModel extends EntityModel {
             });
             resolve(resAccountGroupActivityDTOArray);
             return;
-          }
+          } else {
           // not found
           resolve(resAccountGroupActivityDTOArray);
+          }
+
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));

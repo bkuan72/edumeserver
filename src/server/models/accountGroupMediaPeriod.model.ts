@@ -50,9 +50,9 @@ export class AccountGroupMediaPeriodModel extends EntityModel {
             });
             resolve(resAccountGroupMediaPeriodDTOArray);
             return;
+          } else {
+            resolve(resAccountGroupMediaPeriodDTOArray);
           }
-          // not found Customer with the id
-          resolve(resAccountGroupMediaPeriodDTOArray);
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
@@ -89,9 +89,10 @@ export class AccountGroupMediaPeriodModel extends EntityModel {
             });
             resolve(resAccountGroupMediaPeriodDTOArray);
             return;
+          } else {
+            resolve(resAccountGroupMediaPeriodDTOArray);
           }
-          // not found Customer with the id
-          resolve(resAccountGroupMediaPeriodDTOArray);
+
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));

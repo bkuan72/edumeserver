@@ -53,9 +53,10 @@ export class ActivityModel extends EntityModel {
             });
             resolve(resActivityDTOArray);
             return;
-          }
-          // not found Customer with the id
+          } else { 
           resolve(resActivityDTOArray);
+          }
+
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
@@ -94,9 +95,11 @@ export class ActivityModel extends EntityModel {
             });
             resolve(resActivityDTOArray);
             return;
-          }
+          } else {
           // not found
           resolve(resActivityDTOArray);
+          }
+
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));

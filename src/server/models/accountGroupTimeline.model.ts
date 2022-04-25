@@ -15,6 +15,7 @@ import SysLog from '../../modules/SysLog';
 import appDbConnection from '../../modules/AppDBModule';
 import DTOGenerator from '../../modules/ModelGenerator';
 import CommonFn, { DateAddIntervalEnum } from '../../modules/CommonFnModule';
+import e = require('express');
 
 export class AccountGroupTimelineModel extends EntityModel {
   constructor(altTable?: string) {
@@ -61,9 +62,9 @@ export class AccountGroupTimelineModel extends EntityModel {
             });
             resolve(resAccountGroupTimelineDTOArray);
             return;
+          } else {
+            resolve(resAccountGroupTimelineDTOArray);
           }
-
-          resolve(resAccountGroupTimelineDTOArray);
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
@@ -119,9 +120,11 @@ export class AccountGroupTimelineModel extends EntityModel {
             });
             resolve(resPostDTOArray);
             return;
-          }
-          // not found Customer with the id
+          } else {
+
           resolve(resPostDTOArray);
+          }
+
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
@@ -175,9 +178,9 @@ export class AccountGroupTimelineModel extends EntityModel {
             });
             resolve(resPostDTOArray);
             return;
+          } else {
+            resolve(resPostDTOArray);
           }
-          // not found Customer with the id
-          resolve(resPostDTOArray);
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));

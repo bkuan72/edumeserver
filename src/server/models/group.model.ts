@@ -58,9 +58,9 @@ export class GroupModel extends EntityModel {
             });
             resolve(resGroupDTOArray);
             return;
+          } else {
+            resolve(resGroupDTOArray);
           }
-
-          resolve(resGroupDTOArray);
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));

@@ -90,9 +90,10 @@ export class AccountGroupMemberModel extends EntityModel {
             });
             resolve(resAccountGroupMemberDTOArray);
             return;
-          }
-          // not found Customer with the id
+          } else {
           resolve(resAccountGroupMemberDTOArray);
+          }
+
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
@@ -183,9 +184,10 @@ export class AccountGroupMemberModel extends EntityModel {
             });
             resolve(resAccountGroupMemberListDTOArray);
             return;
-          }
-          // not found Customer with the id
+          } else {
           resolve(resAccountGroupMemberListDTOArray);
+          }
+
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
@@ -251,9 +253,10 @@ export class AccountGroupMemberModel extends EntityModel {
             });
             resolve(resContactListDTOArray);
             return;
-          }
-          // not found Customer with the id
+          } else {
           resolve(resContactListDTOArray);
+          }
+
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
