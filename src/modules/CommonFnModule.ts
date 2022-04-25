@@ -83,14 +83,7 @@ export class CommonFn {
   static isString(obj: any) {
     return typeof(obj) === 'string';
   }
-/**
- * Convert date to mySQL formatted date
- * @param dt date object
- * @returns mySql date format '2021-11-29 05:00:000'
- */
-  static toMySqlDate(dt: Date) {
-    return dt.toISOString().slice(0, 19).replace('T', ' ');
-  }
+
 
     /**
      * Adds time to a date. Modelled after MySQL DATE_ADD function.
@@ -112,6 +105,9 @@ export class CommonFn {
               ret.setDate(0);
           }
       };
+      let addMillisec = 0;
+      let daysFraction = 0;
+      let adjDays = 0;
       switch (interval) {
           case DateAddIntervalEnum.YEAR:
               ret.setFullYear(ret.getFullYear() + units);
@@ -132,16 +128,45 @@ export class CommonFn {
               ret.setDate(ret.getDate() + units);
               break;
           case DateAddIntervalEnum.HOUR:
-              ret.setTime(ret.getTime() + units * 3600000);
+              daysFraction = units / 24;
+              addMillisec = units * 3600000;
+              if (daysFraction >= 1.0) {
+                adjDays = parseInt(daysFraction.toFixed(0));
+                ret.setDate(ret.getDate() + adjDays);
+                addMillisec -= (adjDays * (8640000));
+              }
+
+              ret.setTime(ret.getTime() + addMillisec);
               break;
           case DateAddIntervalEnum.MINUTE:
-              ret.setTime(ret.getTime() + units * 60000);
+              daysFraction = units / 1440;
+              addMillisec = units * 60000;
+              if (daysFraction >= 1.0) {
+                adjDays = parseInt(daysFraction.toFixed(0));
+                ret.setDate(ret.getDate() + adjDays);
+                addMillisec -= (adjDays * (8640000));
+              }
+              ret.setTime(ret.getTime() + addMillisec);
               break;
           case DateAddIntervalEnum.SECOND:
-              ret.setTime(ret.getTime() + units * 1000);
+              daysFraction = units / 86400;
+              addMillisec = units * 1000;
+              if (daysFraction >= 1.0) {
+                adjDays = parseInt(daysFraction.toFixed(0));
+                ret.setDate(ret.getDate() + adjDays);
+                addMillisec -= (adjDays * (8640000));
+              }
+              ret.setTime(ret.getTime() + addMillisec);
               break;
           case DateAddIntervalEnum.MILLISECOND:
-              ret.setTime(ret.getTime() + units);
+              daysFraction = units / 86400000;
+              addMillisec = units;
+              if (daysFraction >= 1.0) {
+                adjDays = parseInt(daysFraction.toFixed(0));
+                ret.setDate(ret.getDate() + adjDays);
+                addMillisec -= (adjDays * (8640000));
+              }
+              ret.setTime(ret.getTime() + addMillisec);
               break;
           default:
               break;
@@ -184,8 +209,7 @@ export class CommonFn {
     return !/[a-z]/.test(str) && /[A-Z]/.test(str);
   }
 
-
-    /**
+  /**
    *
    * Convert camel case string to snake case string eg camelCase, CamelCase to camel_case
    * @static
@@ -194,32 +218,8 @@ export class CommonFn {
    * @return {*}  {string} - snake case string eg camel_case
    * @memberof CommonFn
    */
-     static toSnakeCase(str: string, useCamelCase?: boolean): string  {
-      // convert string to snake case if CAMEL_CASE_DTO environment is Y
-        if (useCamelCase === undefined) {
-          if (SysEnv.CAMEL_CASE_DTO !== 'Y') {
-            return str;
-          }
-        } else {
-          if (useCamelCase === false) {
-            return str;
-          }
-        }
-        return str.split(/(?=[A-Z0-9])/).join('_').toLowerCase();
-    }
-
-    /**
-     * convert snake case string to camel case string camel_case  to camelCase
-     *
-     * @static
-     * @param {string} str input string
-     * @param {boolean} [useCamelCase] - use to override the environment variable
-     * @return {*} camel case string eg camelCase
-     * @memberof CommonFn
-     */
-    static toCamelCase(str: string, useCamelCase?: boolean): string
-    {
-      // convert string to camel case if CAMEL_CASE_DTO environment is Y
+  static toSnakeCase(str: string, useCamelCase?: boolean): string  {
+    // convert string to snake case if CAMEL_CASE_DTO environment is Y
       if (useCamelCase === undefined) {
         if (SysEnv.CAMEL_CASE_DTO !== 'Y') {
           return str;
@@ -229,21 +229,132 @@ export class CommonFn {
           return str;
         }
       }
-      return str.replace(/([-_ ][a-z0-9])/ig, ($1) => {
-        return $1.toUpperCase()
-          .replace('-', '')
-          .replace('_', '')
-          .replace(' ', '');
-      });
-    }
+      return str.split(/(?=[A-Z0-9])/).join('_').toLowerCase();
+  }
 
-    static getMySqlDateTime(date: Date | undefined) {
-      if (date === undefined) {
-        date = new Date;
+  /**
+   * convert snake case string to camel case string camel_case  to camelCase
+   *
+   * @static
+   * @param {string} str input string
+   * @param {boolean} [useCamelCase] - use to override the environment variable
+   * @return {*} camel case string eg camelCase
+   * @memberof CommonFn
+   */
+  static toCamelCase(str: string, useCamelCase?: boolean): string
+  {
+    // convert string to camel case if CAMEL_CASE_DTO environment is Y
+    if (useCamelCase === undefined) {
+      if (SysEnv.CAMEL_CASE_DTO !== 'Y') {
+        return str;
       }
-      return date.toISOString().split('T')[0] + ' ' + date.toTimeString().split(' ')[0];
+    } else {
+      if (useCamelCase === false) {
+        return str;
+      }
     }
+    return str.replace(/([-_ ][a-z0-9])/ig, ($1) => {
+      return $1.toUpperCase()
+        .replace('-', '')
+        .replace('_', '')
+        .replace(' ', '');
+    });
+  }
 
+
+/**
+ * Convert date to mySQL formatted date
+ * @param dt date object
+ * @returns mySql date format '2021-11-29 05:00:000'
+ */
+   static toMySqlDate(dt: Date) {
+    return dt.toISOString().split('T')[0];
+  }
+
+/**
+ * Convert date to mySQL formatted date time
+ * @param dt date object
+ * @returns mySql date format '2021-11-29 05:00:000'
+ */
+   static toMySqlDateTime(date: Date) {
+    return date.toISOString().split('T')[0] + ' ' + date.toTimeString().split(' ')[0];
+  }
+
+  /**
+   * This convert a date string as define by dateFmt into JS Date
+   * @param dateStr - date string 'xx/xx/xxxx' or 'xx/xx/xx'
+   * @param dateFmt 
+   * @returns 
+   */
+  static parseDate(dateStr: string, dateFmt: string) {
+    let formattedDate = new Date('0000-00-00');
+    let delimiter = '';
+    let i;
+    for (i = 0; i < dateFmt.length; i++) {
+      if (dateFmt[i] != 'd' &&
+          dateFmt[i] != 'M' &&
+          dateFmt[i] != 'y') {
+            delimiter = dateFmt[i];
+            break;
+          }
+    }
+    let dd: number | undefined;
+    let MM: number | undefined;
+    let yyyy: number | undefined;
+    let yy: number | undefined;
+    let day: number | undefined;
+    let month: number | undefined;
+    let year: number | undefined;
+    const fmtArray  = dateFmt.split(delimiter);
+    const dateArray = dateStr.split(delimiter);
+    fmtArray.forEach((fmt, idx) => {
+      if (fmt === 'dd') {
+        dd = idx;
+      } else {
+        if (fmt === 'MM') {
+          MM = idx;
+        } else {
+          if (fmt === 'yyyy') {
+            yyyy = idx
+          } else {
+            if (fmt === 'yy') {
+              yy = idx;
+            }
+          }
+        }
+      }
+    })
+    dateArray.forEach((dt, idx) => {
+      if (idx === dd) {
+        day = parseInt (dt);
+      } else {
+        if (idx === MM) {
+          month = parseInt(dt);
+        } else {
+          if (yyyy && idx === yyyy) {
+            year = parseInt(dt);
+          } else {
+            if (yy && idx === yy) {
+              year = 2000 + parseInt(dt);
+            }
+          }
+        }
+      }
+    })
+    if (year !== undefined && month !== undefined && day !== undefined)
+      formattedDate = new Date(Date.UTC(year, month, day));
+    return formattedDate;
+  }
+
+/**
+ * This convert a string date to date
+ * @param dateStr - string date
+ * @returns 
+ */
+ static stringDateToMySqlDate(dateStr: string) {
+  const dt = new Date(dateStr);
+  return this.toMySqlDate(dt);
+}
 }
 
 export default CommonFn;
