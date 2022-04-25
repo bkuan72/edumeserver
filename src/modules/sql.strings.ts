@@ -111,9 +111,16 @@ export class SqlFormatter {
                 );
               } else
               {
-                valueArray.push(
-                  prop.fieldName + ' = ' + SqlStr.escape(obj[objProp])
-                );
+                if (prop.sqlType?.includes('DATE')) {
+                  const dt = new Date(obj[objProp]);
+                  if (prop.sqlType === 'DATE') {
+                    valueArray.push(prop.fieldName + ' = ' + SqlStr.escape(CommonFn.toMySqlDate(dt)));
+                  } else {
+                    valueArray.push(prop.fieldName + ' = ' + SqlStr.escape(CommonFn.toMySqlDateTime(dt)));
+                  }
+                } else {
+                  valueArray.push(prop.fieldName + ' = ' + SqlStr.escape(obj[objProp]));
+                }
               }
               lresolve();
             }
@@ -125,9 +132,16 @@ export class SqlFormatter {
                   SqlStr.escape(JSON.stringify(obj[objProp]))
               );
             } else {
-              valueArray.push(
-                prop.fieldName + ' = ' + SqlStr.escape(obj[objProp])
-              );
+              if (prop.sqlType?.includes('DATE')) {
+                if (prop.sqlType === 'DATE') {
+                  valueArray.push(prop.fieldName + ' = ' + SqlStr.escape(CommonFn.toMySqlDate(obj[objProp])));
+                } else {
+                  valueArray.push(prop.fieldName + ' = ' + SqlStr.escape(CommonFn.toMySqlDateTime(obj[objProp])));
+                }
+
+              } else {
+                valueArray.push(prop.fieldName + ' = ' + SqlStr.escape(obj[objProp]));
+              }
             }
             lresolve();
           }
@@ -152,7 +166,7 @@ export class SqlFormatter {
     valueArray: string[]
   ): Promise<void> => {
     return new Promise((lresolve) => {
-      const fld = getFieldValue(fieldValues, prop);
+      const fld = getFieldIdx(fieldValues, prop);
       if (fld != -1) {
         obj[objProp] = fieldValues[fld].value;
         valueArray.push(SqlStr.escape(obj[objProp]));
@@ -223,7 +237,17 @@ export class SqlFormatter {
               if (obj[objProp] == null || obj[objProp] === 'null') {
                 valueArray.push('NULL');
               } else {
-                valueArray.push(SqlStr.escape(obj[objProp]));
+                if (prop.sqlType?.includes('DATE')) {
+                  const dt = new Date(obj[objProp]);
+                  if (prop.sqlType === 'DATE') {
+                    valueArray.push( SqlStr.escape(CommonFn.toMySqlDate(dt)));
+                  } else {
+                    valueArray.push( SqlStr.escape(CommonFn.toMySqlDateTime(dt)));
+                  }
+
+                } else {
+                  valueArray.push(SqlStr.escape(obj[objProp]));
+                }
               }
               lresolve();
             }
@@ -231,7 +255,16 @@ export class SqlFormatter {
             if (typeof obj[objProp] == 'object') {
               valueArray.push(SqlStr.escape(JSON.stringify(obj[objProp])));
             } else {
-              valueArray.push(SqlStr.escape(obj[objProp]));
+              if (prop.sqlType?.includes('DATE')) {
+                if (prop.sqlType === 'DATE') {
+                  valueArray.push( SqlStr.escape(CommonFn.toMySqlDate(obj[objProp])));
+                } else {
+                  valueArray.push( SqlStr.escape(CommonFn.toMySqlDateTime(obj[objProp])));
+                }                valueArray.push( SqlStr.escape(CommonFn.toMySqlDate(obj[objProp])));
+
+              } else {
+                valueArray.push(SqlStr.escape(obj[objProp]));
+              }
             }
             lresolve();
           }
@@ -825,7 +858,38 @@ export class SqlFormatter {
           propValue = true;
         }
       } else {
-        propValue = dataRow[idx];
+        if (sqlType === 'DATE') {
+          propValue = CommonFn.toMySqlDate(dataRow[idx]);
+        } else {
+          propValue = dataRow[idx];
+        }
+
+      }
+    }
+    return propValue;
+  };
+
+  static translateFldPropValue = (
+    sqlType: string | undefined,
+    fldValue: any
+  ): any => {
+    let propValue: any;
+    if (sqlType?.includes('BLOB')) {
+      const blob = fldValue as Buffer;
+      propValue = blob.toString('utf-8');
+    } else {
+      if (sqlType?.includes('BOOLEAN')) {
+        propValue = false;
+        if (fldValue > 0) {
+          propValue = true;
+        }
+      } else {
+        if (sqlType === 'DATE') {
+          propValue = CommonFn.toMySqlDate(fldValue);
+        } else {
+          propValue = fldValue;
+        }
+
       }
     }
     return propValue;
@@ -995,7 +1059,8 @@ export class SqlFormatter {
               conditions[prop]
             ]);
           } else {
-            sql += SqlStr.format(fld.fieldName + ' = ?', [conditions[prop]]);
+            const propValue = this.translateFldPropValue(fld.sqlType, conditions[prop]);
+            sql += SqlStr.format(fld.fieldName + ' = ?', [propValue]);
           }
           return true;
         }
@@ -1069,11 +1134,13 @@ export class SqlFormatter {
     })
     return setStmt;
   }
+
+
 }
 
 export default SqlFormatter;
 
-function getFieldValue(fieldValues: fieldValueIfc[], prop: schemaIfc): number {
+function getFieldIdx(fieldValues: fieldValueIfc[], prop: schemaIfc): number {
   let fld = -1;
 
   fieldValues.some((fv, idx) => {
@@ -1084,4 +1151,6 @@ function getFieldValue(fieldValues: fieldValueIfc[], prop: schemaIfc): number {
   });
   return fld;
 }
+
+
 
