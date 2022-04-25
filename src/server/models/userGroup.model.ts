@@ -72,9 +72,11 @@ export class UserGroupModel extends EntityModel {
             });
             resolve(respUserGroupsDTOArray);
             return;
-          }
+          } else {
           // not found with the id
           resolve(respUserGroupsDTOArray);
+          }
+
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
@@ -128,9 +130,11 @@ export class UserGroupModel extends EntityModel {
             });
             resolve(respUserGroupsDTOArray);
             return;
-          }
+          } else {
           // not found with the id
           resolve(respUserGroupsDTOArray);
+          }
+
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
@@ -183,9 +187,11 @@ export class UserGroupModel extends EntityModel {
             });
             resolve(respUserGroupsDTOArray);
             return;
-          }
+          } else {
           // not found with the id
           resolve(respUserGroupsDTOArray);
+          }
+
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));

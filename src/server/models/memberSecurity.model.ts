@@ -50,9 +50,9 @@ export class MemberSecurityModel extends EntityModel {
             });
             resolve(resMemberSecurityDTO);
             return;
+          } else {
+            resolve(resMemberSecurityDTO);
           }
-          // not found Customer with the id
-          resolve(resMemberSecurityDTO);
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));

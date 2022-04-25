@@ -58,9 +58,10 @@ export class UserMediaModel extends EntityModel {
             });
             resolve(resUserMediaDTOArray);
             return;
-          }
-          // not found Customer with the id
+          } else {
           resolve(resUserMediaDTOArray);
+          }
+
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));

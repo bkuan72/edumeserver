@@ -52,9 +52,11 @@ export class UserTimelineCommentModel extends EntityModel {
             });
             resolve(resTimelineDTOArray);
             return;
+          } else {
+            resolve(resTimelineDTOArray);
           }
 
-          resolve(resTimelineDTOArray);
+
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));

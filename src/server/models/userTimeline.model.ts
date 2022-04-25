@@ -61,9 +61,9 @@ export class UserTimelineModel extends EntityModel {
             });
             resolve(resUserTimelineDTOArray);
             return;
+          } else {
+            resolve(resUserTimelineDTOArray);
           }
-
-          resolve(resUserTimelineDTOArray);
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
@@ -118,9 +118,10 @@ export class UserTimelineModel extends EntityModel {
             });
             resolve(resPostDTOArray);
             return;
-          }
-          // not found Customer with the id
+          } else {
           resolve(resPostDTOArray);
+          }
+
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));

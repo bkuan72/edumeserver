@@ -236,9 +236,10 @@ export class UserModel extends EntityModel {
             });
           resolve(resUserListDTOArray);
           return;
-        }
-        // not found Customer with the id
+        } else {
         resolve(resUserListDTOArray);
+        }
+
       })
       .catch((err) => {
         SysLog.error(JSON.stringify(err));

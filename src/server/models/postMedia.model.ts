@@ -52,9 +52,9 @@ export class PostMediaModel extends EntityModel {
             });
             resolve(resPostDTOArray);
             return;
+          } else {
+            resolve(resPostDTOArray);
           }
-
-          resolve(resPostDTOArray);
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));

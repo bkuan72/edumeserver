@@ -49,9 +49,9 @@ export class UserMediaPeriodModel extends EntityModel {
             });
             resolve(resUserMediaPeriodDTOArray);
             return;
+          } else {
+            resolve(resUserMediaPeriodDTOArray);
           }
-          // not found Customer with the id
-          resolve(resUserMediaPeriodDTOArray);
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));

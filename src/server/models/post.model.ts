@@ -62,9 +62,9 @@ export class PostModel extends EntityModel {
             });
             resolve(resPostDTOArray);
             return;
+          } else {
+            resolve(resPostDTOArray);
           }
-          // not found Customer with the id
-          resolve(resPostDTOArray);
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
@@ -120,9 +120,9 @@ export class PostModel extends EntityModel {
               });
               resolve(resPostDTOArray);
               return;
+            } else {
+              resolve(resPostDTOArray);
             }
-            // not found Customer with the id
-            resolve(resPostDTOArray);
           })
           .catch((err) => {
             SysLog.error(JSON.stringify(err));

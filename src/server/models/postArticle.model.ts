@@ -59,9 +59,9 @@ export class PostArticleModel extends EntityModel {
             });
             resolve(resPostArticleDTOArray);
             return;
+          } else {
+            resolve(resPostArticleDTOArray);
           }
-
-          resolve(resPostArticleDTOArray);
         })
         .catch((err) => {
           SysLog.error(JSON.stringify(err));
