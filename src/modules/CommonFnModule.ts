@@ -129,11 +129,11 @@ export class CommonFn {
               break;
           case DateAddIntervalEnum.HOUR:
               daysFraction = units / 24;
-              addMillisec = units * 3600000;
+              addMillisec = units * 86400000;
               if (daysFraction >= 1.0) {
                 adjDays = parseInt(daysFraction.toFixed(0));
                 ret.setDate(ret.getDate() + adjDays);
-                addMillisec -= (adjDays * (8640000));
+                addMillisec -= (adjDays * (86400000));
               }
 
               ret.setTime(ret.getTime() + addMillisec);
@@ -144,7 +144,7 @@ export class CommonFn {
               if (daysFraction >= 1.0) {
                 adjDays = parseInt(daysFraction.toFixed(0));
                 ret.setDate(ret.getDate() + adjDays);
-                addMillisec -= (adjDays * (8640000));
+                addMillisec -= (adjDays * (86400000));
               }
               ret.setTime(ret.getTime() + addMillisec);
               break;
@@ -154,7 +154,7 @@ export class CommonFn {
               if (daysFraction >= 1.0) {
                 adjDays = parseInt(daysFraction.toFixed(0));
                 ret.setDate(ret.getDate() + adjDays);
-                addMillisec -= (adjDays * (8640000));
+                addMillisec -= (adjDays * (86400000));
               }
               ret.setTime(ret.getTime() + addMillisec);
               break;
@@ -164,7 +164,7 @@ export class CommonFn {
               if (daysFraction >= 1.0) {
                 adjDays = parseInt(daysFraction.toFixed(0));
                 ret.setDate(ret.getDate() + adjDays);
-                addMillisec -= (adjDays * (8640000));
+                addMillisec -= (adjDays * (86400000));
               }
               ret.setTime(ret.getTime() + addMillisec);
               break;
