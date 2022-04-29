@@ -345,16 +345,35 @@ export class CommonFn {
       formattedDate = new Date(Date.UTC(year, month, day));
     return formattedDate;
   }
-
 /**
  * This convert a string date to date
  * @param dateStr - string date
  * @returns 
  */
- static stringDateToMySqlDate(dateStr: string) {
-  const dt = new Date(dateStr);
-  return this.toMySqlDate(dt);
-}
+  static stringDateToMySqlDate(dateStr: string) {
+    const dt = new Date(dateStr);
+    return this.toMySqlDate(dt);
+  }
+
+/**
+ * get a checksum number
+ * @returns a random checksum number
+ */
+  static checksum() {
+    return Math.floor(Math.random() * 10000000);
+  }
+
+  /**
+   * accumulate the checksum
+   * @param accumulatedChecksum - accumulated checksum
+   * @param checksum - add
+   * @returns accumulated checkum
+   */
+  static addChecksum(accumulatedChecksum: number, checksum: number) {
+    accumulatedChecksum += checksum;
+    return accumulatedChecksum &= 0xffffffff;
+  }
+
 }
 
 export default CommonFn;
