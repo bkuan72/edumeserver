@@ -84,6 +84,10 @@ export class CommonFn {
     return typeof(obj) === 'string';
   }
 
+  static isArray(obj: any) {
+    return (!this.isUndefined(obj) && !this.isUndefined(obj.push));
+  }
+
 
     /**
      * Adds time to a date. Modelled after MySQL DATE_ADD function.
