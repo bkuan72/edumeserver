@@ -9,7 +9,7 @@ import SysLog from '../modules/SysLog';
  
 function validationUserRegistrationMiddleware<T>(dto_schema: schemaIfc[]): express.RequestHandler {
   return (req, res, next) => {
-    let errors = DTOGenerator.validateCreateDTOSchema({schema: dto_schema, postDTO: req.body});
+    let errors = DTOGenerator.validateInsertDTOSchema({schema: dto_schema, postDTO: req.body});
     if (errors) {
       SysLog.error(errors);
         next(new HttpException(400, errors));

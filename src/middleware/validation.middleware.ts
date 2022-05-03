@@ -6,9 +6,9 @@ import DTOGenerator from '../modules/ModelGenerator';
 import { schemaIfc } from '../modules/DbModule';
 import SysLog from '../modules/SysLog';
  
-function validationMiddleware<T>(dto_schema: schemaIfc[]): express.RequestHandler {
+function validationMiddleware<T>(dto_schema: schemaIfc[], ignoreColumns?: string[],  toCamelCase?: boolean): express.RequestHandler {
   return (req, res, next) => {
-    const errors = DTOGenerator.validateInsertDTOSchema({schema: dto_schema, requestDTO: req.body});
+    const errors = DTOGenerator.validateInsertDTOSchema({schema: dto_schema, postDTO: req.body}, toCamelCase, ignoreColumns);
     if (errors) {
         SysLog.error(errors);
         next(new HttpException(400, errors));

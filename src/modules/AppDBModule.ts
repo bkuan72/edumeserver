@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Session from 'mysqlx/lib/Session';
@@ -18,6 +17,12 @@ export class AppDbModule {
   properties = new PropertyService();
   propertiesRetry = true;
 
+  serverCfg!: {
+    host: string | undefined;
+    user: string | undefined;
+    password: string | undefined;
+  };
+
   public getNewDbSession(): Promise<Session> {
     return new Promise((resolve) => {
       dbConnection.DBM_newDBSession().then((session) => {
@@ -30,8 +35,8 @@ export class AppDbModule {
     return new Promise((resolve) => {
       this.dbConnection.DBM_initSysTableSchema().then(() => {
         if (this.propertiesRetry) {
+          this.propertiesRetry = false;
           this.createDefaultProperties().finally(() => {
-            this.propertiesRetry = false;
             resolve();
           });
         } else {
@@ -97,7 +102,8 @@ export class AppDbModule {
     });
   }
 
-  
+
+
   private startTransaction(
     lsession: Session | undefined,
     startTransaction: boolean | undefined
@@ -127,7 +133,6 @@ export class AppDbModule {
     return new Promise((resolve) => resolve(true));
   }
 
-
   /**
    * INSERT data operation
    *
@@ -148,7 +153,6 @@ export class AppDbModule {
             res.DBSession.sql('SET @uuidId=UUID(); ')
               .execute()
               .then((_result) => {
-                SysLog.info('SQL : '+sql);
                 res.DBSession.sql(sql + ';')
                   .execute()
                   .then((_result2) => {
@@ -167,6 +171,7 @@ export class AppDbModule {
                                 this.close(res.DBSession);
                               resolve(newUuid['@uuidId']);
                             } else {
+                              SysLog.info('SQL : '+sql);
                               SysLog.error('Failed Committing data');
                               if (res.autoCloseSession)
                                 this.close(res.DBSession);
@@ -174,12 +179,14 @@ export class AppDbModule {
                             }
                           })
                           .catch(() => {
+                            SysLog.info('SQL : '+sql);
                             SysLog.error('Failed Committing Data');
                             if (res.autoCloseSession) this.close(res.DBSession);
                             reject(undefined);
                           });
                       })
                       .catch((err) => {
+                        SysLog.info('SQL : '+sql);
                         SysLog.error(JSON.stringify(err));
                         if (res.autoCloseSession) this.close(res.DBSession);
                         reject(undefined);
@@ -187,6 +194,7 @@ export class AppDbModule {
                       });
                   })
                   .catch((err) => {
+                    SysLog.info('SQL : '+sql);
                     SysLog.error(JSON.stringify(err));
                     if (res.autoCloseSession) this.close(res.DBSession);
                     reject(undefined);
@@ -194,6 +202,7 @@ export class AppDbModule {
                   });
               })
               .catch((err) => {
+                SysLog.info('SQL : '+sql);
                 SysLog.error(JSON.stringify(err));
                 if (res.autoCloseSession) this.close(res.DBSession);
                 reject(undefined);
@@ -265,7 +274,6 @@ export class AppDbModule {
       this.getSession(session).then((res) => {
         this.startTransaction(session, transactionCommit)
           .then(() => {
-            SysLog.info('SQL : '+sql);
             res.DBSession.sql(sql + ';')
               .execute()
               .then((result: { rows: any[][]; metadata: Metadata }) => {
@@ -275,18 +283,21 @@ export class AppDbModule {
                       if (res.autoCloseSession) this.close(res.DBSession);
                       resolve(result);
                     } else {
+                      SysLog.info('SQL : '+sql);
                       SysLog.error('Failed Committing Data');
                       if (res.autoCloseSession) this.close(res.DBSession);
                       reject();
                     }
                   })
                   .catch(() => {
+                    SysLog.info('SQL : '+sql);
                     SysLog.error('Failed Committing Data');
                     if (res.autoCloseSession) this.close(res.DBSession);
                     reject();
                   });
               })
               .catch((err) => {
+                SysLog.info('SQL : '+sql);
                 SysLog.error(JSON.stringify(err));
                 if (res.autoCloseSession) this.close(res.DBSession);
                 reject();
@@ -316,7 +327,7 @@ export class AppDbModule {
       metadata: Metadata;
     }>((resolve, reject) => {
       this.getSession(session).then((res) => {
-        SysLog.info('SQL : '+sql);
+
         res.DBSession.sql(sql + ';')
           .execute()
           .then((result: { rows: any[][]; metadata: Metadata }) => {
@@ -325,6 +336,7 @@ export class AppDbModule {
             resolve(result);
           })
           .catch((err) => {
+            SysLog.info('SQL : '+sql);
             SysLog.error(JSON.stringify(err));
             if (res.autoCloseSession) this.close(res.DBSession);
             reject(err);

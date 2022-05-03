@@ -197,56 +197,84 @@ class ModelGenerator {
         return colProp;
     }
 
-    public validateInsertDTOSchema({ schema, requestDTO }: { schema: schemaIfc[]; requestDTO: any; }, toCamelCase?: boolean): string | undefined {
+    private ignoreColumn (fieldName: string | undefined, ignoreColumns?: string[] | undefined) {
+        let ignore = false;
+        if (CommonFn.isString(fieldName) && CommonFn.isArray(ignoreColumns)) {
+            ignoreColumns?.some((colName) => {
+                const snakeStr = CommonFn.toSnakeCase(colName);
+                if (snakeStr === fieldName) {
+                    ignore = true;
+                    return true;
+                }
+            })
+        }
+
+        return ignore;
+    }
+
+    public validateInsertDTOSchema({ schema, postDTO }: { schema: schemaIfc[]; postDTO: any; }, 
+                                     toCamelCase?: boolean, 
+                                     ignoreColumns?: string[]): string | undefined {
         let error: string | undefined = '';
         let errorMsg: string | undefined = undefined;
-        for (const prop in requestDTO) {
+        for (const prop in postDTO) {
             const fieldName = CommonFn.toSnakeCase(prop, toCamelCase);
             if (this.normalSchemaField(fieldName)) {
                 const colProp = this.getSchema(schema, fieldName);
                 if (colProp === undefined) {
-                    error += fieldName + ' not in schema! ';
+                    if (!this.ignoreColumn(fieldName, ignoreColumns)) {
+                        error += fieldName + ' not in schema! ';
+                    }
                 } else {
-                    error = this.validateProperty(colProp, error, requestDTO, prop);
+                    error = this.validateProperty(colProp, error, postDTO, prop);
                 }
             }
         }
+
+        if (CommonFn.isArray(ignoreColumns)) {
+            ignoreColumns?.forEach((ignoreColumn) => {
+                if (!CommonFn.hasProperty(postDTO, ignoreColumn)) {
+                    error += ignoreColumn + ' not defined! '
+                }
+            })
+        }
         schema.forEach((colProp) => {
             const prop = CommonFn.toCamelCase(colProp.fieldName, toCamelCase);
-            if (!CommonFn.hasProperty(requestDTO, prop)) {
+            if (!CommonFn.hasProperty(postDTO, prop)) {
                 if (colProp.postRequired) {
                     error += prop + ' not defined! '
                 }
             }
         });
-        if (error !== undefined && error.length > 0) {
-            errorMsg = "Invalid requestDTO : " + error;
-        }
-
-        return errorMsg;
-    }
-
-    public validateCreateDTOSchema({ schema, postDTO }: { schema: schemaIfc[]; postDTO: any; }, toCamelCase?: boolean): string | undefined {
-        let error: string | undefined = '' ;
-        let errorMsg: string | undefined = undefined;
-
-        schema.forEach((colProp) => {
-            const prop = CommonFn.toCamelCase(colProp.fieldName, toCamelCase);
-            if (postDTO[prop]) {
-                error = this.validateProperty(colProp, error, postDTO, prop);
-            } else {
-                if (colProp.postRequired) {
-                    error += prop + ' not defined! '
-                }
-            }
-        });
-
         if (error !== undefined && error.length > 0) {
             errorMsg = "Invalid postDTO : " + error;
         }
 
         return errorMsg;
     }
+
+    // DEPRECATED
+    // public validateCreateDTOSchema({ schema, postDTO }: { schema: schemaIfc[]; postDTO: any; }, toCamelCase?: boolean): string | undefined {
+    //     let error: string | undefined = '' ;
+    //     let errorMsg: string | undefined = undefined;
+
+    //     schema.forEach((colProp) => {
+    //         const prop = CommonFn.toCamelCase(colProp.fieldName, toCamelCase);
+    //         if (postDTO[prop]) {
+    //             error = this.validateProperty(colProp, error, postDTO, prop);
+    //         } else {
+    //             if (colProp.postRequired) {
+    //                 error += prop + ' not defined! '
+    //             }
+    //         }
+    //     });
+
+    //     if (error !== undefined && error.length > 0) {
+    //         errorMsg = "Invalid postDTO : " + error;
+    //     }
+
+    //     return errorMsg;
+    // }
 
     public validateUpdateDTOSchema({ schema, requestDTO }: { schema: schemaIfc[]; requestDTO: any; }, toCamelCase?: boolean): string | undefined {
         let error: string | undefined = '';
