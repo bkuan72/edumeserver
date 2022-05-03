@@ -545,15 +545,15 @@ export class SqlFormatter {
   }
 
   /**
-   * This function determines if properties are included in SQL statement based on fmtPropArr, function will return true
+   * This function determines if properties are included in SQL statement based on includeColumnArray, function will return true
    * @param prop - schema property
-   * @param fmtPropArr - prop fieldName array to include in SQL statement
+   * @param includeColumnArray - prop fieldName array to include in SQL statement
    * @returns true/false
    */
-  static includeInSql(prop: schemaIfc, fmtPropArr?: string[]): boolean {
+  static includeInSql(prop: schemaIfc, includeColumnArray?: string[]): boolean {
     let includeInSql = false;
-    if (fmtPropArr != undefined && fmtPropArr.length > 0) {
-      fmtPropArr.some((fmtProp) => {
+    if (includeColumnArray !== undefined && includeColumnArray.length > 0) {
+      includeColumnArray.some((fmtProp) => {
         if (fmtProp === prop.fieldName) {
           includeInSql = true;
           return true;
@@ -573,7 +573,7 @@ export class SqlFormatter {
    */
   static excludeFromSql(prop: schemaIfc, exclPropArr?: string[]): boolean {
     let exclSql = false;
-    if (exclPropArr != undefined && exclPropArr.length > 0) {
+    if (exclPropArr !== undefined && exclPropArr.length > 0) {
       exclPropArr.some((fmtProp) => {
         if (fmtProp === prop.fieldName) {
           exclSql = true;
@@ -585,113 +585,103 @@ export class SqlFormatter {
   }
 
   /**
-   * This function formats the SQL SELECT statement, if fmtPropArr is provided then only
+   * This function formats the SQL SELECT statement, if includeColumnArray is provided then only
    * those properties with fieldNames in the array would be format into the SQL statement
    *
    * @param table - entity table name
    * @param schema - entity schema
    * @param ignoreExclFromSelect - optional columns to exclude from SELECT
-   * @param fmtPropArr - optional Property name array
+   * @param includeColumnArray - optional Property name array to include
+   * @param excludeColumnArray - optional Property name array to exclude
    */
   static formatSelect = (
     table: string,
     schema: schemaIfc[],
     ignoreExclFromSelect?: boolean,
-    fmtPropArr?: string[]
+    excludeColumnArray?: string[],
+    includeColumnArray?: string[]
   ): string => {
     let sql = 'SELECT ';
     let first = true;
     schema.forEach((prop) => {
-      if (prop.fieldName !== 'INDEX') {
-        if (
-          CommonFn.isUndefined(prop.excludeFromSelect) ||
-          ignoreExclFromSelect ||
-          !prop.excludeFromSelect
-        ) {
-          if (
-            ignoreExclFromSelect ||
-            SqlFormatter.includeInSql(prop, fmtPropArr)
-          ) {
-            if (!CommonFn.isUndefined(prop.uuidProperty) && prop.uuidProperty) {
-              if (first) {
-                first = false;
-              } else {
-                sql += ', ';
-              }
-              sql += 'BIN_TO_UUID(' + prop.fieldName + ') ';
-              sql += prop.fieldName;
-            } else {
-              if (first) {
-                first = false;
-              } else {
-                sql += ', ';
-              }
-              sql += prop.fieldName;
-            }
+      let skip = false;
+      if (prop.fieldName === 'INDEX') {
+        skip = true;
+      }
+      skip = SqlFormatter.checkSkipColumn(prop, skip, excludeColumnArray, includeColumnArray, ignoreExclFromSelect);
+
+      if (skip === false) {
+        if (!CommonFn.isUndefined(prop.uuidProperty) && prop.uuidProperty) {
+          if (first) {
+            first = false;
+          } else {
+            sql += ', ';
           }
+          sql += 'BIN_TO_UUID(' + prop.fieldName + ') ';
+          sql += prop.fieldName;
+        } else {
+          if (first) {
+            first = false;
+          } else {
+            sql += ', ';
+          }
+          sql += prop.fieldName;
         }
       }
+
     });
+    if (first) {
+      sql += ' * ';
+    }
     sql += ' FROM ' + table + '';
     return sql;
   };
 
   /**
-   * This function formats the SQL SELECT statement in tableName.columnName format, if fmtPropArr is provided then only
+   * This function formats the SQL SELECT statement in tableName.columnName format, if includeColumnArray is provided then only
    * those properties with fieldNames in the array would be format into the SQL statement
    *
    * @param table - entity table name
    * @param schema - entity schema
    * @param ignoreExclFromSelect - optional columns to exclude from SELECT
-   * @param fmtPropArr - optional Property name array
+   * @param includeColumnArray - optional Property name array
    */
   static formatTableSelect = (
     table: string,
     schema: schemaIfc[],
-    exclColumnArray?: string[],
+    excludeColumnArray?: string[],
     ignoreExclFromSelect?: boolean,
-    fmtPropArr?: string[]
+    includeColumnArray?: string[]
   ): string => {
     let sql = '';
     let first = true;
     schema.forEach((prop) => {
-      if (prop.fieldName !== 'INDEX') {
+      let skip = false;
+      skip = SqlFormatter.checkSkipColumn(prop, skip, excludeColumnArray, includeColumnArray, ignoreExclFromSelect);
+
+      if (skip === false) {
         if (
-          exclColumnArray === undefined ||
-          !SqlFormatter.excludeFromSql(prop, exclColumnArray)
+          !CommonFn.isUndefined(prop.uuidProperty) && prop.uuidProperty
         ) {
-          if (
-            CommonFn.isUndefined(prop.excludeFromSelect) ||
-            ignoreExclFromSelect ||
-            !prop.excludeFromSelect
-          ) {
-            if (
-              ignoreExclFromSelect ||
-              SqlFormatter.includeInSql(prop, fmtPropArr)
-            ) {
-              if (
-                !CommonFn.isUndefined(prop.uuidProperty) &&
-                prop.uuidProperty
-              ) {
-                if (first) {
-                  first = false;
-                } else {
-                  sql += ', ';
-                }
-                sql += 'BIN_TO_UUID(' + table + '.' + prop.fieldName + ') ';
-              } else {
-                if (first) {
-                  first = false;
-                } else {
-                  sql += ', ';
-                }
-                sql += table + '.' + prop.fieldName;
-              }
-            }
+          if (first) {
+            first = false;
+          } else {
+            sql += ', ';
           }
+          sql += 'BIN_TO_UUID(' + table + '.' + prop.fieldName + ') ';
+        } else {
+          if (first) {
+            first = false;
+          } else {
+            sql += ', ';
+          }
+          sql += table + '.' + prop.fieldName;
         }
       }
     });
+    if (first) {
+      sql += ' * ';
+    }
     return sql;
   };
 
@@ -702,23 +692,23 @@ export class SqlFormatter {
    * @param schema   - schema used to generate the SQL SELECT statement
    * @param sqlRowData - result set of a row of SQL data
    * @param ignoreExclFromSelect - columns to ignore in the schema
-   * @param fmtPropArr
+   * @param includeColumnArray
    */
   static transposeTableSelectColumns = (
     startCol: number,
     dataObj: any,
     schema: schemaIfc[],
     sqlRowData: any[],
-    exclColumnArray?: string[],
+    excludeColumnArray?: string[],
     ignoreExclFromSelect?: boolean,
-    fmtPropArr?: string[],
+    includeColumnArray?: string[],
     toCamelCase?: boolean
   ): number => {
     schema.forEach((prop) => {
       if (prop.fieldName !== 'INDEX') {
         if (
-          exclColumnArray === undefined ||
-          !SqlFormatter.excludeFromSql(prop, exclColumnArray)
+          excludeColumnArray === undefined ||
+          !SqlFormatter.excludeFromSql(prop, excludeColumnArray)
         ) {
           if (
             CommonFn.isUndefined(prop.excludeFromSelect) ||
@@ -727,7 +717,7 @@ export class SqlFormatter {
           ) {
             if (
               ignoreExclFromSelect ||
-              SqlFormatter.includeInSql(prop, fmtPropArr)
+              SqlFormatter.includeInSql(prop, includeColumnArray)
             ) {
               const propValue = SqlFormatter.translatePropValue(
                 prop.sqlType,
@@ -751,7 +741,7 @@ export class SqlFormatter {
    * @param columnArray - array of column names
    * @param columnArray - entity schema
    * @param ignoreExclFromSelect - optional columns to exclude from SELECT
-   * @param fmtPropArr - optional Property name array
+   * @param includeColumnArray - optional Property name array
    */
   static transposeTableSelectColumnArray = (
     startCol: number,
@@ -789,28 +779,28 @@ export class SqlFormatter {
   /**
    * This function transpose the data return from SQL statement into
    * an object defined with properties from the schema taking into account
-   *  ignoreExclFromSelect and fmtPropArr
+   *  ignoreExclFromSelect and includeColumnArray
    *
    * @param schema - entity schema
    * @param ignoreExclFromSelect - columns to be excluded
-   * @param fmtPropArr - Property name array
+   * @param includeColumnArray - Property name array
    * @param dataRow - data rows returned by SQL statement
    */
   static transposeResultSet = (
     schema: schemaIfc[],
     ignoreExclFromSelect: boolean | undefined,
-    fmtPropArr: string[] | undefined,
+    includeColumnArray: string[] | undefined,
     dataRow: any[],
     toCamelCase?: boolean,
-    exclColumnArray?: string[] | undefined
+    excludeColumnArray?: string[] | undefined
   ): any => {
     let idx = 0;
     let data = Object.create(null);
     schema.forEach((prop) => {
       if (prop.fieldName !== 'INDEX') {
         if (
-          exclColumnArray === undefined ||
-          !SqlFormatter.excludeFromSql(prop, exclColumnArray)
+          excludeColumnArray === undefined ||
+          !SqlFormatter.excludeFromSql(prop, excludeColumnArray)
         ) {
           if (
             CommonFn.isUndefined(prop.excludeFromSelect) ||
@@ -819,7 +809,7 @@ export class SqlFormatter {
           ) {
             if (
               ignoreExclFromSelect ||
-              SqlFormatter.includeInSql(prop, fmtPropArr)
+              SqlFormatter.includeInSql(prop, includeColumnArray)
             ) {
               const propValue = SqlFormatter.translatePropValue(
                 prop.sqlType,
@@ -1020,6 +1010,35 @@ export class SqlFormatter {
     });
   };
 
+
+  private static checkSkipColumn(prop: schemaIfc, skip: boolean, excludeColumnArray: string[] | undefined, includeColumnArray: string[] | undefined, ignoreExclFromSelect: boolean | undefined) {
+    if (prop.fieldName === 'INDEX') {
+      skip = true;
+    }
+    if (skip === false) {
+      if (SqlFormatter.excludeFromSql(prop, excludeColumnArray)) {
+        skip = true;
+      }
+      if (skip === false) {
+        if (SqlFormatter.includeInSql(prop, includeColumnArray) === false) {
+          skip = true;
+        } else {
+          if (!CommonFn.isUndefined(prop.excludeFromSelect)) {
+            if (prop.excludeFromSelect) {
+              if (!CommonFn.isUndefined(ignoreExclFromSelect)) {
+                if (ignoreExclFromSelect === false) {
+                  skip = true;
+                }
+              } else {
+                skip = true;
+              }
+            }
+          }
+        }
+      }
+    }
+    return skip;
+  }
 
   /**
    * This function formats the SQL WHERE statement for conditions object by stringing the
