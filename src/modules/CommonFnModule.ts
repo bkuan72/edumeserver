@@ -283,7 +283,17 @@ export class CommonFn {
    static toMySqlDateTime(date: Date) {
     return date.toISOString().split('T')[0] + ' ' + date.toTimeString().split(' ')[0];
   }
-
+  /**
+   * Convert MySql formatted date to Java date
+   * @param dateTimeStr date formatted yyyy-mm-dd hh:mm:ss
+   * @returns 
+   */
+    static fromMySqlDate (dateTimeStr: string) {
+      if (this.isEmpty(dateTimeStr)) {
+        return new Date ('0000-00-00');
+      }
+      return new Date(dateTimeStr);
+    }
   /**
    * This convert a date string as define by dateFmt into JS Date
    * @param dateStr - date string 'xx/xx/xxxx' or 'xx/xx/xx'
@@ -377,6 +387,21 @@ export class CommonFn {
     accumulatedChecksum += checksum;
     return accumulatedChecksum &= 0xffffffff;
   }
+
+  /**
+   * Compare timestamp against current date
+   * @param expiryTimestamp - time stamp yyyy-mm-dd hh:mm:ss
+   * @returns true if expired
+   */
+  static timestampExpired = (expiryTimestamp: string) => {
+    const now = CommonFn.toMySqlDateTime(new Date());
+    let lockExpired = true;
+
+    if (now < expiryTimestamp) {
+      lockExpired = false;
+    }
+    return lockExpired;
+  };
 
 }
 
