@@ -853,13 +853,12 @@ export class SqlFormatter {
         } else {
           propValue = dataRow[idx];
         }
-
       }
     }
     return propValue;
   };
 
-  static translateFldPropValue = (
+  static inputValueToMySqlValue = (
     sqlType: string | undefined,
     fldValue: any
   ): any => {
@@ -874,7 +873,7 @@ export class SqlFormatter {
           propValue = true;
         }
       } else {
-        if (sqlType === 'DATE') {
+        if (sqlType?.includes('DATE')) {
           propValue = CommonFn.toMySqlDate(fldValue);
         } else {
           propValue = fldValue;
@@ -1078,7 +1077,7 @@ export class SqlFormatter {
               conditions[prop]
             ]);
           } else {
-            const propValue = this.translateFldPropValue(fld.sqlType, conditions[prop]);
+            const propValue = this.inputValueToMySqlValue(fld.sqlType, conditions[prop]);
             sql += SqlStr.format(fld.fieldName + ' = ?', [propValue]);
           }
           return true;
