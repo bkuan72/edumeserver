@@ -61,7 +61,7 @@ export class AppDbModule {
           res();
         } else {
           const prop = ServerDefaultProperties[idx];
-          const propName = SysEnv.SITE_CODE + '.' + prop.name;
+          const propName = prop.name;
           const newProperty = {
             name: '',
             property_type: '',
@@ -85,10 +85,10 @@ export class AppDbModule {
           }
           this.properties
             .getProperty(newProperty)
-            .then((propertyDTO) => {
-              if (propertyDTO.length > 0) {
-                ServerDefaultProperties[idx].numValue = propertyDTO[0].numValue;
-                ServerDefaultProperties[idx].value = propertyDTO[0].value;
+            .then((propertyDTOs) => {
+              if (propertyDTOs.length > 0) {
+                ServerDefaultProperties[idx].numValue = propertyDTOs[0].numValue;
+                ServerDefaultProperties[idx].value = propertyDTOs[0].value;
               }
               createProperty(res, idx + 1);
             })

@@ -25,7 +25,7 @@ export class PropertyService {
         hostname: SysEnv.PROPERTY_SERVICE,
         port: SysEnv.PROPERTY_SERVICE_PORT,
         path: '/api/properties/getter',
-        method: 'GET',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Content-Length': jsonData.length
