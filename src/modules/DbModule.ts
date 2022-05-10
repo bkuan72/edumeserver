@@ -89,7 +89,7 @@ class Database {
       }
       SysLog.info('host: ' + this.serverCfg.host);
       SysLog.info('user: ' + this.serverCfg.user);
-      SysLog.info('password: ' + this.serverCfg.password);
+      // SysLog.info('password: ' + this.serverCfg.password);
       // SysLog.info("port: " + this.serverCfg.port);
       mysqlx
         .getSession(this.serverCfg)

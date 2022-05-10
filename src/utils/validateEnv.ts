@@ -9,7 +9,7 @@ import {
         DB_USER: str(),
         DB_PASSWORD: str(),
         DB_NAME: str(),
-        DB_PORT: str(),
+        DB_PORT: num(),
         PORT: port(),
         JWT_SECRET: str(),
         SITE_CODE: str(),
