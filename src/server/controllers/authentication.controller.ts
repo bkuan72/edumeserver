@@ -1,14 +1,14 @@
-import { UserModuleRoleModel } from './../models/userModuleRole.model';
-import { UserModuleRoleDataDTO } from './../../dtos/userModuleRoles.DTO';
-import { UserData } from './../../schemas/users.schema';
-import { CommonFn } from './../../modules/CommonFnModule';
+import { UserModuleRoleModel } from '../models/userModuleRole.model';
+import { UserModuleRoleDataDTO } from '../../dtos/userModuleRoles.DTO';
+import { UserData } from '../../schemas/users.schema';
+import { CommonFn } from '../../modules/CommonFnModule';
 import { ResponseUserDTO, CreateUserDTO } from '../../dtos/user.DTO';
-import { UserAccountModel } from './../models/userAccount.model';
+import { UserAccountModel } from '../models/userAccount.model';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   blacklist_tokens_schema_table,
   tokens_schema_table
-} from './../../schemas/tokens.schema';
+} from '../../schemas/tokens.schema';
 import Controller from '../../interfaces/controller.interface';
 import * as express from 'express';
 import jwt = require('jsonwebtoken');

@@ -1,6 +1,6 @@
-import { UserAccountsData } from './../../schemas/userAccounts.schema';
-import { UpdUserAccountsDTO, UserAccountDataDTO } from './../../dtos/userAccounts.DTO';
-import { CommonFn } from './../../modules/CommonFnModule';
+import { UserAccountsData } from '../../schemas/userAccounts.schema';
+import { UpdUserAccountsDTO, UserAccountDataDTO } from '../../dtos/userAccounts.DTO';
+import { CommonFn } from '../../modules/CommonFnModule';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import * as express from 'express';
 import Controller from "../../interfaces/controller.interface";

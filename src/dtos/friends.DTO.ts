@@ -1,4 +1,4 @@
-import { users_schema } from './../schemas/users.schema';
+import { users_schema } from '../schemas/users.schema';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import DTOGenerator from '../modules/ModelGenerator';

@@ -1,5 +1,5 @@
-import { CommonFn } from './../../modules/CommonFnModule';
-import { AdvertisementData } from './../../schemas/advertisements.schema';
+import { CommonFn } from '../../modules/CommonFnModule';
+import { AdvertisementData } from '../../schemas/advertisements.schema';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */

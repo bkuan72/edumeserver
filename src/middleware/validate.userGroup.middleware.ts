@@ -1,4 +1,4 @@
-import { AccountModel } from './../server/models/account.model';
+import { AccountModel } from '../server/models/account.model';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as express from 'express';

@@ -1,4 +1,4 @@
-import { UserGroupData } from './../../schemas/userGroups.schema';
+import { UserGroupData } from '../../schemas/userGroups.schema';
 import { CommonFn } from '../../modules/CommonFnModule';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import * as express from 'express';

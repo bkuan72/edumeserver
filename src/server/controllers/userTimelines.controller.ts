@@ -1,6 +1,6 @@
-import { AccountDTO } from './../../dtos/accounts.DTO';
-import { ActivityModel } from './../models/activity.model';
-import { UpdUserTimelineDTO } from './../../dtos/userTimelines.DTO';
+import { AccountDTO } from '../../dtos/accounts.DTO';
+import { ActivityModel } from '../models/activity.model';
+import { UpdUserTimelineDTO } from '../../dtos/userTimelines.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import {UserTimelineModel} from "../models/userTimeline.model";

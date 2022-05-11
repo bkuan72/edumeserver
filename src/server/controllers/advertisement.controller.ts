@@ -1,5 +1,5 @@
-import { FilterIfc } from './../models/advertisement.model';
-import { AdvertisementDTO, UpdAdvertisementDTO } from './../../dtos/advertisements.DTO';
+import { FilterIfc } from '../models/advertisement.model';
+import { AdvertisementDTO, UpdAdvertisementDTO } from '../../dtos/advertisements.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import {AdvertisementModel} from "../models/advertisement.model";

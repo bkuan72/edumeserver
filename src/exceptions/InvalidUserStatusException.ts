@@ -1,4 +1,4 @@
-import { UserData } from './../schemas/users.schema';
+import { UserData } from '../schemas/users.schema';
 import { ResponseUserDTO } from '../dtos/user.DTO';
 import HttpException from "./HttpException";
 

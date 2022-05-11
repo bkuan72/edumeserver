@@ -1,4 +1,4 @@
-import { UserData } from './../schemas/users.schema';
+import { UserData } from '../schemas/users.schema';
 import { ResponseUserDTO } from '../dtos/user.DTO';
 import nodemailer from 'nodemailer';
 import SysEnv from './SysEnv';

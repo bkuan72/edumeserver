@@ -1,5 +1,5 @@
-import { UserModuleRoleDataDTO } from './../../dtos/userModuleRoles.DTO';
-import { roles_schema, roles_schema_table } from './../../schemas/roles.schema';
+import { UserModuleRoleDataDTO } from '../../dtos/userModuleRoles.DTO';
+import { roles_schema, roles_schema_table } from '../../schemas/roles.schema';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */

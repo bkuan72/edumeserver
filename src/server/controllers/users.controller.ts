@@ -1,6 +1,6 @@
 import { InsertUserDTO, ResponseUserDTO, UpdUserDTO } from '../../dtos/user.DTO';
-import { CommonFn } from './../../modules/CommonFnModule';
-import { AboutDTO } from './../../dtos/about.DTO';
+import { CommonFn } from '../../modules/CommonFnModule';
+import { AboutDTO } from '../../dtos/about.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import {UserModel} from "../models/user.model";

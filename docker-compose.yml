@@ -24,13 +24,13 @@ services:
   ls10_net_server_application:
     # container_name: ls10_net_server_application
     build:
-      context: ../ls10_net_server/
+      context: ../ls10_net_web_server/
       dockerfile: Dockerfile
-    env_file: ../ls10_net_server/.env
+    env_file: ../ls10_net_web_server/.env
     depends_on:
       - localhost
     volumes:
-    - '../ls10_net_server/${BACKEND_APPLICATION_DIRECTORY}/:/app/www'
+    - '../ls10_net_web_server/${BACKEND_APPLICATION_DIRECTORY}/:/app/www'
     stdin_open: true
     tty: true
     ports:

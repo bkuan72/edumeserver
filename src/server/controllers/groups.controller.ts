@@ -1,4 +1,4 @@
-import { GroupDTO, UpdGroupDTO } from './../../dtos/groups.DTO';
+import { GroupDTO, UpdGroupDTO } from '../../dtos/groups.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import {GroupModel} from "../models/group.model";

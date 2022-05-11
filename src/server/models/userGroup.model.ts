@@ -1,4 +1,4 @@
-import { socialGroups_schema_table } from './../../schemas/groups.schema';
+import { socialGroups_schema_table } from '../../schemas/groups.schema';
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */

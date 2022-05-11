@@ -1,4 +1,4 @@
-import { AccountDTO, UpdAccountDTO, AboutAccountDTO } from './../../dtos/accounts.DTO';
+import { AccountDTO, UpdAccountDTO, AboutAccountDTO } from '../../dtos/accounts.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import {AccountModel} from "../models/account.model";

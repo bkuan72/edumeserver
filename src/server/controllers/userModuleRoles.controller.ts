@@ -1,4 +1,4 @@
-import { UserModuleRoleDTO, UpdUserModuleRoleDTO } from './../../dtos/userModuleRoles.DTO';
+import { UserModuleRoleDTO, UpdUserModuleRoleDTO } from '../../dtos/userModuleRoles.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import {UserModuleRoleModel} from "../models/userModuleRole.model";

@@ -1,4 +1,4 @@
-import { TokenData } from './../../schemas/tokens.schema';
+import { TokenData } from '../../schemas/tokens.schema';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */

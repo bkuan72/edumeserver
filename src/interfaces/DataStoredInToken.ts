@@ -1,4 +1,4 @@
-import { UserModuleRoleDataDTO } from './../dtos/userModuleRoles.DTO';
+import { UserModuleRoleDataDTO } from '../dtos/userModuleRoles.DTO';
 interface DataStoredInToken {
   user_id: string;
   uuid: string;

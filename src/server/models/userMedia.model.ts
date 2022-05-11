@@ -1,7 +1,7 @@
 import {
   UserMediaFullImageDTO,
   RequestUserMediaDTO
-} from './../../dtos/userMedias.DTO';
+} from '../../dtos/userMedias.DTO';
 import { SqlFormatter } from '../../modules/sql.strings';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */

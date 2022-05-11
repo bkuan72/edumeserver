@@ -1,4 +1,4 @@
-import { posts_schema } from './../schemas/posts.schema';
+import { posts_schema } from '../schemas/posts.schema';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import DTOGenerator from '../modules/ModelGenerator';

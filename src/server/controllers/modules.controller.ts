@@ -1,4 +1,4 @@
-import { ModuleDTO, UpdModuleDTO } from './../../dtos/modules.DTO';
+import { ModuleDTO, UpdModuleDTO } from '../../dtos/modules.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import {ModuleModel} from "../models/module.model";

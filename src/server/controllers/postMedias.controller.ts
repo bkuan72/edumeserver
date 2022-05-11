@@ -1,4 +1,4 @@
-import { PostMediaDTO, UpdPostMediaDTO } from './../../dtos/postMedias.DTO';
+import { PostMediaDTO, UpdPostMediaDTO } from '../../dtos/postMedias.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import {PostMediaModel} from "../models/postMedia.model";

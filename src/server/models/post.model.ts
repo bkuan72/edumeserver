@@ -1,4 +1,4 @@
-import CommonFn, { DateAddIntervalEnum } from './../../modules/CommonFnModule';
+import CommonFn, { DateAddIntervalEnum } from '../../modules/CommonFnModule';
 import { FriendModel } from './friend.model';
 import { SqlFormatter } from '../../modules/sql.strings';
 /* eslint-disable @typescript-eslint/no-unused-vars */

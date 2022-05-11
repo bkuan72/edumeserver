@@ -1,4 +1,4 @@
-import { UpdPostDTO } from './../../dtos/posts.DTO';
+import { UpdPostDTO } from '../../dtos/posts.DTO';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import {PostModel} from "../models/post.model";

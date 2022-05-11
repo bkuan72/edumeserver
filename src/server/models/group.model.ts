@@ -1,5 +1,5 @@
-import { GroupData } from './../../schemas/groups.schema';
-import { SqlFormatter } from './../../modules/sql.strings';
+import { GroupData } from '../../schemas/groups.schema';
+import { SqlFormatter } from '../../modules/sql.strings';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */

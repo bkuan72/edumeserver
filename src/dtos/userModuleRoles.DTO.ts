@@ -1,5 +1,5 @@
-import { modules_schema } from './../schemas/modules.schema';
-import { roles_schema } from './../schemas/roles.schema';
+import { modules_schema } from '../schemas/modules.schema';
+import { roles_schema } from '../schemas/roles.schema';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import DTOGenerator from '../modules/ModelGenerator';

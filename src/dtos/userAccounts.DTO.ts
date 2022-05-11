@@ -1,4 +1,4 @@
-import { accounts_schema } from './../schemas/accounts.schema';
+import { accounts_schema } from '../schemas/accounts.schema';
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import DTOGenerator from '../modules/ModelGenerator';
